@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		C82DFCDF1FBF0E3D00B65F92 /* ImageListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82DFCDE1FBF0E3D00B65F92 /* ImageListController.swift */; };
 		C82DFCE11FBFB98C00B65F92 /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82DFCE01FBFB98C00B65F92 /* ImageCell.swift */; };
+		C891DD701FC1BC1800C126BF /* ImageBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = C891DD6F1FC1BC1800C126BF /* ImageBoard.swift */; };
+		C89E07101FC04C6E00C527BC /* ImageEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C89E070F1FC04C6E00C527BC /* ImageEditor.swift */; };
 		C8F22ED01FBC80BD00632109 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F22ECF1FBC80BD00632109 /* AppDelegate.swift */; };
 		C8F22ED21FBC80BD00632109 /* SplashController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F22ED11FBC80BD00632109 /* SplashController.swift */; };
 		C8F22ED51FBC80BD00632109 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C8F22ED31FBC80BD00632109 /* Main.storyboard */; };
@@ -39,6 +41,8 @@
 /* Begin PBXFileReference section */
 		C82DFCDE1FBF0E3D00B65F92 /* ImageListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageListController.swift; sourceTree = "<group>"; };
 		C82DFCE01FBFB98C00B65F92 /* ImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
+		C891DD6F1FC1BC1800C126BF /* ImageBoard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageBoard.swift; sourceTree = "<group>"; };
+		C89E070F1FC04C6E00C527BC /* ImageEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageEditor.swift; sourceTree = "<group>"; };
 		C8F22ECC1FBC80BD00632109 /* StringPictMaker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StringPictMaker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C8F22ECF1FBC80BD00632109 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C8F22ED11FBC80BD00632109 /* SplashController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashController.swift; sourceTree = "<group>"; };
@@ -107,6 +111,8 @@
 				C8F22ED11FBC80BD00632109 /* SplashController.swift */,
 				C82DFCDE1FBF0E3D00B65F92 /* ImageListController.swift */,
 				C82DFCE01FBFB98C00B65F92 /* ImageCell.swift */,
+				C89E070F1FC04C6E00C527BC /* ImageEditor.swift */,
+				C891DD6F1FC1BC1800C126BF /* ImageBoard.swift */,
 				C8F22ED31FBC80BD00632109 /* Main.storyboard */,
 				C8F22ED91FBC80BD00632109 /* Assets.xcassets */,
 				C8F22EDB1FBC80BD00632109 /* LaunchScreen.storyboard */,
@@ -268,10 +274,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C891DD701FC1BC1800C126BF /* ImageBoard.swift in Sources */,
 				C8F22ED21FBC80BD00632109 /* SplashController.swift in Sources */,
 				C8F22ED01FBC80BD00632109 /* AppDelegate.swift in Sources */,
 				C8F22ED81FBC80BD00632109 /* StringPictMaker.xcdatamodeld in Sources */,
 				C82DFCDF1FBF0E3D00B65F92 /* ImageListController.swift in Sources */,
+				C89E07101FC04C6E00C527BC /* ImageEditor.swift in Sources */,
 				C82DFCE11FBFB98C00B65F92 /* ImageCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

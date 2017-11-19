@@ -42,15 +42,63 @@
                         <cells/>
                     </collectionView>
                     <navigationItem key="navigationItem" id="9sv-R2-SrZ"/>
+                    <connections>
+                        <segue destination="oqI-6G-l4C" kind="show" identifier="toImageEditor_id" id="WV5-RO-11L"/>
+                        <segue destination="CRq-VW-vnV" kind="show" identifier="toImageBoard_id" id="O95-24-Ir6"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ehW-7Q-PAp" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1721" y="134"/>
         </scene>
+        <!--Image Editor-->
+        <scene sceneID="quL-pi-3zY">
+            <objects>
+                <viewController id="oqI-6G-l4C" customClass="ImageEditor" customModule="StringPictMaker" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="o0q-99-yqQ">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3am-4G-ycd">
+                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <items>
+                                    <barButtonItem title="Item" id="9k7-o4-yN7"/>
+                                    <barButtonItem title="Item" id="zZG-DP-gUk"/>
+                                    <barButtonItem title="Item" id="wkY-A4-mzr"/>
+                                    <barButtonItem title="Item" id="y7F-Hw-4F0"/>
+                                    <barButtonItem title="Item" id="o74-kN-qQF"/>
+                                    <barButtonItem title="Item" id="Plv-iv-EuT"/>
+                                    <barButtonItem title="Item" id="hpT-qs-wXi"/>
+                                </items>
+                            </toolbar>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <viewLayoutGuide key="safeArea" id="JGr-7r-thp"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="3cD-Rm-aXg" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2534" y="134"/>
+        </scene>
+        <!--Image Board-->
+        <scene sceneID="h3E-dt-KgP">
+            <objects>
+                <viewController id="CRq-VW-vnV" customClass="ImageBoard" customModule="StringPictMaker" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="3g3-Tq-3mF">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <viewLayoutGuide key="safeArea" id="UFp-uG-o3C"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ETo-7g-8S4" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1721" y="894"/>
+        </scene>
         <!--Navigation Controller-->
         <scene sceneID="wiG-rs-wRC">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="aUh-bp-Z7q" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController storyboardIdentifier="ImageList_id" id="Uq4-FE-LuW" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="vcU-Tm-5FQ">
                         <rect key="frame" x="0.0" y="20" width="375" height="44"/>
@@ -60,6 +108,7 @@
                         <segue destination="rgI-FD-gfg" kind="relationship" relationship="rootViewController" id="9kC-5e-Jzv"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="aUh-bp-Z7q" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="935" y="134"/>
         </scene>

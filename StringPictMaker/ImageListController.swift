@@ -15,31 +15,23 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
     var myCollectionView : UICollectionView!
     // ビューのマージンを設定
     let cellMargin:CGFloat = 10.0
-    //管理オブジェクトコンテキスト
+    // CoreData : 管理オブジェクトコンテキスト
     var managedContext:NSManagedObjectContext!
-    //検証用データ
-    let dataList = [["月刊コロコロコミック", "小学館",390,20.2,"2016/5/16 10:30:00"],
-                    ["コロコロイチバン！","小学館",540,25.3,"2016/4/23 09:00:00"],
-                    ["最強ジャンプ","集英社",420,13.2,"2016/6/9 7:00:00"],
-                    ["Vジャンプ","集英社",300,13.4,"2016/1/3 12:00:00"],
-                    ["週刊少年サンデー","小学館",280,16.7,"2016/8/23 11:00:00"],
-                    ["週刊少年マガジン","講談社",250,40.5,"2016/10/10 7:30:00"],
-                    ["週刊少年ジャンプ","集英社",300,60.3,"2016/9/9 10:00:00"],
-                    ["週刊少年チャンピオン","秋田書店",280,23.5,"2015/5/1 11:30:00"],
-                    ["月刊少年マガジン","講談社",320,45.1,"2016/7/2 13:30:00"],
-                    ["月刊少年チャンピオン","秋田書店",220,12.6,"2015/11/10 7:30:00"],
-                    ["月刊少年ガンガン","スクウェア",240,33.5,"2016/2/2 7:30:00"],
-                    ["月刊少年エース","KADOKAWA", 330,9.8,"2016/7/1 8:30:00"],
-                    ["月刊少年シリウス","講談社",350,20.2,"2016/11/26 15:00:00"],
-                    ["週刊ヤングジャンプ","集英社",300,33.3,"2014/3/16 8:30:00"],
-                    ["ビッグコミックスピリッツ","小学館",240,11.2,"2014/9/29 11:30:00"],
-                    ["週刊ヤングマガジン","講談社",310,26.7,"2016/8/8 10:00:00"]]
-    //検索結果配列
+    // 検索結果配列
     var searchResult = [Images]()
-    
+    // 表示するセル数を設定
+    var cellNum : Int = 5
+    var delegateParamIndex : Int = 0
     /// コレクションビューを生成
     override func viewDidLoad() {
         super.viewDidLoad()
+        // ナビゲーションバーにアイテム追加
+        // ナビゲーションバーのボタン
+        var rightBarButton: UIBarButtonItem!
+        rightBarButton = UIBarButtonItem(barButtonSystemItem:  .add,target: self, action: #selector(tappedRightBarButton))
+        self.navigationItem.rightBarButtonItem = rightBarButton
+        
+        // コレクションビューを生成
         let layout = UICollectionViewFlowLayout()
         myCollectionView = UICollectionView(frame:view.frame, collectionViewLayout: layout)
         myCollectionView.register(ImageCell.self, forCellWithReuseIdentifier: "ImageCell_id")        
@@ -48,43 +40,29 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
         myCollectionView.backgroundColor = UIColor.black
         self.view.addSubview(myCollectionView)
         
-        //管理オブジェクトコンテキストを取得する。
+        // CoreData : 管理オブジェクトコンテキストを取得
         let applicationDelegate = UIApplication.shared.delegate as! AppDelegate
         managedContext = applicationDelegate.persistentContainer.viewContext
-        //コンフリクトが発生した場合はマージする。
+        //コンフリクトが発生した場合にマージ
         managedContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
-        getData()
+        //getData()
+        //deleteData()
+        //setView()
     }
     
-    /// CoreDataにimageを保存
-    func setData(){
-        do{
-            //オブジェクトを管理オブジェクトコンテキストに格納する。
-            for data in dataList {
-                let book = NSEntityDescription.insertNewObject(forEntityName: "Images", into: managedContext) as! Images
-                book.title = data[0] as? String        //雑誌名
-            }
-            //管理オブジェクトコンテキストの中身を保存する。
-            try managedContext.save()
-         } catch {
-            print(error)
-         }
-    }
-    
-    /// CoreDataからimageを取得
-    func getData(){
-        //フェッチリクエストのインスタンスを生成する。
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Images")
-        do {
-            //フェッチリクエストを実行する。
-            searchResult = try managedContext.fetch(fetchRequest) as! [Images]
-        } catch {
-            print(error)
+    /// 画面遷移時に渡すデータを設定
+    ///
+    /// - Parameters:
+    ///   - segue: セグエ
+    ///   - sender: 渡すデータ
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if (segue.identifier == "toImageBoard_id") {
+            let secondViewController:ImageBoard = segue.destination as! ImageBoard
+            secondViewController.delegateParamIndex = sender as! Int
+         }else if(segue.identifier == "toImageEditor_id"){
+            let secondViewController:ImageEditor = segue.destination as! ImageEditor
+            secondViewController.delegateParamIndex = sender as! Int
         }
-        for serchRes in searchResult{
-            print(serchRes.title! as Any)
-        }
-        //print(searchResult[2].title! as Any)
     }
     /// セルの要素数を設定
     ///
@@ -93,7 +71,7 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
     ///   - section: セクションに含まれる要素数
     /// - Returns: 要素数
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 20
+        return cellNum
     }
     /// セルの情報を設定
     ///
@@ -104,13 +82,23 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCell_id", for: indexPath) as! ImageCell
         //logo設定
-        cell.imageLabel?.image = UIImage(named: "jv_logo")
+        cell.imageLabel?.image = UIImage(named: "noimage")
         cell.textLabel?.text = "Title" + indexPath.row.description
         cell.editButton?.setTitle("EDIT", for: .normal)
         cell.editButton?.setTitleColor(UIColor.blue, for: .normal)
+        cell.editButton?.tag = indexPath.row
         cell.backgroundColor = UIColor.lightGray
-        //cell.editButton?.addTarget(self, action: #selector(onClickSubButtons), for: UIControlEvents.touchUpInside)
+        cell.editButton?.addTarget(self, action: #selector(onClickEditButtons), for: UIControlEvents.touchUpInside)
         return cell
+    }
+    /// セルが選択された時のイベント
+    ///
+    /// - Parameters:
+    ///   - collectionView: myCollectionView
+    ///   - indexPath: セルのインデックス
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        self.delegateParamIndex = (indexPath as NSIndexPath).row
+        self.performSegue(withIdentifier: "toImageBoard_id", sender: self.delegateParamIndex)
     }
     /// 行間の余白を設定
     ///
@@ -152,4 +140,107 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
+    /// ナビゲーションバーの追加ボタンをタップしたときのアクション
+    @objc func tappedRightBarButton() {
+        self.cellNum += 1
+        myCollectionView.reloadData()
+        self.delegateParamIndex = self.cellNum
+        self.performSegue(withIdentifier: "toImageEditor_id", sender: self.delegateParamIndex)
+    }
+    /// セルの編集ボタンをタップしたときのアクション
+    ///
+    /// - Parameter sender: 編集ボタン
+    @objc func onClickEditButtons(sender: UIButton) {
+        self.delegateParamIndex = sender.tag
+        self.performSegue(withIdentifier: "toImageEditor_id", sender: self.delegateParamIndex)
+    }
+    /// CoreDataにimageを保存
+    func setData(){
+        /*do{
+         //オブジェクトを管理オブジェクトコンテキストに格納する。
+         for data in dataList {
+         let book = NSEntityDescription.insertNewObject(forEntityName: "Images", into: managedContext) as! Images
+         book.title = data[0] as? String        //雑誌名
+         }
+         //管理オブジェクトコンテキストの中身を保存する。
+         try managedContext.save()
+         } catch {
+         print(error)
+         }*/
+        do{
+         let emptyView = UIView()
+         emptyView.backgroundColor = UIColor.green
+         let viewArchive = NSKeyedArchiver.archivedData(withRootObject: emptyView)
+         let book = NSEntityDescription.insertNewObject(forEntityName: "Images", into: managedContext) as! Images
+         book.imageview = viewArchive
+         //管理オブジェクトコンテキストの中身を保存する。
+         try managedContext.save()
+         } catch {
+         print(error)
+         }
+    }
+    func setView(){
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Images")
+        do {
+            //フェッチリクエストを実行
+            searchResult = try managedContext.fetch(fetchRequest) as! [Images]
+        } catch {
+            print(error)
+        }
+        print(searchResult.count)
+        for serchRes in searchResult{
+         
+         //print(serchRes.title!)
+         let archivedData = serchRes.imageview!
+         let unarchivedView = (NSKeyedUnarchiver.unarchiveObject(with: archivedData as Data) as? UIView)! //NSDataから変換
+          unarchivedView.frame = CGRect(x:0,y:0,width:320,height:300)
+         self.view.addSubview(unarchivedView)
+         
+         }
+    }
+    /// CoreDataからimageを取得
+    func getData(){
+        //フェッチリクエストのインスタンスを生成
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Images")
+        //fetchRequest.predicate = NSPredicate(format: "title = %@", deleteCategory)
+
+        do {
+            //フェッチリクエストを実行
+            searchResult = try managedContext.fetch(fetchRequest) as! [Images]
+        } catch {
+            print(error)
+        }
+        print(searchResult.count)
+        //for serchRes in searchResult{
+        //    print(serchRes.title! as Any)
+        //}
+    }
+    func deleteData(){
+        //let deleteCategory :String = "月刊コロコロコミック"
+        //フェッチリクエストのインスタンスを生成
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Images")
+        //fetchRequest.predicate = NSPredicate(format: "title = %@", deleteCategory)
+        do{
+            //フェッチリクエストを実行
+            let task = try managedContext.fetch(fetchRequest)
+            print("delete")
+            print(task.count)
+            //if(task.count == 1){
+            //managedContext.delete(task[0] as! NSManagedObject)
+            //}
+            // Images Entityの全てのデータを削除
+            for data in task {
+                managedContext.delete(data as! NSManagedObject)
+            }
+        } catch {
+            print(error)
+        }
+        // 削除したあとのデータを保存する
+        (UIApplication.shared.delegate as! AppDelegate).saveContext()
+
+        
+        // 削除後の全データをfetchする
+        //getData()
+    }
+
 }
