@@ -12,6 +12,7 @@
 		C891DD701FC1BC1800C126BF /* ImageBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = C891DD6F1FC1BC1800C126BF /* ImageBoard.swift */; };
 		C891DD721FC4555F00C126BF /* MenuButtonActionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C891DD711FC4555F00C126BF /* MenuButtonActionController.swift */; };
 		C891DD741FC4649600C126BF /* MenuButtonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C891DD731FC4649600C126BF /* MenuButtonViewController.swift */; };
+		C891DD761FC46AEF00C126BF /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C891DD751FC46AEF00C126BF /* DataManager.swift */; };
 		C89E07101FC04C6E00C527BC /* ImageEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C89E070F1FC04C6E00C527BC /* ImageEditor.swift */; };
 		C8F22ED01FBC80BD00632109 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F22ECF1FBC80BD00632109 /* AppDelegate.swift */; };
 		C8F22ED21FBC80BD00632109 /* SplashController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F22ED11FBC80BD00632109 /* SplashController.swift */; };
@@ -46,6 +47,7 @@
 		C891DD6F1FC1BC1800C126BF /* ImageBoard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageBoard.swift; sourceTree = "<group>"; };
 		C891DD711FC4555F00C126BF /* MenuButtonActionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuButtonActionController.swift; sourceTree = "<group>"; };
 		C891DD731FC4649600C126BF /* MenuButtonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuButtonViewController.swift; sourceTree = "<group>"; };
+		C891DD751FC46AEF00C126BF /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		C89E070F1FC04C6E00C527BC /* ImageEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageEditor.swift; sourceTree = "<group>"; };
 		C8F22ECC1FBC80BD00632109 /* StringPictMaker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StringPictMaker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C8F22ECF1FBC80BD00632109 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -119,6 +121,7 @@
 				C891DD6F1FC1BC1800C126BF /* ImageBoard.swift */,
 				C891DD711FC4555F00C126BF /* MenuButtonActionController.swift */,
 				C891DD731FC4649600C126BF /* MenuButtonViewController.swift */,
+				C891DD751FC46AEF00C126BF /* DataManager.swift */,
 				C8F22ED31FBC80BD00632109 /* Main.storyboard */,
 				C8F22ED91FBC80BD00632109 /* Assets.xcassets */,
 				C8F22EDB1FBC80BD00632109 /* LaunchScreen.storyboard */,
@@ -281,6 +284,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C891DD701FC1BC1800C126BF /* ImageBoard.swift in Sources */,
+				C891DD761FC46AEF00C126BF /* DataManager.swift in Sources */,
 				C8F22ED21FBC80BD00632109 /* SplashController.swift in Sources */,
 				C8F22ED01FBC80BD00632109 /* AppDelegate.swift in Sources */,
 				C8F22ED81FBC80BD00632109 /* StringPictMaker.xcdatamodeld in Sources */,

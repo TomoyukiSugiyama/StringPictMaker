@@ -15,19 +15,11 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
     var myCollectionView : UICollectionView!
     // ビューのマージンを設定
     let cellMargin:CGFloat = 10.0
-    // CoreData : 管理オブジェクトコンテキスト
-    var managedContext:NSManagedObjectContext!
-    // 検索結果配列
-    var searchResult = [Images]()
     // 表示するセル数を設定
     var cellNum : Int = 0
     var delegateParamIndex : Int = 0
-    
-    struct ImageData {
-        var title: String
-        var imageview: UIView
-    }
-    var imageList = [ImageData]()
+    // DataManagerのオブジェクトを生成し、CoreDataからデータを読み出す
+    var data:DataManager? = nil
     /// コレクションビューを生成
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,7 +28,6 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
         var rightBarButton: UIBarButtonItem!
         rightBarButton = UIBarButtonItem(barButtonSystemItem:  .add,target: self, action: #selector(tappedRightBarButton))
         self.navigationItem.rightBarButtonItem = rightBarButton
-        
         // コレクションビューを生成
         let layout = UICollectionViewFlowLayout()
         myCollectionView = UICollectionView(frame:view.frame, collectionViewLayout: layout)
@@ -46,20 +37,10 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
         myCollectionView.backgroundColor = UIColor.black
         self.view.addSubview(myCollectionView)
         
-        // CoreData : 管理オブジェクトコンテキストを取得
-        let applicationDelegate = UIApplication.shared.delegate as! AppDelegate
-        managedContext = applicationDelegate.persistentContainer.viewContext
-        //コンフリクトが発生した場合にマージ
-        managedContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
-        
-        //saveEmptyImage()
-        //loadImage()
-
-        //getData()
-        deleteData()
-        saveEmptyImage()
-        loadImage()
-        //setView()
+        data = DataManager(param:view)
+        data?.deleteData()
+        data?.saveEmptyImage()
+        data?.loadImage()
     }
     
     /// 画面遷移時に渡すデータを設定
@@ -74,7 +55,7 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
          }else if(segue.identifier == "toImageEditor_id"){
             let secondViewController:ImageEditor = segue.destination as! ImageEditor
             secondViewController.delegateParamIndex = sender as! Int
-            secondViewController.imageView = imageList[sender as! Int].imageview
+            secondViewController.imageView = self.data?.imageList[sender as! Int].imageview
         }
     }
     /// セルの要素数を設定
@@ -84,7 +65,7 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
     ///   - section: セクションに含まれる要素数
     /// - Returns: 要素数
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return imageList.count
+        return (self.data?.imageList.count)!
     }
     /// セルの情報を設定
     ///
@@ -99,8 +80,8 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
         //cell.imageLabel?.image = UIImage(named: "noimage")
         //cell.textLabel?.text = "Title" + indexPath.row.description
         
-        cell.imageLabel?.image = self.imageList[indexPath.row].imageview.GetImage() as UIImage
-        cell.textLabel?.text = self.imageList[indexPath.row].title
+        cell.imageLabel?.image = self.data?.imageList[indexPath.row].imageview.GetImage()
+        cell.textLabel?.text = self.data?.imageList[indexPath.row].title
         cell.editButton?.setTitle("EDIT", for: .normal)
         cell.editButton?.setTitleColor(UIColor.blue, for: .normal)
         cell.editButton?.tag = indexPath.row
@@ -172,109 +153,21 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
         self.delegateParamIndex = sender.tag
         self.performSegue(withIdentifier: "toImageEditor_id", sender: self.delegateParamIndex)
     }
-    
-    /// CoreDataに空のimageを保存
-    func saveEmptyImage(){
-        do{
-            let emptyView = UIView(frame: CGRect(x:0, y:0, width:self.view.frame.width, height:self.view.frame.height))
-            let  imageLabel = UIImageView(frame: CGRect(x:0, y:0, width:self.view.frame.width, height:self.view.frame.height))
-            imageLabel.image = UIImage(named: "noimage")
-            imageLabel.tag = -1
-            emptyView.addSubview(imageLabel)
-            // UIViewをアーカイブし、シリアライズされたNSDataに変換
-            let viewArchive = NSKeyedArchiver.archivedData(withRootObject: emptyView)
-            let ImagesEntity = NSEntityDescription.insertNewObject(forEntityName: "Images", into: managedContext) as! Images
-            ImagesEntity.imageview = viewArchive
-            ImagesEntity.title = "none"
-            //管理オブジェクトコンテキストの中身を保存する。
-            try managedContext.save()
-         } catch {
-            print(error)
-         }
-    }
-    /// CoreDataからImageを読み出し、ImageListに追加
-    func loadImage(){
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Images")
-        do {
-            //フェッチリクエストを実行
-            searchResult = try managedContext.fetch(fetchRequest) as! [Images]
-        } catch {
-            print(error)
-        }
-        print(searchResult.count)
-        for serchRes in searchResult{
-            let archivedData = serchRes.imageview!
-            // アーカイブされたデータを元に戻す
-            let unarchivedView = (NSKeyedUnarchiver.unarchiveObject(with: archivedData as Data) as? UIView)!
-            // imageListに追加
-            imageList.append(ImageData(title: serchRes.title!,imageview: unarchivedView))
-            //self.view.addSubview(unarchivedView)
-         }
-    }
-    /*
-    /// CoreDataからimageを取得
-    func getData(){
-        //フェッチリクエストのインスタンスを生成
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Images")
-        //fetchRequest.predicate = NSPredicate(format: "title = %@", deleteCategory)
-
-        do {
-            //フェッチリクエストを実行
-            searchResult = try managedContext.fetch(fetchRequest) as! [Images]
-        } catch {
-            print(error)
-        }
-        print(searchResult.count)
-        //for serchRes in searchResult{
-        //    print(serchRes.title! as Any)
-        //}
-    }*/
-    func deleteData(){
-        //フェッチリクエストのインスタンスを生成
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Images")
-        //fetchRequest.predicate = NSPredicate(format: "title = %@", deleteCategory)
-        do{
-            //フェッチリクエストを実行
-            let task = try managedContext.fetch(fetchRequest)
-            print("delete")
-            print(task.count)
-            // Images Entityの全てのデータを削除
-            for data in task {
-                managedContext.delete(data as! NSManagedObject)
-            }
-        } catch {
-            print(error)
-        }
-        // 削除したあとのデータを保存する
-        (UIApplication.shared.delegate as! AppDelegate).saveContext()
-        // 削除後の全データをfetchする
-        //getData()
-    }
-
-    
-    
 }
 
 extension UIView {
-    
     func GetImage() -> UIImage{
-        
         // キャプチャする範囲を取得.
         let rect = self.bounds
-        
         // ビットマップ画像のcontextを作成.
         UIGraphicsBeginImageContextWithOptions(rect.size, false, 0.0)
         let context: CGContext = UIGraphicsGetCurrentContext()!
-        
         // 対象のview内の描画をcontextに複写する.
         self.layer.render(in: context)
-        
         // 現在のcontextのビットマップをUIImageとして取得.
         let capturedImage : UIImage = UIGraphicsGetImageFromCurrentImageContext()!
-        
         // contextを閉じる.
         UIGraphicsEndImageContext()
-        
         return capturedImage
     }
 }
