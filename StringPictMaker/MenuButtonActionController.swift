@@ -12,7 +12,6 @@ import UIKit
 class MenuButtonActionController: UIButton {
     var isMoveing: Bool = false
     var position: CGPoint!
-    
     /// began to touch menu butoon
     ///
     /// - Parameters:
@@ -22,7 +21,7 @@ class MenuButtonActionController: UIButton {
         super.touchesBegan(touches, with: event)
         position = self.frame.origin
     }
-    /// moved
+    /// touches moved
     ///
     /// - Parameters:
     ///   - touches: <#touches description#>
@@ -58,7 +57,7 @@ class MenuButtonActionController: UIButton {
         self.frame = viewFrame
         
     }
-    /// ended
+    /// touches ended
     ///
     /// - Parameters:
     ///   - touches: <#touches description#>

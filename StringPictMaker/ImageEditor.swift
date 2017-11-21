@@ -31,8 +31,7 @@ class ImageEditor: UIViewController{
         // 影を付ける
         menuButton.layer.shadowOffset = CGSize(width: 1.0, height: 3.0)
         menuButton.layer.shadowOpacity = 5.0
-        /// TODO
-        /// subボタンの追加
+        /// TODO　subボタンの追加
         // mainボタンをviewに追加.
         self.view.addSubview(menuButton)
         /************************************/
@@ -60,10 +59,16 @@ class ImageEditor: UIViewController{
         /************************************/
         
     }
+    /************************************/
+    //  テストコード↓
+    /************************************/
     private func getScreenRatio() -> CGFloat {
         let baseScreenWidth : CGFloat = 375.0
         return UIScreen.main.bounds.size.width / baseScreenWidth
     }
+    /************************************/
+    //  テストコード↑
+    /************************************/
     func initView(){        
         for view in (imageView?.subviews)!
         {

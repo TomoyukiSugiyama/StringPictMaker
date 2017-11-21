@@ -181,6 +181,7 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
             imageLabel.image = UIImage(named: "noimage")
             imageLabel.tag = -1
             emptyView.addSubview(imageLabel)
+            // UIViewをアーカイブし、シリアライズされたNSDataに変換
             let viewArchive = NSKeyedArchiver.archivedData(withRootObject: emptyView)
             let ImagesEntity = NSEntityDescription.insertNewObject(forEntityName: "Images", into: managedContext) as! Images
             ImagesEntity.imageview = viewArchive
@@ -191,6 +192,7 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
             print(error)
          }
     }
+    /// CoreDataからImageを読み出し、ImageListに追加
     func loadImage(){
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Images")
         do {
@@ -202,7 +204,9 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
         print(searchResult.count)
         for serchRes in searchResult{
             let archivedData = serchRes.imageview!
-            let unarchivedView = (NSKeyedUnarchiver.unarchiveObject(with: archivedData as Data) as? UIView)! //NSDataから変換
+            // アーカイブされたデータを元に戻す
+            let unarchivedView = (NSKeyedUnarchiver.unarchiveObject(with: archivedData as Data) as? UIView)!
+            // imageListに追加
             imageList.append(ImageData(title: serchRes.title!,imageview: unarchivedView))
             //self.view.addSubview(unarchivedView)
          }
