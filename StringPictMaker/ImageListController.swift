@@ -20,12 +20,18 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
     // 検索結果配列
     var searchResult = [Images]()
     // 表示するセル数を設定
-    var cellNum : Int = 5
+    var cellNum : Int = 0
     var delegateParamIndex : Int = 0
+    
+    struct ImageData {
+        var title: String
+        var imageview: UIView
+    }
+    var imageList = [ImageData]()
     /// コレクションビューを生成
     override func viewDidLoad() {
         super.viewDidLoad()
-        // ナビゲーションバーにアイテム追加
+         // ナビゲーションバーにアイテム追加
         // ナビゲーションバーのボタン
         var rightBarButton: UIBarButtonItem!
         rightBarButton = UIBarButtonItem(barButtonSystemItem:  .add,target: self, action: #selector(tappedRightBarButton))
@@ -45,8 +51,14 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
         managedContext = applicationDelegate.persistentContainer.viewContext
         //コンフリクトが発生した場合にマージ
         managedContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        
+        //saveEmptyImage()
+        //loadImage()
+
         //getData()
-        //deleteData()
+        deleteData()
+        saveEmptyImage()
+        loadImage()
         //setView()
     }
     
@@ -62,6 +74,7 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
          }else if(segue.identifier == "toImageEditor_id"){
             let secondViewController:ImageEditor = segue.destination as! ImageEditor
             secondViewController.delegateParamIndex = sender as! Int
+            secondViewController.imageView = imageList[sender as! Int].imageview
         }
     }
     /// セルの要素数を設定
@@ -71,7 +84,7 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
     ///   - section: セクションに含まれる要素数
     /// - Returns: 要素数
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return cellNum
+        return imageList.count
     }
     /// セルの情報を設定
     ///
@@ -82,8 +95,12 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCell_id", for: indexPath) as! ImageCell
         //logo設定
-        cell.imageLabel?.image = UIImage(named: "noimage")
-        cell.textLabel?.text = "Title" + indexPath.row.description
+        //let img = self.imageList[indexPath.row].imageview.GetImage()
+        //cell.imageLabel?.image = UIImage(named: "noimage")
+        //cell.textLabel?.text = "Title" + indexPath.row.description
+        
+        cell.imageLabel?.image = self.imageList[indexPath.row].imageview.GetImage() as UIImage
+        cell.textLabel?.text = self.imageList[indexPath.row].title
         cell.editButton?.setTitle("EDIT", for: .normal)
         cell.editButton?.setTitleColor(UIColor.blue, for: .normal)
         cell.editButton?.tag = indexPath.row
@@ -144,6 +161,7 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
     @objc func tappedRightBarButton() {
         self.cellNum += 1
         myCollectionView.reloadData()
+        
         self.delegateParamIndex = self.cellNum
         self.performSegue(withIdentifier: "toImageEditor_id", sender: self.delegateParamIndex)
     }
@@ -154,32 +172,26 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
         self.delegateParamIndex = sender.tag
         self.performSegue(withIdentifier: "toImageEditor_id", sender: self.delegateParamIndex)
     }
-    /// CoreDataにimageを保存
-    func setData(){
-        /*do{
-         //オブジェクトを管理オブジェクトコンテキストに格納する。
-         for data in dataList {
-         let book = NSEntityDescription.insertNewObject(forEntityName: "Images", into: managedContext) as! Images
-         book.title = data[0] as? String        //雑誌名
-         }
-         //管理オブジェクトコンテキストの中身を保存する。
-         try managedContext.save()
-         } catch {
-         print(error)
-         }*/
+    
+    /// CoreDataに空のimageを保存
+    func saveEmptyImage(){
         do{
-         let emptyView = UIView()
-         emptyView.backgroundColor = UIColor.green
-         let viewArchive = NSKeyedArchiver.archivedData(withRootObject: emptyView)
-         let book = NSEntityDescription.insertNewObject(forEntityName: "Images", into: managedContext) as! Images
-         book.imageview = viewArchive
-         //管理オブジェクトコンテキストの中身を保存する。
-         try managedContext.save()
+            let emptyView = UIView(frame: CGRect(x:0, y:0, width:self.view.frame.width, height:self.view.frame.height))
+            let  imageLabel = UIImageView(frame: CGRect(x:0, y:0, width:self.view.frame.width, height:self.view.frame.height))
+            imageLabel.image = UIImage(named: "noimage")
+            imageLabel.tag = -1
+            emptyView.addSubview(imageLabel)
+            let viewArchive = NSKeyedArchiver.archivedData(withRootObject: emptyView)
+            let ImagesEntity = NSEntityDescription.insertNewObject(forEntityName: "Images", into: managedContext) as! Images
+            ImagesEntity.imageview = viewArchive
+            ImagesEntity.title = "none"
+            //管理オブジェクトコンテキストの中身を保存する。
+            try managedContext.save()
          } catch {
-         print(error)
+            print(error)
          }
     }
-    func setView(){
+    func loadImage(){
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Images")
         do {
             //フェッチリクエストを実行
@@ -189,15 +201,13 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
         }
         print(searchResult.count)
         for serchRes in searchResult{
-         
-         //print(serchRes.title!)
-         let archivedData = serchRes.imageview!
-         let unarchivedView = (NSKeyedUnarchiver.unarchiveObject(with: archivedData as Data) as? UIView)! //NSDataから変換
-          unarchivedView.frame = CGRect(x:0,y:0,width:320,height:300)
-         self.view.addSubview(unarchivedView)
-         
+            let archivedData = serchRes.imageview!
+            let unarchivedView = (NSKeyedUnarchiver.unarchiveObject(with: archivedData as Data) as? UIView)! //NSDataから変換
+            imageList.append(ImageData(title: serchRes.title!,imageview: unarchivedView))
+            //self.view.addSubview(unarchivedView)
          }
     }
+    /*
     /// CoreDataからimageを取得
     func getData(){
         //フェッチリクエストのインスタンスを生成
@@ -214,9 +224,8 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
         //for serchRes in searchResult{
         //    print(serchRes.title! as Any)
         //}
-    }
+    }*/
     func deleteData(){
-        //let deleteCategory :String = "月刊コロコロコミック"
         //フェッチリクエストのインスタンスを生成
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Images")
         //fetchRequest.predicate = NSPredicate(format: "title = %@", deleteCategory)
@@ -225,9 +234,6 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
             let task = try managedContext.fetch(fetchRequest)
             print("delete")
             print(task.count)
-            //if(task.count == 1){
-            //managedContext.delete(task[0] as! NSManagedObject)
-            //}
             // Images Entityの全てのデータを削除
             for data in task {
                 managedContext.delete(data as! NSManagedObject)
@@ -237,10 +243,34 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
         }
         // 削除したあとのデータを保存する
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
-
-        
         // 削除後の全データをfetchする
         //getData()
     }
 
+    
+    
+}
+
+extension UIView {
+    
+    func GetImage() -> UIImage{
+        
+        // キャプチャする範囲を取得.
+        let rect = self.bounds
+        
+        // ビットマップ画像のcontextを作成.
+        UIGraphicsBeginImageContextWithOptions(rect.size, false, 0.0)
+        let context: CGContext = UIGraphicsGetCurrentContext()!
+        
+        // 対象のview内の描画をcontextに複写する.
+        self.layer.render(in: context)
+        
+        // 現在のcontextのビットマップをUIImageとして取得.
+        let capturedImage : UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+        
+        // contextを閉じる.
+        UIGraphicsEndImageContext()
+        
+        return capturedImage
+    }
 }
