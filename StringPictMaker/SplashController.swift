@@ -23,12 +23,12 @@ class SplashController: UIViewController {
         // viewに追加
         self.view.addSubview(self.logoImageView)
     }
-    /// none
+    /// メモリワーニング
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    /// <#Description#>
+    /// アニメーションを表示
     ///
     /// - Parameter animated: <#animated description#>
     override func viewDidAppear(_ animated: Bool) {

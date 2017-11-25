@@ -21,20 +21,23 @@ class DataManager{
         var imageview: UIView
     }
     var imageList = [ImageData]()
-    let index:Int
+    let DUMMY:Int
     init() {
         // CoreData : 管理オブジェクトコンテキストを取得
         let applicationDelegate = UIApplication.shared.delegate as! AppDelegate
         managedContext = applicationDelegate.persistentContainer.viewContext
         //コンフリクトが発生した場合にマージ
         managedContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
-        index = 0
+        /// TODO
+        /// 不要な変数
+        DUMMY = 0
     }
     /// CoreDataに空のimageを保存
     func saveEmptyImage(id:Int,frame:CGRect){
         do{
             let emptyView = UIView(frame: CGRect(x:0, y:0, width:frame.width, height:frame.height))
-            let  imageLabel = UIImageView(frame: CGRect(x:0, y:0, width:frame.width, height:frame.height))
+            emptyView.backgroundColor = UIColor.white
+            let imageLabel = UIImageView(frame: CGRect(x:0, y:0, width:frame.width, height:frame.height))
             imageLabel.image = UIImage(named: "noimage")
             imageLabel.tag = -1
             emptyView.addSubview(imageLabel)
@@ -49,6 +52,8 @@ class DataManager{
         } catch {
             print(error)
         }
+        print("saveEmptyImage - id:",id)
+        loadImage()
     }
     /// CoreDataからImageを読み出し、ImageListに追加
     func loadImage(){
@@ -59,36 +64,36 @@ class DataManager{
         } catch {
             print(error)
         }
-        print(searchResult.count)
+        imageList.removeAll()
         for serchRes in searchResult{
             let archivedData = serchRes.imageview!
             // アーカイブされたデータを元に戻す
             let unarchivedView = (NSKeyedUnarchiver.unarchiveObject(with: archivedData as Data) as? UIView)!
             // imageListに追加
             imageList.append(ImageData(id: Int(serchRes.id),title: serchRes.title!,imageview: unarchivedView))
-            //self.view.addSubview(unarchivedView)
         }
+        print("loadImage - imageList.count:",imageList.count,"searchResult.count:",searchResult.count)
     }
     // CoreDataのImageを更新
     func updateImage(id:Int,view:UIView){
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Images")
-        
         //let predict = NSPredicate(format: "%K=%@", "id", id)
         //fetchRequest.predicate = predict
-        print("updateImage")
+        print("updateImage - id:",id,"count:",imageList.count)
         // 読み込み実行
         do {
             //フェッチリクエストを実行
             searchResult = try managedContext.fetch(fetchRequest) as! [Images]
-            print(searchResult.count)
             // UIViewをアーカイブし、シリアライズされたNSDataに変換
             let viewArchive = NSKeyedArchiver.archivedData(withRootObject: view)
-            searchResult[0].imageview = viewArchive
+            searchResult[indexOf(id: id)].imageview = viewArchive
             //管理オブジェクトコンテキストの中身を保存する。
             try managedContext.save()
         } catch {
             print(error)
         }
+        print("updateImage")
+        loadImage()
     }
     /*
      /// CoreDataからimageを取得
@@ -108,6 +113,8 @@ class DataManager{
      //    print(serchRes.title! as Any)
      //}
      }*/
+    
+    /// CoreDataに保存したImageを全て削除
     func deleteAllData(){
         //フェッチリクエストのインスタンスを生成
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Images")
@@ -115,8 +122,6 @@ class DataManager{
         do{
             //フェッチリクエストを実行
             let task = try managedContext.fetch(fetchRequest)
-            print("delete")
-            print(task.count)
             // Images Entityの全てのデータを削除
             for data in task {
                 managedContext.delete(data as! NSManagedObject)
@@ -128,6 +133,12 @@ class DataManager{
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
         // 削除後の全データをfetchする
         //getData()
+    }
+    
+    func indexOf(id: Int) -> Int {
+        print("indexOf - id",id,"count",imageList.count)
+        return imageList.index(where: { $0.id == id })!
+
     }
     
 }

@@ -19,6 +19,10 @@ class ImageCell: UICollectionViewCell {
         super.init(coder: aDecoder)!
     }
     
+    
+    /// ImageListControllerのセルをカスタマイズ
+    ///
+    /// - Parameter frame: セルのフレーム
     override init(frame: CGRect) {
         super.init(frame: frame)
         imageLabel = UIImageView(frame: CGRect(x:20, y:40, width:frame.width-40, height:frame.height-60))

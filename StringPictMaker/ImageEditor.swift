@@ -12,17 +12,15 @@ import UIKit
 class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate{
 //,SampleViewDelegate{
     // delegate
-    var delegateParamIndex: Int = 0
+    var delegateParamId: Int = 0
     var imageView : UIView? = nil
+    var imageData : DataManager? = nil
     var selectedSubMenuItemState = 0
     // DataManagerのオブジェクトを生成し、CoreDataからデータを読み出す
-    var data:DataManager? = nil
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(delegateParamIndex)
         initView()
         self.view.addSubview(imageView!)
-        data = DataManager()
         // menuボタンを生成
         // menuボタンにタッチイベントを追加
         let menuButton = MenuButtonActionController(type: .custom)
@@ -86,7 +84,8 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate{
         // ツールバーの色を決める.
         myToolbar.barStyle = .blackTranslucent
         myToolbar.tintColor = UIColor.white
-        myToolbar.backgroundColor = UIColor.black
+        //myToolbar.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
+        myToolbar.backgroundColor = UIColor.lightGray.withAlphaComponent(0.50)
         // ボタン１を生成する.
         let myUIBarButtonGreen: UIBarButtonItem = UIBarButtonItem(title: "Green", style:.plain, target: self, action: #selector(onClickBarButton))
         myUIBarButtonGreen.tag = 1
@@ -107,6 +106,13 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate{
         //  テストコード↑
         /************************************/
 
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.imageData?.loadImage()
+        let prevVC = self.getPreviousViewController() as! ImageListController
+        prevVC.updateView()
     }
     /************************************/
     //  テストコード↓
@@ -211,25 +217,19 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate{
         case 3:
             self.imageView?.backgroundColor = UIColor.red
         case 4:
-            self.data?.updateImage(id: 0, view: self.imageView!)
+            // CoreDataを更新
+            print("imageEditor - save:",self.delegateParamId)
+            self.imageData?.updateImage(id: self.delegateParamId, view: self.imageView!)
+            // ImageListControllerを更新
             let prevVC = self.getPreviousViewController() as! ImageListController
             prevVC.updateView()
-            //let originVc = presentingViewController as! ImageListController
-            //originVc.updateView()
-            
-            //let parentVC = self.parent as! ImageListController
-            //parentVC.updateView()
-            //let imageListControllerDelegate = ImageListController()
-            //imageListControllerDelegate.updateView()
-            //print("cellnum")
-            //print(imageListControllerDelegate.cellNum)
-            print("save")
         default:
             print("ERROR!!!")
         }
     }
 }
 
+// MARK: - 以前のViewControllerのインスタンスを取得
 public extension UIViewController
 {
     public func getPreviousViewController() -> UIViewController?
