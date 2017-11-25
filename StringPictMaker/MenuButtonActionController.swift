@@ -69,7 +69,4 @@ class MenuButtonActionController: UIButton {
              self.sendActions(for: .touchUpOutside)
         }
     }
-
-
-
 }

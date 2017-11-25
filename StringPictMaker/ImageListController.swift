@@ -9,9 +9,9 @@
 import Foundation
 import UIKit
 import CoreData
-
 /// 作成したイメージのリストを表示
 class ImageListController: UIViewController, UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout{
+    
     var myCollectionView : UICollectionView!
     // ビューのマージンを設定
     let cellMargin:CGFloat = 10.0
@@ -37,12 +37,12 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
         myCollectionView.backgroundColor = UIColor.black
         self.view.addSubview(myCollectionView)
         
-        data = DataManager(param:view)
-        data?.deleteData()
-        data?.saveEmptyImage()
+        data = DataManager()
+        //data?.deleteAllData()
+        //data?.saveEmptyImage(id: 0,frame: view.frame)
         data?.loadImage()
     }
-    
+
     /// 画面遷移時に渡すデータを設定
     ///
     /// - Parameters:
@@ -52,6 +52,7 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
         if (segue.identifier == "toImageBoard_id") {
             let secondViewController:ImageBoard = segue.destination as! ImageBoard
             secondViewController.delegateParamIndex = sender as! Int
+            secondViewController.imageView = self.data?.imageList[sender as! Int].imageview
          }else if(segue.identifier == "toImageEditor_id"){
             let secondViewController:ImageEditor = segue.destination as! ImageEditor
             secondViewController.delegateParamIndex = sender as! Int
@@ -140,7 +141,7 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
     }
     /// ナビゲーションバーの追加ボタンをタップしたときのアクション
     @objc func tappedRightBarButton() {
-        self.cellNum += 1
+        //self.cellNum += 1
         myCollectionView.reloadData()
         
         self.delegateParamIndex = self.cellNum
@@ -152,6 +153,12 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
     @objc func onClickEditButtons(sender: UIButton) {
         self.delegateParamIndex = sender.tag
         self.performSegue(withIdentifier: "toImageEditor_id", sender: self.delegateParamIndex)
+    }
+    func updateView(){
+        //self.cellNum += 1
+        print("update")
+        myCollectionView.reloadData()
+        print(self.cellNum)
     }
 }
 

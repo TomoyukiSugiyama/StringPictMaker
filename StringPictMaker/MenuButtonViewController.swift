@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 @objc protocol ViewDelegate {
     // デリゲートメソッド定義
-    func selectedSubMenu(num:Int)
+    func selectedSubMenu(state:Int)
 }
 
 class MenuButtonViewController : UIView {
@@ -23,7 +23,7 @@ class MenuButtonViewController : UIView {
     var subButton_4: UIButton = UIButton()
     var subButton_5: UIButton = UIButton()
     
-    var mainButton: UIButton!
+    var menuButton: UIButton!
     var colors: NSMutableArray!
     var mainPosition: CGPoint!
     
@@ -61,10 +61,10 @@ class MenuButtonViewController : UIView {
         // 度からラジアンに変換.
         let radian = angle * CGFloat(Double.pi) / 180.0
         // x座標を計算.
-        let x_position:CGFloat = mainButton.layer.position.x + radius * cos(radian)
+        let x_position:CGFloat = menuButton.layer.position.x + radius * cos(radian)
         // y座標を計算.
         //let y_position = mainPosition.y + radius * sin(radian)
-        let y_position = mainButton.layer.position.y + radius * sin(radian)
+        let y_position = menuButton.layer.position.y + radius * sin(radian)
         
         let position = CGPoint(x: x_position, y: y_position)
         
@@ -105,7 +105,7 @@ class MenuButtonViewController : UIView {
             buttons[i].layer.cornerRadius = 30.0
             //buttons[i].backgroundColor = colors[i] as? UIColor
             //buttons[i].center = self.center
-            buttons[i].center = CGPoint(x: mainButton.layer.position.x, y: mainButton.layer.position.y)
+            buttons[i].center = CGPoint(x: menuButton.layer.position.x, y: menuButton.layer.position.y)
             buttons[i].addTarget(self, action: #selector(onClickSubButtons), for: UIControlEvents.touchUpInside)
             buttons[i].layer.shadowOffset = CGSize(width: 1.0, height: 3.0)
             buttons[i].layer.shadowOpacity = 5.0
@@ -150,23 +150,23 @@ class MenuButtonViewController : UIView {
         switch(sender.tag) {
         case 1:
             // デリゲートメソッドを呼ぶ
-            self.delegate?.selectedSubMenu(num: 1)
+            self.delegate?.selectedSubMenu(state: 1)
             fadeAnimation()
         case 2:
             // デリゲートメソッドを呼ぶ(処理をデリゲートインスタンスに委譲する)
-            self.delegate?.selectedSubMenu(num: 2)
+            self.delegate?.selectedSubMenu(state: 2)
              fadeAnimation()
         case 3:
             // デリゲートメソッドを呼ぶ(処理をデリゲートインスタンスに委譲する)
-            self.delegate?.selectedSubMenu(num: 3)
+            self.delegate?.selectedSubMenu(state: 3)
              fadeAnimation()
         case 4:
             // デリゲートメソッドを呼ぶ(処理をデリゲートインスタンスに委譲する)
-            self.delegate?.selectedSubMenu(num: 4)
+            self.delegate?.selectedSubMenu(state: 4)
             fadeAnimation()
         case 5:
             // デリゲートメソッドを呼ぶ(処理をデリゲートインスタンスに委譲する)
-            self.delegate?.selectedSubMenu(num: 5)
+            self.delegate?.selectedSubMenu(state: 5)
             fadeAnimation()
         default: break
         }
@@ -178,15 +178,15 @@ class MenuButtonViewController : UIView {
             animations: { () -> Void in
                 
                 // subボタンに座標を設定.
-                self.subButton_1.layer.position = CGPoint(x: self.mainButton.layer.position.x, y: self.mainButton.layer.position.y)
+                self.subButton_1.layer.position = CGPoint(x: self.menuButton.layer.position.x, y: self.menuButton.layer.position.y)
                 // subボタンに座標を設定.
-                self.subButton_2.layer.position = CGPoint(x: self.mainButton.layer.position.x, y: self.mainButton.layer.position.y)
+                self.subButton_2.layer.position = CGPoint(x: self.menuButton.layer.position.x, y: self.menuButton.layer.position.y)
                 // subボタンに座標を設定.
-                self.subButton_3.layer.position = CGPoint(x: self.mainButton.layer.position.x, y: self.mainButton.layer.position.y)
+                self.subButton_3.layer.position = CGPoint(x: self.menuButton.layer.position.x, y: self.menuButton.layer.position.y)
                 // subボタンに座標を設定.
-                self.subButton_4.layer.position = CGPoint(x: self.mainButton.layer.position.x, y: self.mainButton.layer.position.y)
+                self.subButton_4.layer.position = CGPoint(x: self.menuButton.layer.position.x, y: self.menuButton.layer.position.y)
                 // subボタンに座標を設定.
-                self.subButton_5.layer.position = CGPoint(x: self.mainButton.layer.position.x, y: self.mainButton.layer.position.y)
+                self.subButton_5.layer.position = CGPoint(x: self.menuButton.layer.position.x, y: self.menuButton.layer.position.y)
         }
             , completion: { (Bool) -> Void in
                 self.subButton_1.removeFromSuperview()

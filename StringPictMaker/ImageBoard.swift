@@ -12,8 +12,10 @@ import UIKit
 class ImageBoard: UIViewController{
     //,SampleViewDelegate{
     var delegateParamIndex: Int = 0
+    var imageView : UIView? = nil
     override func viewDidLoad() {
         super.viewDidLoad()
         print(delegateParamIndex)
+        self.view.addSubview(imageView!)
     }
 }

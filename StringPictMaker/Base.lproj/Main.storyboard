@@ -58,21 +58,6 @@
                     <view key="view" contentMode="scaleToFill" id="o0q-99-yqQ">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3am-4G-ycd">
-                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                <items>
-                                    <barButtonItem title="Item" id="9k7-o4-yN7"/>
-                                    <barButtonItem title="Item" id="zZG-DP-gUk"/>
-                                    <barButtonItem title="Item" id="wkY-A4-mzr"/>
-                                    <barButtonItem title="Item" id="y7F-Hw-4F0"/>
-                                    <barButtonItem title="Item" id="o74-kN-qQF"/>
-                                    <barButtonItem title="Item" id="Plv-iv-EuT"/>
-                                    <barButtonItem title="Item" id="hpT-qs-wXi"/>
-                                </items>
-                            </toolbar>
-                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <viewLayoutGuide key="safeArea" id="JGr-7r-thp"/>
                     </view>
