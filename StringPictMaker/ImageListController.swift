@@ -35,7 +35,6 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
         myCollectionView.dataSource = self
         myCollectionView.backgroundColor = UIColor.black
         self.view.addSubview(myCollectionView)
-        //print("ImageListController - viewDidLoad")
         imageData = DataManager()
         imageData?.deleteAllData()
     }
@@ -74,7 +73,7 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
     /// - Returns: セル
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCell_id", for: indexPath) as! ImageCell
-        print("ImageListController - index:",indexPath.row)
+        print("ImageListController - collectionView - index:",indexPath.row)
         cell.imageLabel?.image = self.imageData?.imageList[indexPath.row].imageview.GetImage()
         cell.textLabel?.text = self.imageData?.imageList[indexPath.row].title
         cell.editButton?.setTitle("EDIT", for: .normal)
@@ -136,7 +135,7 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
     /// ナビゲーションバーの追加ボタンをタップしたときのアクション
     @objc func tappedRightBarButton() {
         let id = (self.imageData?.imageList.count)! + 1
-        print("ImageListController - addButton - id:",id)
+        print("ImageListController - tappedRightBarButton - id:",id)
          // CoreDataにimageを追加
         self.imageData?.saveEmptyImage(id: id, frame: self.view.frame)
         // CorrectionViewを更新

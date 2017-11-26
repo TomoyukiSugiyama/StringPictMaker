@@ -52,7 +52,7 @@ class DataManager{
         } catch {
             print(error)
         }
-        print("saveEmptyImage - id:",id)
+        print("DataManager - saveEmptyImage - id:",id)
         loadImage()
     }
     /// CoreDataからImageを読み出し、ImageListに追加
@@ -72,14 +72,14 @@ class DataManager{
             // imageListに追加
             imageList.append(ImageData(id: Int(serchRes.id),title: serchRes.title!,imageview: unarchivedView))
         }
-        print("loadImage - imageList.count:",imageList.count,"searchResult.count:",searchResult.count)
+        print("DataManager - loadImage - imageList.count:",imageList.count,"searchResult.count:",searchResult.count)
     }
     // CoreDataのImageを更新
     func updateImage(id:Int,view:UIView){
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Images")
         //let predict = NSPredicate(format: "%K=%@", "id", id)
         //fetchRequest.predicate = predict
-        print("updateImage - id:",id,"count:",imageList.count)
+        print("DataManager - updateImage - id:",id,"count:",imageList.count)
         // 読み込み実行
         do {
             //フェッチリクエストを実行
@@ -92,7 +92,6 @@ class DataManager{
         } catch {
             print(error)
         }
-        print("updateImage")
         loadImage()
     }
     /*
@@ -136,7 +135,7 @@ class DataManager{
     }
     
     func indexOf(id: Int) -> Int {
-        print("indexOf - id",id,"count",imageList.count)
+        print("DataManager - indexOf - id",id,"count",imageList.count)
         return imageList.index(where: { $0.id == id })!
 
     }

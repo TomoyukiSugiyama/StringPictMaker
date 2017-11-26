@@ -20,13 +20,14 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate{
     override func viewDidLoad() {
         super.viewDidLoad()
         initView()
+        imageView?.isUserInteractionEnabled = true
         self.view.addSubview(imageView!)
         // menuボタンを生成
         // menuボタンにタッチイベントを追加
         let menuButton = MenuButtonActionController(type: .custom)
         menuButton.setImage(UIImage(named: "add-icon"), for: .normal)
         menuButton.frame = CGRect(x: 0, y: 0, width: 80, height: 80)
-        menuButton.center = CGPoint(x: self.view.frame.width/2, y: self.view.frame.height-50)
+        menuButton.center = CGPoint(x: self.view.frame.width/2, y: self.view.frame.height-70)
         menuButton.layer.cornerRadius = 40.0
         // 影を付ける
         menuButton.layer.shadowOffset = CGSize(width: 1.0, height: 3.0)
@@ -44,7 +45,6 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate{
         // subボタンにイベント追加
         menuButton.addTarget(subMenuButton,action:#selector(subMenuButton.onUpMainButton(sender:)),for: UIControlEvents.touchUpOutside )
         //| UIControlEvents.touchDragOutside
-        
         // インスタンスをviewに追加.(subボタン)
         self.view.addSubview(subMenuButton)
         // mainボタンをviewに追加.
@@ -133,7 +133,7 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate{
                 view.removeFromSuperview()
             }else{
                 if view.isKind(of: NSClassFromString("UIImageView")!) {
-                    print("ImageView")
+                    print("ImageEditor - initView")
                 }else if view.isKind(of: NSClassFromString("UISearchBarBackground")!) {
                 
                 }
@@ -160,54 +160,55 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate{
             setPen()
         }
     }
+    var gpsTag = 10
     // GPSをセット
     func setGPSLabel(){
-        let gpsTag = 10
-        print("GPS is selected");
-        let label = UILabel()
+        let GPSlabel = UILabel()
         /*      文字追加        */
         let str2 = "現在位置"
         let pointSize : CGFloat = 120
-        
         let font = UIFont.boldSystemFont(ofSize: pointSize)
         let width = str2.size(withAttributes: [NSAttributedStringKey.font : font])
-        
         //let labelWidth : CGFloat = 375
         let labelWidth : CGFloat = 250
-        label.font = UIFont.boldSystemFont(ofSize: pointSize * getScreenRatio() * labelWidth / width.width)
-        
-        //label.layer.borderColor = UIColor.black.cgColor
-        //label.layer.borderWidth = 2
-        label.text = str2
-        // 文字サイズに合わせてラベルのサイズを調整する
-        label.sizeToFit()
-        //ラベルをviewの中心に移動する
-        label.center = self.view.center
-        label.tag = gpsTag
-        label.isUserInteractionEnabled = true
-        self.imageView?.addSubview(label)
-
+        print("ImageEditor - setGPSLabel");
+        GPSlabel.font = UIFont.boldSystemFont(ofSize: pointSize * getScreenRatio() * labelWidth / width.width)
+        // label.layer.borderColor = UIColor.black.cgColor
+        // label.layer.borderWidth = 2
+        GPSlabel.text = str2
+        // 文字サイズに合わせてラベルのサイズを調整
+        GPSlabel.sizeToFit()
+        // ラベルをviewの中心に移動
+        GPSlabel.center = self.view.center
+        GPSlabel.tag = gpsTag
+        gpsTag += 1
+        // touchイベントの有効化
+        GPSlabel.isUserInteractionEnabled = true
+         self.imageView?.addSubview(GPSlabel)
     }
     // Imageをセット
     func setImage(){
-        print("PICT is selected");
+        print("ImageEditor - setImage");
         //self.navigationController?.setNavigationBarHidden(false, animated: false)
         //self.navigationController?.popViewController(animated: true)
     }
     // Colorをセット
     func setColor(){
-        print("COLOR is selected");
+        print("ImageEditor - setColor");
     }
     // Timeをセット
     func setTime(){
-        print("TIME is selected");
+        print("ImageEditor - setTime");
     }
     
     // Penをセット
     func setPen(){
-        print("PEN is selected");
+        print("ImageEditor - setPen");
     }
     
+    /// ツールバーのアクション
+    ///
+    /// - Parameter sender: ツールバーのボタンを取得
     @objc func onClickBarButton(sender: UIBarButtonItem) {
         switch sender.tag {
         case 1:
@@ -218,14 +219,72 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate{
             self.imageView?.backgroundColor = UIColor.red
         case 4:
             // CoreDataを更新
-            print("imageEditor - save:",self.delegateParamId)
+            print("imageEditor - onClickBarButton - save:",self.delegateParamId)
             self.imageData?.updateImage(id: self.delegateParamId, view: self.imageView!)
             // ImageListControllerを更新
             let prevVC = self.getPreviousViewController() as! ImageListController
             prevVC.updateView()
         default:
-            print("ERROR!!!")
+            print("imageEditor - onClickBarButton - error")
         }
+    }
+    var operateView:UIView!
+    var bezierPath:UIBezierPath!
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        print("imageEditor - touchesBegan")
+        for touch: UITouch in touches {
+            // imageViewからイベントを取得
+            let point:CGPoint = touch.location(in: self.imageView)
+            let hitImageView:UIView? = self.imageView?.hitTest(point, with: event)
+            print("subview:",hitImageView?.subviews.count as Any)
+            
+            for subview in (self.imageView?.subviews)! {
+                // subviewの位置がタッチされていたらsubviewを返す
+                print("subview.bouns:",subview.frame,"point:",point)
+                if (subview.frame.contains(point)) {
+                    print("tags:",subview.tag)
+                }
+            }
+         }
+    }
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        let touchEvent = touches.first!
+        // ドラッグ前の座標
+        let preDx = touchEvent.previousLocation(in: self.imageView).x
+        let preDy = touchEvent.previousLocation(in: self.imageView).y
+        // ドラッグ後の座標
+        let newDx = touchEvent.location(in: self.imageView).x
+        let newDy = touchEvent.location(in: self.imageView).y
+        // ドラッグしたx座標の移動距離
+        let dx = newDx - preDx
+        // ドラッグしたy座標の移動距離
+        let dy = newDy - preDy
+        // タッチされたビューを取得
+        for touch: UITouch in touches {
+            // タッチされた位置の座標を取得
+            let point:CGPoint = touch.location(in: self.imageView)
+            // imageViewにタッチイベントを渡し、
+            // タッチされた座標にあるサブビューを取得
+            let hitImageView:UIView? = self.imageView?.hitTest(point, with: event)
+            if(hitImageView != nil){
+                // タッチされた座標の位置を含むサブビューを取得
+                for subview in (self.imageView?.subviews)! {
+                    if (subview.frame.contains(point)) {
+                        operateView = (self.imageView?.viewWithTag(subview.tag))!
+                        // 画像のフレーム
+                        var viewFrame: CGRect = (operateView.frame)
+                        // 移動分を反映させる
+                        viewFrame.origin.x += dx
+                        viewFrame.origin.y += dy
+                        operateView.frame = viewFrame
+                    }
+                }
+            }
+            
+        }
+    }
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        //super.touchesEnded(touches, with: event)
     }
 }
 
@@ -244,7 +303,7 @@ public extension UIViewController
             }
             return prevVc
         }
-        // ここに来るのは実装ミスなので assert でもよろし
+        // 実装ミス
         return nil
     }
 }

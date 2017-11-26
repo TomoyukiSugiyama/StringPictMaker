@@ -15,7 +15,7 @@ class ImageBoard: UIViewController{
     var imageView : UIView? = nil
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(delegateParamId)
+        print("ImageBoard - delegateParamId:",delegateParamId)
         self.view.addSubview(imageView!)
     }
 }
