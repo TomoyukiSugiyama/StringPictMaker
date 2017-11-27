@@ -161,7 +161,7 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate{
             setPen()
         }
     }
-    var gpsTag = 10
+    var gpsTag = 1024
     /// GPSをセット
     func setGPSLabel(){
         let GPSlabel = UILabel()
@@ -183,8 +183,8 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate{
         GPSlabel.center = self.view.center
         /// TODO
         /// tagの値変更
-        GPSlabel.tag = gpsTag
-        gpsTag += 1
+        GPSlabel.tag = gpsTag + DataManager.TagIDs.typeGPS.rawValue
+        gpsTag += 1024
         // touchイベントの有効化
         GPSlabel.isUserInteractionEnabled = true
         self.imageView?.addSubview(GPSlabel)

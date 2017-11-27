@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		C82DFCDF1FBF0E3D00B65F92 /* ImageListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82DFCDE1FBF0E3D00B65F92 /* ImageListController.swift */; };
 		C82DFCE11FBFB98C00B65F92 /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82DFCE01FBFB98C00B65F92 /* ImageCell.swift */; };
+		C888FF6E1FCCCB92000F7738 /* StringPictMaker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C888FF6C1FCCCB92000F7738 /* StringPictMaker.xcdatamodeld */; };
 		C891DD701FC1BC1800C126BF /* ImageBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = C891DD6F1FC1BC1800C126BF /* ImageBoard.swift */; };
 		C891DD721FC4555F00C126BF /* MenuButtonActionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C891DD711FC4555F00C126BF /* MenuButtonActionController.swift */; };
 		C891DD741FC4649600C126BF /* MenuButtonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C891DD731FC4649600C126BF /* MenuButtonViewController.swift */; };
@@ -17,7 +18,6 @@
 		C8F22ED01FBC80BD00632109 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F22ECF1FBC80BD00632109 /* AppDelegate.swift */; };
 		C8F22ED21FBC80BD00632109 /* SplashController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F22ED11FBC80BD00632109 /* SplashController.swift */; };
 		C8F22ED51FBC80BD00632109 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C8F22ED31FBC80BD00632109 /* Main.storyboard */; };
-		C8F22ED81FBC80BD00632109 /* StringPictMaker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C8F22ED61FBC80BD00632109 /* StringPictMaker.xcdatamodeld */; };
 		C8F22EDA1FBC80BD00632109 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C8F22ED91FBC80BD00632109 /* Assets.xcassets */; };
 		C8F22EDD1FBC80BD00632109 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C8F22EDB1FBC80BD00632109 /* LaunchScreen.storyboard */; };
 		C8F22EE81FBC80BD00632109 /* StringPictMakerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F22EE71FBC80BD00632109 /* StringPictMakerTests.swift */; };
@@ -44,6 +44,7 @@
 /* Begin PBXFileReference section */
 		C82DFCDE1FBF0E3D00B65F92 /* ImageListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageListController.swift; sourceTree = "<group>"; };
 		C82DFCE01FBFB98C00B65F92 /* ImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
+		C888FF6D1FCCCB92000F7738 /* StringPictMaker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = StringPictMaker.xcdatamodel; sourceTree = "<group>"; };
 		C891DD6F1FC1BC1800C126BF /* ImageBoard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageBoard.swift; sourceTree = "<group>"; };
 		C891DD711FC4555F00C126BF /* MenuButtonActionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuButtonActionController.swift; sourceTree = "<group>"; };
 		C891DD731FC4649600C126BF /* MenuButtonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuButtonViewController.swift; sourceTree = "<group>"; };
@@ -53,7 +54,6 @@
 		C8F22ECF1FBC80BD00632109 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C8F22ED11FBC80BD00632109 /* SplashController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashController.swift; sourceTree = "<group>"; };
 		C8F22ED41FBC80BD00632109 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		C8F22ED71FBC80BD00632109 /* StringPictMaker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = StringPictMaker.xcdatamodel; sourceTree = "<group>"; };
 		C8F22ED91FBC80BD00632109 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C8F22EDC1FBC80BD00632109 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C8F22EDE1FBC80BD00632109 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -123,10 +123,10 @@
 				C891DD731FC4649600C126BF /* MenuButtonViewController.swift */,
 				C891DD751FC46AEF00C126BF /* DataManager.swift */,
 				C8F22ED31FBC80BD00632109 /* Main.storyboard */,
+				C888FF6C1FCCCB92000F7738 /* StringPictMaker.xcdatamodeld */,
 				C8F22ED91FBC80BD00632109 /* Assets.xcassets */,
 				C8F22EDB1FBC80BD00632109 /* LaunchScreen.storyboard */,
 				C8F22EDE1FBC80BD00632109 /* Info.plist */,
-				C8F22ED61FBC80BD00632109 /* StringPictMaker.xcdatamodeld */,
 			);
 			path = StringPictMaker;
 			sourceTree = "<group>";
@@ -287,10 +287,10 @@
 				C891DD761FC46AEF00C126BF /* DataManager.swift in Sources */,
 				C8F22ED21FBC80BD00632109 /* SplashController.swift in Sources */,
 				C8F22ED01FBC80BD00632109 /* AppDelegate.swift in Sources */,
-				C8F22ED81FBC80BD00632109 /* StringPictMaker.xcdatamodeld in Sources */,
 				C891DD721FC4555F00C126BF /* MenuButtonActionController.swift in Sources */,
 				C891DD741FC4649600C126BF /* MenuButtonViewController.swift in Sources */,
 				C82DFCDF1FBF0E3D00B65F92 /* ImageListController.swift in Sources */,
+				C888FF6E1FCCCB92000F7738 /* StringPictMaker.xcdatamodeld in Sources */,
 				C89E07101FC04C6E00C527BC /* ImageEditor.swift in Sources */,
 				C82DFCE11FBFB98C00B65F92 /* ImageCell.swift in Sources */,
 			);
@@ -592,12 +592,12 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		C8F22ED61FBC80BD00632109 /* StringPictMaker.xcdatamodeld */ = {
+		C888FF6C1FCCCB92000F7738 /* StringPictMaker.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				C8F22ED71FBC80BD00632109 /* StringPictMaker.xcdatamodel */,
+				C888FF6D1FCCCB92000F7738 /* StringPictMaker.xcdatamodel */,
 			);
-			currentVersion = C8F22ED71FBC80BD00632109 /* StringPictMaker.xcdatamodel */;
+			currentVersion = C888FF6D1FCCCB92000F7738 /* StringPictMaker.xcdatamodel */;
 			path = StringPictMaker.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

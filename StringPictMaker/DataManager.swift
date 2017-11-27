@@ -22,9 +22,9 @@ class DataManager{
     }
     var imageList = [ImageData]()
     
-    enum Tag : Int{
-        case tagGPS
-        case tagDUMMY
+    enum TagIDs : Int{
+        case typeGPS
+        case typeDUMMY
     }
     
     let DUMMY:Int
