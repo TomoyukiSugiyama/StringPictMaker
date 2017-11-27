@@ -37,6 +37,7 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
         self.view.addSubview(myCollectionView)
         imageData = DataManager()
         imageData?.deleteAllData()
+        imageData?.saveEmptyImage(id: 0, frame: self.view.frame)
     }
     /// 画面遷移時に渡すデータを設定
     ///

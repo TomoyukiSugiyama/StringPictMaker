@@ -21,6 +21,12 @@ class DataManager{
         var imageview: UIView
     }
     var imageList = [ImageData]()
+    
+    enum Tag : Int{
+        case tagGPS
+        case tagDUMMY
+    }
+    
     let DUMMY:Int
     init() {
         // CoreData : 管理オブジェクトコンテキストを取得
@@ -72,6 +78,7 @@ class DataManager{
             // imageListに追加
             imageList.append(ImageData(id: Int(serchRes.id),title: serchRes.title!,imageview: unarchivedView))
         }
+        //print("type:",imageList[0].typeList[0]);
         print("DataManager - loadImage - imageList.count:",imageList.count,"searchResult.count:",searchResult.count)
     }
     // CoreDataのImageを更新

@@ -16,10 +16,11 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate{
     var imageView : UIView? = nil
     var imageData : DataManager? = nil
     var selectedSubMenuItemState = 0
+    
     // DataManagerのオブジェクトを生成し、CoreDataからデータを読み出す
     override func viewDidLoad() {
         super.viewDidLoad()
-        initView()
+        self.initView()
         imageView?.isUserInteractionEnabled = true
         self.view.addSubview(imageView!)
         // menuボタンを生成
@@ -141,7 +142,7 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate{
         }
     }
     
-    // delegate
+    /// 選択されたサブメニューを取得
     func selectedSubMenu(state: Int) {
         if state == 1{
             selectedSubMenuItemState = 1
@@ -161,7 +162,7 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate{
         }
     }
     var gpsTag = 10
-    // GPSをセット
+    /// GPSをセット
     func setGPSLabel(){
         let GPSlabel = UILabel()
         /*      文字追加        */
@@ -180,11 +181,13 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate{
         GPSlabel.sizeToFit()
         // ラベルをviewの中心に移動
         GPSlabel.center = self.view.center
+        /// TODO
+        /// tagの値変更
         GPSlabel.tag = gpsTag
         gpsTag += 1
         // touchイベントの有効化
         GPSlabel.isUserInteractionEnabled = true
-         self.imageView?.addSubview(GPSlabel)
+        self.imageView?.addSubview(GPSlabel)
     }
     // Imageをセット
     func setImage(){
@@ -228,26 +231,41 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate{
             print("imageEditor - onClickBarButton - error")
         }
     }
-    var operateView:UIView!
-    var bezierPath:UIBezierPath!
+
+    //var bezierPath:UIBezierPath!
+    var tagList = [Int]()
+    /// 選択されたサブビューのtagをtagListに追加
+    ///
+    /// - Parameters:
+    ///   - touches: touches description
+    ///   - event: event description
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        tagList.removeAll()
         print("imageEditor - touchesBegan")
         for touch: UITouch in touches {
-            // imageViewからイベントを取得
+            // タッチされた位置の座標を取得
             let point:CGPoint = touch.location(in: self.imageView)
+            // imageViewにタッチイベントを渡し、
+            // タッチされた座標にあるサブビューを取得
             let hitImageView:UIView? = self.imageView?.hitTest(point, with: event)
-            print("subview:",hitImageView?.subviews.count as Any)
-            
-            for subview in (self.imageView?.subviews)! {
-                // subviewの位置がタッチされていたらsubviewを返す
-                print("subview.bouns:",subview.frame,"point:",point)
-                if (subview.frame.contains(point)) {
-                    print("tags:",subview.tag)
+            if(hitImageView != nil){
+                // タッチされた座標の位置を含むサブビューを取得
+                for subview in (self.imageView?.subviews)! {
+                    if (subview.frame.contains(point)) {
+                        tagList.append(subview.tag)
+                        print("tags:",subview.tag)
+                    }
                 }
             }
          }
     }
+    /// 移動分をサブビューに反映
+    ///
+    /// - Parameters:
+    ///   - touches: touches description
+    ///   - event: event description
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        var operateView:UIView!
         let touchEvent = touches.first!
         // ドラッグ前の座標
         let preDx = touchEvent.previousLocation(in: self.imageView).x
@@ -259,28 +277,14 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate{
         let dx = newDx - preDx
         // ドラッグしたy座標の移動距離
         let dy = newDy - preDy
-        // タッチされたビューを取得
-        for touch: UITouch in touches {
-            // タッチされた位置の座標を取得
-            let point:CGPoint = touch.location(in: self.imageView)
-            // imageViewにタッチイベントを渡し、
-            // タッチされた座標にあるサブビューを取得
-            let hitImageView:UIView? = self.imageView?.hitTest(point, with: event)
-            if(hitImageView != nil){
-                // タッチされた座標の位置を含むサブビューを取得
-                for subview in (self.imageView?.subviews)! {
-                    if (subview.frame.contains(point)) {
-                        operateView = (self.imageView?.viewWithTag(subview.tag))!
-                        // 画像のフレーム
-                        var viewFrame: CGRect = (operateView.frame)
-                        // 移動分を反映させる
-                        viewFrame.origin.x += dx
-                        viewFrame.origin.y += dy
-                        operateView.frame = viewFrame
-                    }
-                }
-            }
-            
+        for tag:Int in tagList {
+            operateView = (self.imageView?.viewWithTag(tag))!
+            // 画像のフレーム
+            var viewFrame: CGRect = (operateView.frame)
+            // 移動分を反映
+            viewFrame.origin.x += dx
+            viewFrame.origin.y += dy
+            operateView.frame = viewFrame
         }
     }
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
