@@ -17,6 +17,8 @@ class ImageBoard: UIViewController, CLLocationManagerDelegate{
     var isUsed:Bool = false
     var myLocationManager:CLLocationManager!
     var addresstxt:String!
+    var gpsTagArray = [Int]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         print("ImageBoard - delegateParamId:",delegateParamId)
@@ -36,16 +38,18 @@ class ImageBoard: UIViewController, CLLocationManagerDelegate{
             }else{
                 if (view.tag & 0x3FF) == DataManager.TagIDs.typeGPS.rawValue {
                     print("ImageEditor - initView - tagGPS - view.tag:",view.tag)
-                    self.getGPS(viewGPS: view as! UILabel)
+                    self.isUsed = true
+                    self.gpsTagArray.append(view.tag)
                 }else if view.tag == DataManager.TagIDs.typeDUMMY.rawValue {
                     
                 }
             }
         }
+        self.getGPS()
     }
     
-    func getGPS(viewGPS:UILabel){
-        if(self.isUsed == false){
+    func getGPS(){
+        if(self.isUsed == true){
             let status = CLLocationManager.authorizationStatus()
             if(status == CLAuthorizationStatus.notDetermined) {
                 print("ImageBoard - getGPS - status",status)
@@ -61,11 +65,12 @@ class ImageBoard: UIViewController, CLLocationManagerDelegate{
             //myLocationManager.startUpdatingLocation()
             myLocationManager.requestLocation()
             //myLocationManager.stopUpdatingLocation()
-            self.isUsed = true
+            
         }
         
-        viewGPS.text = self.addresstxt
-        print("ImageBoard - getGPS - addresstxt:",self.addresstxt);
+        //viewGPS.text = self.addresstxt
+        //viewGPS.text = "test"
+        //print("ImageBoard - getGPS - addresstxt:",self.addresstxt);
 
     }
     
@@ -143,6 +148,12 @@ class ImageBoard: UIViewController, CLLocationManagerDelegate{
                     }
                     
                     self.addresstxt = pm.administrativeArea!
+                    for tag in self.gpsTagArray{
+                        let view:UILabel = self.imageView?.viewWithTag(tag) as! UILabel
+                        view.text = pm.administrativeArea!
+                        //view.text = pm.administrativeArea!
+                    }
+                    
                     //self.setLabel()
                     /*                    print(pm.country)
                      print(pm.postalCode)
