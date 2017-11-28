@@ -23,7 +23,7 @@ class DataManager{
     var imageList = [ImageData]()
     
     enum TagIDs : Int{
-        case typeGPS
+        case typeGPS = 1
         case typeDUMMY
     }
     
