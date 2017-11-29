@@ -26,8 +26,33 @@ class ImageBoard: UIViewController, CLLocationManagerDelegate{
         myLocationManager.delegate = self
         self.initView()
         self.view.addSubview(imageView!)
+        
+        // imageViewにジェスチャーレコグナイザを設定(ダブルタップ)
+        let doubleTapGesture = UITapGestureRecognizer(target: self, action:#selector(self.doubleTap))
+        doubleTapGesture.numberOfTapsRequired = 2
+        self.imageView?.addGestureRecognizer(doubleTapGesture)
+        
+        // imageViewにジェスチャーレコグナイザを設定(ピンチ)
+        let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(self.pinchAction))
+        self.imageView?.addGestureRecognizer(pinchGesture)
     }
-    
+    // ナビゲーションバーを非表示
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.setNavigationBarHidden(true, animated: false)
+    }
+    // ダブルタップ時、ImageListControllerに戻る
+    @objc func doubleTap(gesture: UITapGestureRecognizer) -> Void {
+        print("ImageBoard - doubleTap")
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        self.navigationController?.popViewController(animated: true)
+    }
+    // ピンチ時、ImageListControllerに戻る
+    @objc func pinchAction(gesture: UITapGestureRecognizer) -> Void {
+        print("ImageBoard - pinchAction")
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        self.navigationController?.popViewController(animated: true)
+    }
+    // imageViewを初期化
     func initView(){
         for view in (imageView?.subviews)!
         {
@@ -47,7 +72,7 @@ class ImageBoard: UIViewController, CLLocationManagerDelegate{
         }
         self.getGPS()
     }
-    
+    // GPSから位置情報を取得
     func getGPS(){
         if(self.isUsed == true){
             let status = CLLocationManager.authorizationStatus()
@@ -67,13 +92,8 @@ class ImageBoard: UIViewController, CLLocationManagerDelegate{
             //myLocationManager.stopUpdatingLocation()
             
         }
-        
-        //viewGPS.text = self.addresstxt
-        //viewGPS.text = "test"
-        //print("ImageBoard - getGPS - addresstxt:",self.addresstxt);
-
-    }
-    
+     }
+    // プライバシー設定
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         switch status {
         case .notDetermined:
@@ -99,6 +119,7 @@ class ImageBoard: UIViewController, CLLocationManagerDelegate{
             break
         }
     }
+    // requestLocation実行時、住所を取得
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let userLocation: CLLocation = locations[0]
         reverseGeocode(latitude: userLocation.coordinate.latitude, longitude: userLocation.coordinate.longitude)
@@ -109,6 +130,7 @@ class ImageBoard: UIViewController, CLLocationManagerDelegate{
     func locationManager(_ manager: CLLocationManager,didFailWithError error: Error){
         print("error")
     }
+    // リバースジオコーディングを実行
     func reverseGeocode(latitude:CLLocationDegrees, longitude:CLLocationDegrees) {
         let location = CLLocation(latitude: latitude, longitude: longitude)
         let geocoder = CLGeocoder()
