@@ -206,6 +206,10 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate{
         // touchイベントの有効化
         GPSlabel.isUserInteractionEnabled = true
         self.imageView?.addSubview(GPSlabel)
+        
+        // imageViewにジェスチャーレコグナイザを設定(ピンチ)
+        let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(self.pinchAction))
+        self.imageView?.addGestureRecognizer(pinchGesture)
     }
     // Imageをセット
     func setImage(){
@@ -309,7 +313,9 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate{
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         //super.touchesEnded(touches, with: event)
     }
-    
+    // ピンチ時、ImageListControllerに戻る
+    @objc func pinchAction(gesture: UITapGestureRecognizer) -> Void {
+    }
     func dispSaveAlert() {
         // UIAlertControllerクラスのインスタンスを生成
         // タイトル, メッセージ, Alertのスタイルを指定する

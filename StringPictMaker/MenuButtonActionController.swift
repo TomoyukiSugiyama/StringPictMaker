@@ -15,8 +15,8 @@ class MenuButtonActionController: UIButton {
     /// began to touch menu butoon
     ///
     /// - Parameters:
-    ///   - touches: <#touches description#>
-    ///   - event: <#event description#>
+    ///   - touches: touches
+    ///   - event: event
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         position = self.frame.origin
@@ -24,8 +24,8 @@ class MenuButtonActionController: UIButton {
     /// touches moved
     ///
     /// - Parameters:
-    ///   - touches: <#touches description#>
-    ///   - event: <#event description#>
+    ///   - touches: touches
+    ///   - event: event
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesMoved(touches, with: event)
         
@@ -60,8 +60,8 @@ class MenuButtonActionController: UIButton {
     /// touches ended
     ///
     /// - Parameters:
-    ///   - touches: <#touches description#>
-    ///   - event: <#event description#>
+    ///   - touches: touches
+    ///   - event: event
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
         isMoveing = false

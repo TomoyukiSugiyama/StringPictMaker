@@ -30,7 +30,7 @@ class SplashController: UIViewController {
     }
     /// アニメーションを表示
     ///
-    /// - Parameter animated: <#animated description#>
+    /// - Parameter animated: animated
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         // 少し縮小するアニメーション

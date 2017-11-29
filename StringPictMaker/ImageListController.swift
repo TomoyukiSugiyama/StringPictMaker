@@ -27,6 +27,7 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
         var rightBarButton: UIBarButtonItem!
         rightBarButton = UIBarButtonItem(barButtonSystemItem:  .add,target: self, action: #selector(tappedRightBarButton))
         self.navigationItem.rightBarButtonItem = rightBarButton
+        
         // コレクションビューを生成
         let layout = UICollectionViewFlowLayout()
         myCollectionView = UICollectionView(frame:view.frame, collectionViewLayout: layout)
@@ -38,6 +39,11 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
         imageData = DataManager()
         imageData?.deleteAllData()
         imageData?.saveEmptyImage(id: 0, frame: self.view.frame)
+        
+        // タイトルをセット
+        let num:Int = (self.imageData?.imageList.count)!
+        self.navigationItem.title = "ギャラリー(" + String(describing: num) + ")"
+
     }
     /// 画面遷移時に渡すデータを設定
     ///
@@ -80,7 +86,8 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
         cell.editButton?.setTitle("EDIT", for: .normal)
         cell.editButton?.setTitleColor(UIColor.blue, for: .normal)
         cell.editButton?.tag = (self.imageData?.imageList[indexPath.row].id)!
-        cell.backgroundColor = UIColor.lightGray
+        //cell.backgroundColor = UIColor.lightGray
+        cell.backgroundColor = UIColor.lightGray.withAlphaComponent(0.50)
         cell.editButton?.addTarget(self, action: #selector(onClickEditButtons), for: UIControlEvents.touchUpInside)
         return cell
     }
