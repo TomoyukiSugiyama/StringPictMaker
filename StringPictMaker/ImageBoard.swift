@@ -148,6 +148,8 @@ class ImageBoard: UIViewController, CLLocationManagerDelegate{
                     }
                     
                     self.addresstxt = pm.administrativeArea!
+                    /// TODO:
+                    /// テキストサイズを調整
                     for tag in self.gpsTagArray{
                         let view:UILabel = self.imageView?.viewWithTag(tag) as! UILabel
                         view.text = pm.administrativeArea!

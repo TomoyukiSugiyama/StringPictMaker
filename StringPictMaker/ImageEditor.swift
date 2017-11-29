@@ -78,35 +78,51 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate{
         /************************************/
 
         var myToolbar: UIToolbar!
-        // ツールバーのサイズを決める.
+        // ツールバーのサイズを決定
         myToolbar = UIToolbar(frame: CGRect(x:0, y:self.view.bounds.size.height - 44, width:self.view.bounds.size.width, height:40.0))
-        // ツールバーの位置を決める.
+        // ツールバーの位置を決定
         myToolbar.layer.position = CGPoint(x: self.view.bounds.width/2, y: self.view.bounds.height-20.0)
-        // ツールバーの色を決める.
+        // ツールバーの色を決定
         myToolbar.barStyle = .blackTranslucent
         myToolbar.tintColor = UIColor.white
         //myToolbar.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
         myToolbar.backgroundColor = UIColor.lightGray.withAlphaComponent(0.50)
-        // ボタン１を生成する.
+        // ボタン１を生成
         let myUIBarButtonGreen: UIBarButtonItem = UIBarButtonItem(title: "Green", style:.plain, target: self, action: #selector(onClickBarButton))
         myUIBarButtonGreen.tag = 1
-        // ボタン２を生成する.
+        // ボタン２を生成
         let myUIBarButtonBlue: UIBarButtonItem = UIBarButtonItem(title: "Yellow", style:.plain, target: self, action: #selector(onClickBarButton))
         myUIBarButtonBlue.tag = 2
-        // ボタン3を生成する.
+        // ボタン3を生成
         let myUIBarButtonRed: UIBarButtonItem = UIBarButtonItem(title: "Red", style:.plain, target: self, action: #selector(onClickBarButton))
         myUIBarButtonRed.tag = 3
-        // ボタン3を生成する.
-        let myUIBarButtonSave: UIBarButtonItem = UIBarButtonItem(title: "SAVE", style:.plain, target: self, action: #selector(onClickBarButton))
-        myUIBarButtonSave.tag = 4
+        // スペースを確保
+        let myUIBarItemSpace: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
+        myUIBarItemSpace.width = 100
+        // ボタン4を生成
+        //let myUIBarButtonCancel: UIBarButtonItem = UIBarButtonItem(title: "CANCEL", style:.plain, target: self, action: #selector(onClickBarButton))
+        let myUIBarButtonCancel: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(onClickBarButton))
+        myUIBarButtonCancel.tag = 4
+        // スペースを確保
+        let myUIBarItemSpace2: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
+        myUIBarItemSpace2.width = 20
+        // ボタン5を生成
+        //let myUIBarButtonSave: UIBarButtonItem = UIBarButtonItem(title: "SAVE", style:.plain, target: self, action: #selector(onClickBarButton))
+        let myUIBarButtonSave: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(onClickBarButton))
+        
+        myUIBarButtonSave.tag = 5
         // ボタンをツールバーに入れる.
-        myToolbar.items = [myUIBarButtonGreen, myUIBarButtonBlue, myUIBarButtonRed,myUIBarButtonSave]
+        myToolbar.items = [myUIBarButtonGreen, myUIBarButtonBlue, myUIBarButtonRed,myUIBarItemSpace,myUIBarButtonCancel,myUIBarItemSpace2,myUIBarButtonSave]
         // ツールバーに追加する.
         self.view.addSubview(myToolbar)
         /************************************/
         //  テストコード↑
         /************************************/
 
+    }
+    // ナビゲーションバーを非表示
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.setNavigationBarHidden(true, animated: false)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -133,10 +149,12 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate{
             if view.tag == -1{
                 view.removeFromSuperview()
             }else{
-                if view.isKind(of: NSClassFromString("UIImageView")!) {
-                    print("ImageEditor - initView")
-                }else if view.isKind(of: NSClassFromString("UISearchBarBackground")!) {
-                
+                if (view.tag & 0x3FF) == DataManager.TagIDs.typeGPS.rawValue {
+                    print("ImageEditor - initView - tagGPS - view.tag:",view.tag)
+                    let label = view as! UILabel
+                    label.text = "現在位置"
+                 }else if view.tag == DataManager.TagIDs.typeDUMMY.rawValue {
+                    
                 }
             }
         }
@@ -221,12 +239,13 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate{
         case 3:
             self.imageView?.backgroundColor = UIColor.red
         case 4:
+            print("imageEditor - onClickBarButton - cancel")
+            self.dispCancelAlert()
+        case 5:
             // CoreDataを更新
             print("imageEditor - onClickBarButton - save:",self.delegateParamId)
-            self.imageData?.updateImage(id: self.delegateParamId, view: self.imageView!)
-            // ImageListControllerを更新
-            let prevVC = self.getPreviousViewController() as! ImageListController
-            prevVC.updateView()
+            self.dispSaveAlert()
+ 
         default:
             print("imageEditor - onClickBarButton - error")
         }
@@ -289,6 +308,74 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate{
     }
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         //super.touchesEnded(touches, with: event)
+    }
+    
+    func dispSaveAlert() {
+        // UIAlertControllerクラスのインスタンスを生成
+        // タイトル, メッセージ, Alertのスタイルを指定する
+        // 第3引数のpreferredStyleでアラートの表示スタイルを指定する
+        let alert: UIAlertController = UIAlertController(title: "イメージ", message: "保存して終了しますか？", preferredStyle:  UIAlertControllerStyle.alert)
+        
+        // Actionの設定
+        // Action初期化時にタイトル, スタイル, 押された時に実行されるハンドラを指定する
+        // 第3引数のUIAlertActionStyleでボタンのスタイルを指定する
+        // OKボタン
+        let defaultAction: UIAlertAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler:{
+            // ボタンが押された時の処理を書く（クロージャ実装）
+            (action: UIAlertAction!) -> Void in
+            print("Save - OK")
+            self.imageData?.updateImage(id: self.delegateParamId, view: self.imageView!)
+            // ImageListControllerを更新
+            let prevVC = self.getPreviousViewController() as! ImageListController
+            prevVC.updateView()
+            self.navigationController?.setNavigationBarHidden(false, animated: false)
+            self.navigationController?.popViewController(animated: true)
+            
+        })
+        // キャンセルボタン
+        let cancelAction: UIAlertAction = UIAlertAction(title: "キャンセル", style: UIAlertActionStyle.cancel, handler:{
+            // ボタンが押された時の処理を書く（クロージャ実装）
+            (action: UIAlertAction!) -> Void in
+            print("Save - Cancel")
+        })
+        
+        // UIAlertControllerにActionを追加
+        alert.addAction(cancelAction)
+        alert.addAction(defaultAction)
+        
+        // Alertを表示
+        present(alert, animated: true, completion: nil)
+    }
+    func dispCancelAlert() {
+        // UIAlertControllerクラスのインスタンスを生成
+        // タイトル, メッセージ, Alertのスタイルを指定する
+        // 第3引数のpreferredStyleでアラートの表示スタイルを指定する
+        let alert: UIAlertController = UIAlertController(title: "イメージ", message: "保存せず終了してもいいですか？", preferredStyle:  UIAlertControllerStyle.alert)
+        
+        // Actionの設定
+        // Action初期化時にタイトル, スタイル, 押された時に実行されるハンドラを指定する
+        // 第3引数のUIAlertActionStyleでボタンのスタイルを指定する
+        // OKボタン
+        let defaultAction: UIAlertAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler:{
+            // ボタンが押された時の処理を書く（クロージャ実装）
+            (action: UIAlertAction!) -> Void in
+            print("Cancel - OK")
+            self.navigationController?.setNavigationBarHidden(false, animated: false)
+            self.navigationController?.popViewController(animated: true)
+        })
+        // キャンセルボタン
+        let cancelAction: UIAlertAction = UIAlertAction(title: "キャンセル", style: UIAlertActionStyle.cancel, handler:{
+            // ボタンが押された時の処理を書く（クロージャ実装）
+            (action: UIAlertAction!) -> Void in
+            print("Cancel - Cancel")
+        })
+        
+        // UIAlertControllerにActionを追加
+        alert.addAction(cancelAction)
+        alert.addAction(defaultAction)
+        
+        // Alertを表示
+        present(alert, animated: true, completion: nil)
     }
 }
 
