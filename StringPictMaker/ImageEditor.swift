@@ -9,47 +9,80 @@
 import Foundation
 import UIKit
 
-class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate{
+class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollViewDelegate{
 //,SampleViewDelegate{
     // delegate
     var delegateParamId: Int = 0
     var imageView : UIView? = nil
     var imageData : DataManager? = nil
     var selectedSubMenuItemState = 0
-    
+    var scrollView: UIScrollView!
     // DataManagerのオブジェクトを生成し、CoreDataからデータを読み出す
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.backgroundColor = UIColor.gray
+        
+        
+        //スクロールビューを設置
+        scrollView = myScrollView()
+
+        scrollView.frame = CGRect(x:0,y:0,width:self.view.frame.width,height:self.view.frame.height)
+        scrollView.center = self.view.center
+        print("width:",self.view.frame.width,"height:",self.view.frame.height,"center:",self.view.center)
+        //scrollView.frame = CGRect(x:0,y:0,width:(self.imageView?.frame.width)!,height:(self.imageView?.frame.height)!)
+        scrollView.frame.size = CGSize(width:(self.view.frame.width),height:(self.view.frame.height))
+        //scrollView.contentSize = CGSize(width:self.(view.frame.width), height: (self.view.frame.heigh))
+        //scrollView.contentSize = CGSize(width:100,height:100)
+        scrollView.isUserInteractionEnabled = true
+        //デリゲートを設定
+        scrollView.delegate = self
+        //最大・最小の大きさを決める
+        scrollView.maximumZoomScale = 2.0
+        scrollView.minimumZoomScale = 0.5
+        
+        self.view.addSubview(scrollView)
         self.initView()
+        
         imageView?.isUserInteractionEnabled = true
-        self.view.addSubview(imageView!)
+        //self.view.addSubview(imageView!)
+        imageView?.addGestureRecognizer(UIPanGestureRecognizer(target:self, action:#selector(handlePanGesture)))
+        scrollView.addSubview(imageView!)
         // menuボタンを生成
         // menuボタンにタッチイベントを追加
         let menuButton = MenuButtonActionController(type: .custom)
         menuButton.setImage(UIImage(named: "add-icon"), for: .normal)
         menuButton.frame = CGRect(x: 0, y: 0, width: 80, height: 80)
+        menuButton.backgroundColor = UIColor.lightGray
         menuButton.center = CGPoint(x: self.view.frame.width/2, y: self.view.frame.height-70)
         menuButton.layer.cornerRadius = 40.0
         // 影を付ける
         menuButton.layer.shadowOffset = CGSize(width: 1.0, height: 3.0)
         menuButton.layer.shadowOpacity = 5.0
+        menuButton.delegate = self
         /// TODO　subボタンの追加
         // MenuButtonViewControllerクラスのインスタンス生成.
-        let subMenuButton: MenuButtonViewController = MenuButtonViewController(frame: self.view.frame)
+        //let subMenuButton: MenuButtonViewController = MenuButtonViewController(frame: self.view.frame)
+        
+        //let frame = CGRect(x: 0, y: 0, width: 60, height: 60)
+        /*let subMenuButton: MenuButtonViewController = MenuButtonViewController(frame: frame)
+        subMenuButton.backgroundColor = UIColor.yellow
+        //subMenuButton.frame = CGRect(x: 0, y: 0, width: 200, height: 200)
         subMenuButton.menuButton = menuButton
         subMenuButton.mainPosition = menuButton.layer.position
-        subMenuButton.delegate = self
+        subMenuButton.delegate = self*/
         // mainボタンにイベント追加
-        menuButton.addTarget(subMenuButton, action: #selector(subMenuButton.onDownMainButton(sender:)), for: UIControlEvents.touchDown)
+        menuButton.addTarget(menuButton, action: #selector(menuButton.onDownMainButton(sender:)), for: UIControlEvents.touchDown)
         //isUserInteractionEnabledをtrueにして、touchesEndedで処理
         menuButton.isUserInteractionEnabled = true
         // subボタンにイベント追加
-        menuButton.addTarget(subMenuButton,action:#selector(subMenuButton.onUpMainButton(sender:)),for: UIControlEvents.touchUpOutside )
+        menuButton.addTarget(menuButton,action:#selector(menuButton.onUpMainButton(sender:)),for: UIControlEvents.touchUpOutside )
         //| UIControlEvents.touchDragOutside
         // インスタンスをviewに追加.(subボタン)
-        self.view.addSubview(subMenuButton)
+        //self.view.addSubview(subMenuButton)
+        //scrollView.addSubview(subMenuButton)
         // mainボタンをviewに追加.
         self.view.addSubview(menuButton)
+        //scrollView.addSubview(menuButton)
         /************************************/
         //  テストコード↓
         /************************************/
@@ -69,7 +102,7 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate{
         label.sizeToFit()
         //ラベルをviewの中心に移動する
         label.center = CGPoint(x: 50, y: 100)
-        self.imageView?.addSubview(label)
+        //self.imageView?.addSubview(label)
         /************************************/
         //  テストコード↑
         /************************************/
@@ -100,14 +133,12 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate{
         let myUIBarItemSpace: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
         myUIBarItemSpace.width = 100
         // ボタン4を生成
-        //let myUIBarButtonCancel: UIBarButtonItem = UIBarButtonItem(title: "CANCEL", style:.plain, target: self, action: #selector(onClickBarButton))
         let myUIBarButtonCancel: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(onClickBarButton))
         myUIBarButtonCancel.tag = 4
         // スペースを確保
         let myUIBarItemSpace2: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
         myUIBarItemSpace2.width = 20
         // ボタン5を生成
-        //let myUIBarButtonSave: UIBarButtonItem = UIBarButtonItem(title: "SAVE", style:.plain, target: self, action: #selector(onClickBarButton))
         let myUIBarButtonSave: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(onClickBarButton))
         
         myUIBarButtonSave.tag = 5
@@ -115,6 +146,7 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate{
         myToolbar.items = [myUIBarButtonGreen, myUIBarButtonBlue, myUIBarButtonRed,myUIBarItemSpace,myUIBarButtonCancel,myUIBarItemSpace2,myUIBarButtonSave]
         // ツールバーに追加する.
         self.view.addSubview(myToolbar)
+        //scrollView.addSubview(myToolbar)
         /************************************/
         //  テストコード↑
         /************************************/
@@ -203,13 +235,18 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate{
         /// tagの値変更
         GPSlabel.tag = gpsTag + DataManager.TagIDs.typeGPS.rawValue
         gpsTag += 1024
+        
+        //let singleTap = UIPanGestureRecognizer(target:self, action:#selector(handlePanGesture))
+        //singleTap.maximumNumberOfTouches = 1
+        GPSlabel.addGestureRecognizer(UIPanGestureRecognizer(target:self, action:#selector(handlePanGesture)))
+        //GPSlabel.addGestureRecognizer(singleTap)
         // touchイベントの有効化
         GPSlabel.isUserInteractionEnabled = true
         self.imageView?.addSubview(GPSlabel)
         
         // imageViewにジェスチャーレコグナイザを設定(ピンチ)
-        let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(self.pinchAction))
-        self.imageView?.addGestureRecognizer(pinchGesture)
+        //let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(self.pinchAction))
+        //self.imageView?.addGestureRecognizer(pinchGesture)
     }
     // Imageをセット
     func setImage(){
@@ -255,16 +292,67 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate{
         }
     }
 
-    //var bezierPath:UIBezierPath!
     var tagList = [Int]()
+    var isSelected:Bool = false
+    @objc func handlePanGesture(sender: UIPanGestureRecognizer){
+        switch sender.state {
+        case UIGestureRecognizerState.began:
+            if(!isSelected){
+            tagList.removeAll()
+            let location:CGPoint=sender.location(in: imageView)
+            // タッチされた座標にあるサブビューを取得
+            //let hitImageView:UIView? = self.imageView?.hitTest(location, with: UIEvent?)
+            print("ImageEditor - Pan began:",sender.view?.tag)
+            // タッチされた座標の位置を含むサブビューを取得
+            for subview in (self.imageView?.subviews)! {
+                if (subview.frame.contains(location)) {
+                    tagList.append(subview.tag)
+                    print("ImageEditor - Pan - tags:",subview.tag)
+                }
+            }
+                isSelected = true
+            }
+            break
+        case UIGestureRecognizerState.changed:
+            if(isSelected){
+            //print("ImageEditor - Pan changed")
+            var operateView:UIView!
+            //移動量を取得する。
+            let move:CGPoint = sender.translation(in: self.imageView)
+            for tag:Int in tagList {
+                operateView = (self.imageView?.viewWithTag(tag))!
+                // 画像のフレーム
+                //var viewFrame: CGRect = (operateView.frame)
+                // 移動分を反映
+                //viewFrame.origin.x += move.x
+                //viewFrame.origin.y += move.y
+                //operateView.frame = viewFrame
+                
+                let moved = CGPoint(x: operateView.center.x + move.x, y: operateView.center.y + move.y)
+                operateView.center = moved
+                sender.setTranslation(CGPoint.zero, in:operateView)
+            }
+            }
+            break
+        case UIGestureRecognizerState.ended:
+            isSelected = false
+            break
+        default:
+            break
+            
+        }
+    }
+    //var bezierPath:UIBezierPath!
+    
     /// 選択されたサブビューのtagをtagListに追加
     ///
     /// - Parameters:
     ///   - touches: touches description
     ///   - event: event description
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        //super.touchesBegan(touches, with: event)
         tagList.removeAll()
-        print("imageEditor - touchesBegan")
+        //print("imageEditor - touchesBegan")
         for touch: UITouch in touches {
             // タッチされた位置の座標を取得
             let point:CGPoint = touch.location(in: self.imageView)
@@ -282,12 +370,15 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate{
             }
          }
     }
+
     /// 移動分をサブビューに反映
     ///
     /// - Parameters:
     ///   - touches: touches description
     ///   - event: event description
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        //super.touchesMoved(touches, with: event)
+        //print("imageEditor - touchesMoved")
         var operateView:UIView!
         let touchEvent = touches.first!
         // ドラッグ前の座標
@@ -311,10 +402,51 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate{
         }
     }
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        //print("imageEditor - touchesEnded")
         //super.touchesEnded(touches, with: event)
     }
-    // ピンチ時、ImageListControllerに戻る
+/*    // ピンチ時、ImageListControllerに戻る
     @objc func pinchAction(gesture: UITapGestureRecognizer) -> Void {
+    }
+    
+    func viewForZoomingInScrollView(scrollView: UIScrollView) -> UIView? {
+        // ズームのために要指定
+        return imageView
+    }
+*/
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return self.imageView
+    }
+    func scrollViewDidZoom(_ scrollView: UIScrollView) {
+        // 拡大縮小されるたびに呼ばれる
+        updateImageCenter()
+    }
+    
+    func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
+    }
+    
+    func updateImageCenter(){
+        
+        let bounds:CGRect = self.scrollView.bounds;
+        var point:CGPoint = CGPoint()
+        point.x = (self.imageView?.frame.width)! / 2
+        if ((self.imageView?.frame.width)! < bounds.size.width) {
+            point.x += (bounds.size.width - (self.imageView?.frame.width)!) / 2;
+        }
+        point.y = (self.imageView?.frame.height)! / 2;
+        if ((self.imageView?.frame.height)! < bounds.size.height) {
+            point.y += (bounds.size.height - (self.imageView?.frame.height)!) / 2;
+        }
+        self.imageView?.center = point;
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        // スクロール中の処理
+        //print("didScroll")
+    }
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        // ドラッグ開始時の処理
+        //print("beginDragging")
     }
     func dispSaveAlert() {
         // UIAlertControllerクラスのインスタンスを生成
@@ -403,4 +535,23 @@ public extension UIViewController
         // 実装ミス
         return nil
     }
+}
+
+class myScrollView: UIScrollView{
+    /*override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        //self.next?.touchesBegan(touches, with: event)
+        superview?.touchesBegan(touches, with: event)
+        //print("myScrollView - touchesBegan")
+    }
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        //self.next?.touchesMoved(touches, with: event)
+        superview?.touchesMoved(touches, with: event)
+        //print("myScrollView - touchesMoved")
+    }
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        //self.next?.touchesEnded(touches, with: event)
+        superview?.touchesEnded(touches, with: event)
+        //print("myScrollView - touchesEnded")
+        
+    }*/
 }

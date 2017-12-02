@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-@objc protocol ViewDelegate {
+/*@objc protocol ViewDelegate {
     // デリゲートメソッド定義
     func selectedSubMenu(state:Int)
 }
@@ -107,6 +107,7 @@ class MenuButtonViewController : UIView {
             //buttons[i].center = self.center
             buttons[i].center = CGPoint(x: menuButton.layer.position.x, y: menuButton.layer.position.y)
             buttons[i].addTarget(self, action: #selector(onClickSubButtons), for: UIControlEvents.touchUpInside)
+                    buttons[i].backgroundColor = UIColor.blue
             buttons[i].layer.shadowOffset = CGSize(width: 1.0, height: 3.0)
             buttons[i].layer.shadowOpacity = 5.0
             buttons[i].tag = i+1
@@ -135,12 +136,17 @@ class MenuButtonViewController : UIView {
                         animations: { () -> Void in
                             // subボタンに座標を設定.
                             self.subButton_1.layer.position = self.getPosition(angle: -90, radius: radius)
+                            print("pos sub",self.subButton_1.layer.position)
                             self.subButton_2.layer.position = self.getPosition(angle: -30, radius: radius)
                             self.subButton_3.layer.position = self.getPosition(angle: -60, radius: radius)
                             self.subButton_4.layer.position = self.getPosition(angle: -120, radius: radius)
                             self.subButton_5.layer.position = self.getPosition(angle: -150, radius: radius)
-                        }) { (Bool) -> Void in
-                        }
+                       // }) { (Bool) -> Void in
+                        }, completion: { (Bool) -> Void in
+                            self.subButton_1.frame.origin = self.getPosition(angle: -90, radius: radius)
+                            print("pos ori",self.subButton_1.frame.origin)
+        })
+        
     }
     /// サブメニューボタンイベント　選択されたサブメニューの番号を送信
     ///
@@ -197,4 +203,4 @@ class MenuButtonViewController : UIView {
         }
         )
     }
-}
+}*/
