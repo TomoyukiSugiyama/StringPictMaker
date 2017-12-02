@@ -9,19 +9,22 @@
 import Foundation
 import UIKit
 import CoreData
+
 /// Data manager
+/// 様々なクラスで使用するデータ・メモリに保存するためのデータを管理
 class DataManager{
     // CoreData : 管理オブジェクトコンテキスト
     var managedContext:NSManagedObjectContext!
     // 検索結果配列
     var searchResult = [Images]()
+    // CoreDataを読み出すための構造体
     struct ImageData {
         var id: Int
         var title: String
         var imageview: UIView
     }
     var imageList = [ImageData]()
-    
+    // Viewにセットするtagの種類を管理
     enum TagIDs : Int{
         case typeGPS = 1
         case typeDUMMY
@@ -34,20 +37,21 @@ class DataManager{
         managedContext = applicationDelegate.persistentContainer.viewContext
         //コンフリクトが発生した場合にマージ
         managedContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
-        /// TODO
-        /// 不要な変数
+        /// TODO: 不要な変数のため削除
+        /// initを実行する時、１つ以上のクラスインスタンスの初期化が必要であるため
         DUMMY = 0
     }
     /// CoreDataに空のimageを保存
     func saveEmptyImage(id:Int,frame:CGRect){
         do{
+            // 空のImageを作成
             let emptyView = UIView(frame: CGRect(x:0, y:0, width:frame.width, height:frame.height))
             emptyView.backgroundColor = UIColor.white
             let imageLabel = UIImageView(frame: CGRect(x:0, y:0, width:frame.width, height:frame.height))
             imageLabel.image = UIImage(named: "noimage")
             imageLabel.tag = -1
             emptyView.addSubview(imageLabel)
-            // UIViewをアーカイブし、シリアライズされたNSDataに変換
+            // UIViewをアーカイブし、シリアライズ（バイナリ化）されたNSDataに変換
             let viewArchive = NSKeyedArchiver.archivedData(withRootObject: emptyView)
             let ImagesEntity = NSEntityDescription.insertNewObject(forEntityName: "Images", into: managedContext) as! Images
             ImagesEntity.id = Int16(id)
@@ -118,8 +122,8 @@ class DataManager{
      //for serchRes in searchResult{
      //    print(serchRes.title! as Any)
      //}
-     }*/
-    
+     }
+     */
     /// CoreDataに保存したImageを全て削除
     func deleteAllData(){
         //フェッチリクエストのインスタンスを生成
@@ -140,7 +144,10 @@ class DataManager{
         // 削除後の全データをfetchする
         //getData()
     }
-    
+    /// 指定したidを含むimageListのインデックスを返す
+    ///
+    /// - Parameter id: 検索するid
+    /// - Returns: 検索したIDを含むimageListのインデックス
     func indexOf(id: Int) -> Int {
         print("DataManager - indexOf - id",id,"count",imageList.count)
         return imageList.index(where: { $0.id == id })!

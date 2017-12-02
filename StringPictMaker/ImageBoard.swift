@@ -10,15 +10,21 @@ import Foundation
 import UIKit
 import CoreLocation
 
+/// ImageEditorで編集したImageを表示
 class ImageBoard: UIViewController, CLLocationManagerDelegate{
-    //,SampleViewDelegate{
+    // delegate
+    // ImageListControllerから受信
     var delegateParamId: Int = 0
     var imageView : UIView? = nil
+    // GPSを利用したImageか確認するためのフラグ
     var isUsed:Bool = false
     var myLocationManager:CLLocationManager!
     var addresstxt:String!
     var gpsTagArray = [Int]()
-    
+    /// ImageEditorで編集したImageを表示
+    /// 1.GPS情報を取得するためのCLLocationManagerを生成
+    /// 2.imageView上のアイテムを種類毎に分別
+    /// 3.ImageListControllerに戻るためのジェスチャーを追加
     override func viewDidLoad() {
         super.viewDidLoad()
         print("ImageBoard - delegateParamId:",delegateParamId)
@@ -26,12 +32,10 @@ class ImageBoard: UIViewController, CLLocationManagerDelegate{
         myLocationManager.delegate = self
         self.initView()
         self.view.addSubview(imageView!)
-        
         // imageViewにジェスチャーレコグナイザを設定(ダブルタップ)
         let doubleTapGesture = UITapGestureRecognizer(target: self, action:#selector(self.doubleTap))
         doubleTapGesture.numberOfTapsRequired = 2
         self.imageView?.addGestureRecognizer(doubleTapGesture)
-        
         // imageViewにジェスチャーレコグナイザを設定(ピンチ)
         let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(self.pinchAction))
         self.imageView?.addGestureRecognizer(pinchGesture)
@@ -52,7 +56,7 @@ class ImageBoard: UIViewController, CLLocationManagerDelegate{
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         self.navigationController?.popViewController(animated: true)
     }
-    // imageViewを初期化
+    // imageView上のアイテムを種類毎に分別
     func initView(){
         for view in (imageView?.subviews)!
         {
@@ -177,7 +181,6 @@ class ImageBoard: UIViewController, CLLocationManagerDelegate{
                         view.text = pm.administrativeArea!
                         //view.text = pm.administrativeArea!
                     }
-                    
                     //self.setLabel()
                     /*                    print(pm.country)
                      print(pm.postalCode)

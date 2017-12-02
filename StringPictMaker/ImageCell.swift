@@ -9,17 +9,14 @@
 import Foundation
 import UIKit
 
+/// ImageListControllerに追加するセルのデザインを作成
 class ImageCell: UICollectionViewCell {
- 
     var imageLabel: UIImageView?
     var textLabel : UILabel?
-    var editButton: UIButton?
-    
+    var editButton: UIButton?    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)!
     }
-    
-    
     /// ImageListControllerのセルをカスタマイズ
     ///
     /// - Parameter frame: セルのフレーム

@@ -9,12 +9,14 @@
 import Foundation
 import UIKit
 
+/// 選択されたサブメニューの番号をImageEditorに送付するデリゲートメソッド
 protocol ViewDelegate {
     // デリゲートメソッド定義
     func selectedSubMenu(state:Int)
 }
 
-// CustomButton Class (Menu Button)
+/// CustomButton Class (Menu/Sub Menu Button)
+/// ImageEditorでメイン/サブメニューボタンが押された時の、アクションを定義
 class MenuButtonActionController: UIButton {
     var isMoveing: Bool = false
     var position: CGPoint!
@@ -34,34 +36,25 @@ class MenuButtonActionController: UIButton {
     ///   - event: event
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesMoved(touches, with: event)
-        
         isMoveing = true
-        
         let touchEvent = touches.first!
-        
         // ドラッグ前の座標
         let preDx = touchEvent.previousLocation(in: superview).x
         let preDy = touchEvent.previousLocation(in: superview).y
-        
         // ドラッグ後の座標
         let newDx = touchEvent.location(in: superview).x
         let newDy = touchEvent.location(in: superview).y
-        
         // ドラッグしたx座標の移動距離
         let dx = newDx - preDx
-        
         // ドラッグしたy座標の移動距離
         let dy = newDy - preDy
-        
         // 画像のフレーム
         var viewFrame: CGRect = self.frame
-        
         // 移動分を反映させる
         /// TODO フレームの外に出ないように設定
         viewFrame.origin.x += dx
         viewFrame.origin.y += dy
         self.frame = viewFrame
-        
     }
     /// touches ended
     ///
@@ -75,18 +68,17 @@ class MenuButtonActionController: UIButton {
              self.sendActions(for: .touchUpOutside)
         }
     }
-    
     /// メインメニューボタンイベント(Down)
     ///
     /// - Parameter sender: 選択されたメインメニューボタン
     @objc  func onDownMainButton(sender: UIButton) {
-        // 背景を黒色に設定.
+        // 背景を黒色に設定
         //self.backgroundColor = UIColor.white
         UIView.animate(withDuration: 0.06,
-                       // アニメーション中の処理.
+            // アニメーション中の処理
             animations: { () -> Void in
-                // 縮小用アフィン行列を生成する.
-                sender.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+                        // 縮小用アフィン行列を生成する
+                        sender.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
         }){ (Bool) -> Void in
         }
     }
@@ -97,10 +89,7 @@ class MenuButtonActionController: UIButton {
     var subButton_3: UIButton = UIButton()
     var subButton_4: UIButton = UIButton()
     var subButton_5: UIButton = UIButton()
-    
     var colors: NSMutableArray!
-
-    
     /// サブメニューボタンの座標を返すメソッド
     ///
     /// - Parameters:
@@ -120,17 +109,15 @@ class MenuButtonActionController: UIButton {
         
         return position
     }
-    
-    
     /// メインメニューボタンイベント(Up)
     ///
     /// - Parameter sender: 選択されたメインメニューボタン
     @objc  func onUpMainButton(sender: UIButton) {
-        // subボタンを配列に格納.
+        // subボタンを配列に格納
         let buttons = [subButton_1, subButton_2, subButton_3, subButton_4, subButton_5]
-        // subボタン用の　UIColorを配列に格納.
+        // subボタン用の　UIColorを配列に格納
         colors = [UIColor.green, UIColor.yellow, UIColor.cyan, UIColor.magenta, UIColor.purple] as NSMutableArray
-        // mainボタンからの距離(半径).
+        // mainボタンからの距離(半径)
         //let radius: CGFloat = 150
         let radius: CGFloat = 140
         buttons[0].setTitle("GPS", for: .normal)
@@ -166,37 +153,36 @@ class MenuButtonActionController: UIButton {
             // subボタンをviewに追加
             self.superview?.addSubview(buttons[i])
         }
-        
+        // メインメニューボタンのサイズを0.4倍にした後、元のサイズに戻す
         UIView.animate(withDuration: 0.06,
-                       // アニメーション中の処理
+            // アニメーション中の処理
             animations: { () -> Void in
-                // 拡大用アフィン行列を作成
-                sender.transform = CGAffineTransform(scaleX: 0.4, y: 0.4)
-                // 縮小用アフィン行列を作成
-                sender.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
+                        // 縮小用アフィン行列を作成
+                        sender.transform = CGAffineTransform(scaleX: 0.4, y: 0.4)
+                        // 拡大用アフィン行列を作成
+                        sender.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
         }){ (Bool) -> Void in
         }
-        
+        // サブメニューボタンを設定した位置に移動
         UIView.animate(withDuration: 0.7,
                        delay: 0.0,
                        // バネを設定
-            usingSpringWithDamping: 0.5,
-            // バネの弾性力
-            initialSpringVelocity: 1.5,
-            options: UIViewAnimationOptions.curveEaseIn,
+                        usingSpringWithDamping: 0.5,
+                        // バネの弾性力
+                        initialSpringVelocity: 1.5,
+                        options: UIViewAnimationOptions.curveEaseIn,
             // アニメーション中の処理
             animations: { () -> Void in
-                // subボタンに座標を設定.
-                self.subButton_1.layer.position = self.getPosition(angle: -90, radius: radius)
-                self.subButton_2.layer.position = self.getPosition(angle: -30, radius: radius)
-                self.subButton_3.layer.position = self.getPosition(angle: -60, radius: radius)
-                self.subButton_4.layer.position = self.getPosition(angle: -120, radius: radius)
-                self.subButton_5.layer.position = self.getPosition(angle: -150, radius: radius)
-            }) { (Bool) -> Void in
-            }
+                        // サブメニューボタンに座標を設定
+                        self.subButton_1.layer.position = self.getPosition(angle: -90, radius: radius)
+                        self.subButton_2.layer.position = self.getPosition(angle: -30, radius: radius)
+                        self.subButton_3.layer.position = self.getPosition(angle: -60, radius: radius)
+                        self.subButton_4.layer.position = self.getPosition(angle: -120, radius: radius)
+                        self.subButton_5.layer.position = self.getPosition(angle: -150, radius: radius)
+        }) { (Bool) -> Void in
+        }
         
     }
-    
     /// サブメニューボタンイベント　選択されたサブメニューの番号を送信
     ///
     /// - Parameter sender: 選択されたボタン
@@ -204,58 +190,51 @@ class MenuButtonActionController: UIButton {
         // 背景色をsubボタンの色に設定
         switch(sender.tag) {
         case 1:
-            // デリゲートメソッドを呼ぶ
+            // デリゲートメソッドを呼出
             self.delegate?.selectedSubMenu(state: 1)
             fadeAnimation()
         case 2:
-            // デリゲートメソッドを呼ぶ(処理をデリゲートインスタンスに委譲する)
+            // デリゲートメソッドを呼出(処理をデリゲートインスタンスに委譲)
             self.delegate?.selectedSubMenu(state: 2)
             fadeAnimation()
         case 3:
-            // デリゲートメソッドを呼ぶ(処理をデリゲートインスタンスに委譲する)
+            // デリゲートメソッドを呼出(処理をデリゲートインスタンスに委譲)
             self.delegate?.selectedSubMenu(state: 3)
             fadeAnimation()
         case 4:
-            // デリゲートメソッドを呼ぶ(処理をデリゲートインスタンスに委譲する)
+            // デリゲートメソッドを呼出(処理をデリゲートインスタンスに委譲)
             self.delegate?.selectedSubMenu(state: 4)
             fadeAnimation()
         case 5:
-            // デリゲートメソッドを呼ぶ(処理をデリゲートインスタンスに委譲する)
+            // デリゲートメソッドを呼出(処理をデリゲートインスタンスに委譲)
             self.delegate?.selectedSubMenu(state: 5)
             fadeAnimation()
         default: break
         }
     }
-    
     /// サブメニューボタンをフェードアウト
     func fadeAnimation(){
         UIView.animate(withDuration: 0.1,
                        // アニメーション中の処理.
             animations: { () -> Void in
-                
-                // subボタンに座標を設定.
-                self.subButton_1.layer.position = CGPoint(x: self.layer.position.x, y: self.layer.position.y)
-                // subボタンに座標を設定.
-                self.subButton_2.layer.position = CGPoint(x: self.layer.position.x, y: self.layer.position.y)
-                // subボタンに座標を設定.
-                self.subButton_3.layer.position = CGPoint(x: self.layer.position.x, y: self.layer.position.y)
-                // subボタンに座標を設定.
-                self.subButton_4.layer.position = CGPoint(x: self.layer.position.x, y: self.layer.position.y)
-                // subボタンに座標を設定.
-                self.subButton_5.layer.position = CGPoint(x: self.layer.position.x, y: self.layer.position.y)
+                        // subボタンに座標を設定.
+                        self.subButton_1.layer.position = CGPoint(x: self.layer.position.x, y: self.layer.position.y)
+                        // subボタンに座標を設定.
+                        self.subButton_2.layer.position = CGPoint(x: self.layer.position.x, y: self.layer.position.y)
+                        // subボタンに座標を設定.
+                        self.subButton_3.layer.position = CGPoint(x: self.layer.position.x, y: self.layer.position.y)
+                        // subボタンに座標を設定.
+                        self.subButton_4.layer.position = CGPoint(x: self.layer.position.x, y: self.layer.position.y)
+                        // subボタンに座標を設定.
+                        self.subButton_5.layer.position = CGPoint(x: self.layer.position.x, y: self.layer.position.y)
         }
             , completion: { (Bool) -> Void in
-                self.subButton_1.removeFromSuperview()
-                self.subButton_2.removeFromSuperview()
-                self.subButton_3.removeFromSuperview()
-                self.subButton_4.removeFromSuperview()
-                self.subButton_5.removeFromSuperview()
+                        self.subButton_1.removeFromSuperview()
+                        self.subButton_2.removeFromSuperview()
+                        self.subButton_3.removeFromSuperview()
+                        self.subButton_4.removeFromSuperview()
+                        self.subButton_5.removeFromSuperview()
         }
         )
     }
-    
-    
-    
-    
-    
 }

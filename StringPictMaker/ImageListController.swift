@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import CoreData
+
 /// 作成したイメージのリストを表示
 class ImageListController: UIViewController, UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout{
     // カスタマイズしたCollectionView
@@ -27,7 +28,6 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
         var rightBarButton: UIBarButtonItem!
         rightBarButton = UIBarButtonItem(barButtonSystemItem:  .add,target: self, action: #selector(tappedRightBarButton))
         self.navigationItem.rightBarButtonItem = rightBarButton
-        
         // コレクションビューを生成
         let layout = UICollectionViewFlowLayout()
         myCollectionView = UICollectionView(frame:view.frame, collectionViewLayout: layout)
@@ -39,11 +39,9 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
         imageData = DataManager()
         imageData?.deleteAllData()
         imageData?.saveEmptyImage(id: 0, frame: self.view.frame)
-        
         // タイトルをセット
         let num:Int = (self.imageData?.imageList.count)!
         self.navigationItem.title = "ギャラリー(" + String(describing: num) + ")"
-
     }
     /// 画面遷移時に渡すデータを設定
     ///

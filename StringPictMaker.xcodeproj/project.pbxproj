@@ -12,7 +12,6 @@
 		C888FF6E1FCCCB92000F7738 /* StringPictMaker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C888FF6C1FCCCB92000F7738 /* StringPictMaker.xcdatamodeld */; };
 		C891DD701FC1BC1800C126BF /* ImageBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = C891DD6F1FC1BC1800C126BF /* ImageBoard.swift */; };
 		C891DD721FC4555F00C126BF /* MenuButtonActionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C891DD711FC4555F00C126BF /* MenuButtonActionController.swift */; };
-		C891DD741FC4649600C126BF /* MenuButtonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C891DD731FC4649600C126BF /* MenuButtonViewController.swift */; };
 		C891DD761FC46AEF00C126BF /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C891DD751FC46AEF00C126BF /* DataManager.swift */; };
 		C89E07101FC04C6E00C527BC /* ImageEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C89E070F1FC04C6E00C527BC /* ImageEditor.swift */; };
 		C8F22ED01FBC80BD00632109 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F22ECF1FBC80BD00632109 /* AppDelegate.swift */; };
@@ -47,7 +46,6 @@
 		C888FF6D1FCCCB92000F7738 /* StringPictMaker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = StringPictMaker.xcdatamodel; sourceTree = "<group>"; };
 		C891DD6F1FC1BC1800C126BF /* ImageBoard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageBoard.swift; sourceTree = "<group>"; };
 		C891DD711FC4555F00C126BF /* MenuButtonActionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuButtonActionController.swift; sourceTree = "<group>"; };
-		C891DD731FC4649600C126BF /* MenuButtonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuButtonViewController.swift; sourceTree = "<group>"; };
 		C891DD751FC46AEF00C126BF /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		C89E070F1FC04C6E00C527BC /* ImageEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageEditor.swift; sourceTree = "<group>"; };
 		C8F22ECC1FBC80BD00632109 /* StringPictMaker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StringPictMaker.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -120,7 +118,6 @@
 				C89E070F1FC04C6E00C527BC /* ImageEditor.swift */,
 				C891DD6F1FC1BC1800C126BF /* ImageBoard.swift */,
 				C891DD711FC4555F00C126BF /* MenuButtonActionController.swift */,
-				C891DD731FC4649600C126BF /* MenuButtonViewController.swift */,
 				C891DD751FC46AEF00C126BF /* DataManager.swift */,
 				C8F22ED31FBC80BD00632109 /* Main.storyboard */,
 				C888FF6C1FCCCB92000F7738 /* StringPictMaker.xcdatamodeld */,
@@ -288,7 +285,6 @@
 				C8F22ED21FBC80BD00632109 /* SplashController.swift in Sources */,
 				C8F22ED01FBC80BD00632109 /* AppDelegate.swift in Sources */,
 				C891DD721FC4555F00C126BF /* MenuButtonActionController.swift in Sources */,
-				C891DD741FC4649600C126BF /* MenuButtonViewController.swift in Sources */,
 				C82DFCDF1FBF0E3D00B65F92 /* ImageListController.swift in Sources */,
 				C888FF6E1FCCCB92000F7738 /* StringPictMaker.xcdatamodeld in Sources */,
 				C89E07101FC04C6E00C527BC /* ImageEditor.swift in Sources */,
