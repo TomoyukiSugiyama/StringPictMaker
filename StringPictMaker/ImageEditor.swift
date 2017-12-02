@@ -25,7 +25,9 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollVie
         
         //スクロールビューを設置
         scrollView = myScrollView()
-
+        let singleTap = UIPanGestureRecognizer(target:self, action:#selector(handlePanGesture))
+        singleTap.maximumNumberOfTouches = 1
+        scrollView.addGestureRecognizer(singleTap)
         scrollView.frame = CGRect(x:0,y:0,width:self.view.frame.width,height:self.view.frame.height)
         scrollView.center = self.view.center
         print("width:",self.view.frame.width,"height:",self.view.frame.height,"center:",self.view.center)
@@ -45,7 +47,7 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollVie
         
         imageView?.isUserInteractionEnabled = true
         //self.view.addSubview(imageView!)
-        imageView?.addGestureRecognizer(UIPanGestureRecognizer(target:self, action:#selector(handlePanGesture)))
+        //imageView?.addGestureRecognizer(UIPanGestureRecognizer(target:self, action:#selector(handlePanGesture)))
         scrollView.addSubview(imageView!)
         // menuボタンを生成
         // menuボタンにタッチイベントを追加
@@ -238,7 +240,7 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollVie
         
         //let singleTap = UIPanGestureRecognizer(target:self, action:#selector(handlePanGesture))
         //singleTap.maximumNumberOfTouches = 1
-        GPSlabel.addGestureRecognizer(UIPanGestureRecognizer(target:self, action:#selector(handlePanGesture)))
+        //GPSlabel.addGestureRecognizer(UIPanGestureRecognizer(target:self, action:#selector(handlePanGesture)))
         //GPSlabel.addGestureRecognizer(singleTap)
         // touchイベントの有効化
         GPSlabel.isUserInteractionEnabled = true
