@@ -29,8 +29,7 @@ class DataManager{
         case typeGPS = 1
         case typeScale
         case typeDUMMY
-    }
-    
+    }    
     let DUMMY:Int
     init() {
         // CoreData : 管理オブジェクトコンテキストを取得
@@ -152,7 +151,5 @@ class DataManager{
     func indexOf(id: Int) -> Int {
         print("DataManager - indexOf - id",id,"count",imageList.count)
         return imageList.index(where: { $0.id == id })!
-
     }
-    
 }

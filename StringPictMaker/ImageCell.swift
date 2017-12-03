@@ -37,9 +37,6 @@ class ImageCell: UICollectionViewCell {
         editButton?.frame = CGRect(x: 20, y: frame.height-40, width: frame.width-40, height: 20)
         editButton?.setTitle("EDIT", for: .normal)
         editButton?.setTitleColor(UIColor.blue, for: .normal)
-        self.contentView.addSubview(editButton!)
-        
+        self.contentView.addSubview(editButton!)        
      }
-    
-    
 }

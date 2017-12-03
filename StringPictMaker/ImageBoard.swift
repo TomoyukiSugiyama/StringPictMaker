@@ -94,7 +94,6 @@ class ImageBoard: UIViewController, CLLocationManagerDelegate{
             //myLocationManager.startUpdatingLocation()
             myLocationManager.requestLocation()
             //myLocationManager.stopUpdatingLocation()
-            
         }
      }
     // プライバシー設定

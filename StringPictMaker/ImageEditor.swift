@@ -12,6 +12,8 @@ import UIKit
 /// TODO:
 /// ＊再編集すると、スクロールが効かなくなる
 /// ＊編集し保存すると文字サイズ変更アイコンが残る
+/// ＊Image上のアイテムを選択したタイミングに、強調枠が表示されない
+/// ＊ディスプレイを反転した時の処理がない
 
 /// Imageを編集するためのコントローラー
 class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollViewDelegate{
@@ -302,7 +304,6 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollVie
                             self.clearEmphasisSelectedItem(selectedView: operateView)
                         }
                 }
-                
             }
             break
         case UIGestureRecognizerState.changed:
@@ -357,7 +358,6 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollVie
         // 拡大縮小されるたびに呼ばれる
         updateImageCenter()
     }
-    
     func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
     }
     // スクロールビュー上のviewサイズを変更した時、

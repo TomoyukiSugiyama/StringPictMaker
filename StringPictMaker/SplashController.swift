@@ -68,6 +68,5 @@ class SplashController: UIViewController {
             return .portrait
         }
     }
-
 }
 

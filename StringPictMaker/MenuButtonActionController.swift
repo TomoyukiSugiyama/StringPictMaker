@@ -180,8 +180,7 @@ class MenuButtonActionController: UIButton {
                         self.subButton_4.layer.position = self.getPosition(angle: -120, radius: radius)
                         self.subButton_5.layer.position = self.getPosition(angle: -150, radius: radius)
         }) { (Bool) -> Void in
-        }
-        
+        }        
     }
     /// サブメニューボタンイベント　選択されたサブメニューの番号を送信
     ///
