@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import CoreData
 
-/// 作成したイメージのリストを表示
+/// 作成したイメージのリストを表示するコントローラー
 class ImageListController: UIViewController, UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout{
     // カスタマイズしたCollectionView
     var myCollectionView : UICollectionView!

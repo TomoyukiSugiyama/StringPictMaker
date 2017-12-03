@@ -9,6 +9,10 @@
 import Foundation
 import UIKit
 
+/// TODO:
+/// ＊再編集すると、スクロールが効かなくなる
+/// ＊編集し保存すると文字サイズ変更アイコンが残る
+
 /// Imageを編集するためのコントローラー
 class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollViewDelegate{
     // delegate
@@ -19,7 +23,7 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollVie
     // MenuButtonActionControllerで選択されたサブメニューアイテムの番号を取得
     var selectedSubMenuItemState = 0
     // スクロールビューを生成
-    var scrollView: UIScrollView!
+    var scrollView: UIScrollView! = nil
     /// DataManagerのオブジェクトを生成し、CoreDataからデータを読み出す
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -146,6 +150,10 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollVie
                     print("ImageEditor - initView - tagGPS - view.tag:",view.tag)
                     let label = view as! UILabel
                     label.text = "現在位置"
+                    if(gpsTag <= (view.tag & ~0x3FF)){
+                        gpsTag += 1024
+                        print("ImageEditor - initVies - tag:",gpsTag)
+                    }
                  }else if view.tag == DataManager.TagIDs.typeDUMMY.rawValue {
                     
                 }
@@ -184,7 +192,6 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollVie
         let pointSize : CGFloat = 120
         let font = UIFont.boldSystemFont(ofSize: pointSize)
         let width = str2.size(withAttributes: [NSAttributedStringKey.font : font])
-        //let labelWidth : CGFloat = 375
         let labelWidth : CGFloat = 250
         print("ImageEditor - setGPSLabel");
         GPSlabel.font = UIFont.boldSystemFont(ofSize: pointSize * getScreenRatio() * labelWidth / width.width)
@@ -198,7 +205,7 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollVie
         /// TODO
         /// tagの値変更
         GPSlabel.tag = gpsTag + DataManager.TagIDs.typeGPS.rawValue
-        gpsTag += gpsTag
+        gpsTag += 1024
         // touchイベントの有効化
         GPSlabel.isUserInteractionEnabled = true
         self.imageView?.addSubview(GPSlabel)
@@ -258,28 +265,78 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollVie
             let location:CGPoint=sender.location(in: imageView)
             // タッチされた座標にあるサブビューを取得
             //let hitImageView:UIView? = self.imageView?.hitTest(location, with: UIEvent?)
-            print("ImageEditor - handlePanGesture - tag:",sender.view?.tag as Any)
+            print("ImageEditor - handlePanGesture - view.tag:",sender.view?.tag as Any)
             // タッチされた座標の位置を含むサブビューを取得
             for subview in (self.imageView?.subviews)! {
                 if (subview.frame.contains(location)) {
                     tagList.append(subview.tag)
-                    print("ImageEditor - handlePanGesture - tag:",subview.tag)
+                    print("ImageEditor - handlePanGesture - subview.tag:",subview.tag)
+                    /// TODO:
+                    /// タグの種類確認
+                    if(subview.tag != 0){
+                        // 選択されたアイテムを強調
+                        var operateView:UIView!
+                        operateView = (self.imageView?.viewWithTag(subview.tag))!
+                        self.emphasisSelectedItem(selectedView: operateView)
+                    }else{
+                        /// TODO:
+                    }
+                }else{
+                    var iconIsSelected:Bool = false
+                        for icon in subview.subviews{
+                            print("subview:",subview.frame,"icon:",icon.frame,"location:",location)
+                            var iconframe = icon.frame
+                            iconframe.origin.x += subview.frame.origin.x
+                            iconframe.origin.y += subview.frame.origin.y
+                            print("subview:",subview.frame,"iconframe:",iconframe,"location:",location)
+                            if(iconframe.contains(location)){
+                                tagList.append(icon.tag)
+                                print("ImageEditor - handlePanGesture - icon.tag:",icon.tag)
+                                iconIsSelected = true
+                            }
+                        }
+                        if(iconIsSelected == false){
+                            // 選択されたアイテムの強調を削除
+                            var operateView:UIView!
+                            operateView = (self.imageView?.viewWithTag(subview.tag))!
+                            self.clearEmphasisSelectedItem(selectedView: operateView)
+                        }
                 }
+                
             }
             break
         case UIGestureRecognizerState.changed:
             var operateView:UIView!
             //移動量を取得する。
             let move:CGPoint = sender.translation(in: self.imageView)
+            var iconIsSelected:Bool = false
             for tag:Int in tagList {
+                for subview in (self.imageView?.subviews)! {
+                    for icon in subview.subviews{
+                        //print("tag:",tag,icon.tag)
+                        if(tag  == icon.tag){
+                            //print("ImageEditor - handlePanGesture - subview.frame:",subview.frame)
+                            let moved = CGPoint(x: icon.center.x + move.x, y: icon.center.y)
+                            //print("ImageEditor - handlePanGesture - moved:",moved,"move:",move)
+                            self.resizeText(textLabel: subview as! UILabel, posX: icon.frame)
+                            icon.center = moved
+                            sender.setTranslation(CGPoint.zero, in: icon)
+                            iconIsSelected = true
+                        }
+                    }
+                }
+                if(iconIsSelected == false){
                 operateView = (self.imageView?.viewWithTag(tag))!
                 // 移動分を反映
                 let moved = CGPoint(x: operateView.center.x + move.x, y: operateView.center.y + move.y)
                 operateView.center = moved
                 sender.setTranslation(CGPoint.zero, in:operateView)
+                }
             }
             break
         case UIGestureRecognizerState.ended:
+            break
+        case UIGestureRecognizerState.cancelled:
             break
         default:
             break
@@ -338,7 +395,6 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollVie
         // タイトル, メッセージ, Alertのスタイルを指定する
         // 第3引数のpreferredStyleでアラートの表示スタイルを指定する
         let alert: UIAlertController = UIAlertController(title: "イメージ", message: "保存して終了しますか？", preferredStyle:  UIAlertControllerStyle.alert)
-        
         // Actionの設定
         // Action初期化時にタイトル, スタイル, 押された時に実行されるハンドラを指定する
         // 第3引数のUIAlertActionStyleでボタンのスタイルを指定する
@@ -396,7 +452,62 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollVie
         // Alertを表示
         present(alert, animated: true, completion: nil)
     }
+    /// 選択されたアイテムを強調
+    /// 拡大・縮小アイコンを追加
+    ///
+    /// - Parameter selectedView: 選択されたアイテム
+    func emphasisSelectedItem(selectedView:UIView){
+        if(selectedView.subviews.count == 0){
+            selectedView.layer.borderColor = UIColor.red.cgColor
+            selectedView.layer.borderWidth = 4
+            //print("ImageEditor - emphasisSelectedItem - selectedView.frame:",selectedView.frame)
+            //print("ImageEditor - emphasisSelectedItem - selectedView.frame.origin:",selectedView.frame.origin)
+            //print("ImageEditor - emphasisSelectedItem - selectedView.center:",selectedView.center)
+            let iconSize:CGFloat = 40.0
+            let posX = selectedView.frame.width + iconSize / 2
+            let posY = selectedView.frame.height / 2 - iconSize / 2
+            let scaleButton = UIButton(frame:CGRect(x:posX,y:posY,width:iconSize,height:iconSize))
+            //print("ImageEditor - emphasisSelectedItem - scaleButton.frame:",scaleButton.frame)
+            scaleButton.backgroundColor = UIColor.blue
+            scaleButton.setTitle("↔︎", for: .normal)
+            scaleButton.tag = selectedView.tag & ~0x3FF + DataManager.TagIDs.typeScale.rawValue
+            print("ImageEditor - emphasisSelectedItem - tag:",scaleButton.tag)
+            selectedView.addSubview(scaleButton)
+        }
+    }
+    /// 選択されたアイテムの強調を削除
+    /// 拡大・縮小アイコンを削除
+    ///
+    /// - Parameter selectedView: 選択されたアイテム
+    func clearEmphasisSelectedItem(selectedView:UIView){
+        selectedView.layer.borderColor = UIColor.clear.cgColor
+        selectedView.layer.borderWidth = 4
+        for v in selectedView.subviews {
+            // オブジェクトの型がUIImageView型で、タグ番号が1〜5番のオブジェクトを取得する
+            //if let v = v as? UIImageView, v.tag >= 1 && v.tag <= 5  {
+                // そのオブジェクトを親のviewから取り除く
+                v.removeFromSuperview()
+            //}
+        }
+        
+    }
+    /// テキストの幅を調整
+    ///
+    /// - Parameters:
+    ///   - textLabel: 調整したいテキスト
+    ///   - posX: テキストの左上の座標を(0,0)とした時の、調整後の右上のx座標
+    func resizeText(textLabel:UILabel,posX:CGRect){
+        let margine:CGFloat = 20.0
+        let width = posX.origin.x - margine
+        let refPointSize: CGFloat = 100.0
+        let refFont = UIFont.boldSystemFont(ofSize: refPointSize)
+        let refWidth = textLabel.text?.size(withAttributes: [NSAttributedStringKey.font : refFont])
+        textLabel.font = UIFont.boldSystemFont(ofSize: refPointSize * width / (refWidth?.width)! )
+        // 文字サイズに合わせてラベルのサイズを調整する
+        textLabel.sizeToFit()
+     }
 }
+
 // MARK: - 以前のViewControllerのインスタンスを取得
 public extension UIViewController
 {
