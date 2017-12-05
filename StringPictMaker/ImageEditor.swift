@@ -26,6 +26,25 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollVie
     var selectedSubMenuItemState = 0
     // スクロールビューを生成
     var scrollView: UIScrollView! = nil
+    // ツールバーを生成
+    var myToolbar: UIToolbar! = nil
+    // ツールバーのアイテム
+    struct ToolBarItem {
+        var title: [String]
+        //var item: [UIBarButtonItem]
+    }
+    var toolBar: [[UIBarButtonItem]]! = nil
+    var myUIBarButtonGreen: UIBarButtonItem? = nil
+    var myUIBarButtonBlue: UIBarButtonItem? = nil
+    var myUIBarButtonRed: UIBarButtonItem? = nil
+    var myUIBarItemSpace100: UIBarButtonItem? = nil
+    var myUIBarButtonCancel: UIBarButtonItem? = nil
+    var myUIBarItemSpace20: UIBarButtonItem? = nil
+    var myUIBarButtonSave: UIBarButtonItem? = nil
+    var myUIBarButtonColorPalet: UIBarButtonItem? = nil
+    var myUIBarButtonFontSeloctor: UIBarButtonItem? = nil
+    
+    var fontPickerView: FontPickerViewController!
     /// DataManagerのオブジェクトを生成し、CoreDataからデータを読み出す
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -79,7 +98,7 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollVie
         /************************************/
         //  テストコード↓
         /************************************/
-        var myToolbar: UIToolbar!
+        initToolBarItem()
         // ツールバーのサイズを決定
         myToolbar = UIToolbar(frame: CGRect(x:0, y:self.view.bounds.size.height - 44, width:self.view.bounds.size.width, height:40.0))
         // ツールバーの位置を決定
@@ -89,32 +108,15 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollVie
         myToolbar.tintColor = UIColor.white
         //myToolbar.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
         myToolbar.backgroundColor = UIColor.lightGray.withAlphaComponent(0.50)
-        // ボタン１を生成
-        let myUIBarButtonGreen: UIBarButtonItem = UIBarButtonItem(title: "Green", style:.plain, target: self, action: #selector(onClickBarButton))
-        myUIBarButtonGreen.tag = 1
-        // ボタン２を生成
-        let myUIBarButtonBlue: UIBarButtonItem = UIBarButtonItem(title: "Yellow", style:.plain, target: self, action: #selector(onClickBarButton))
-        myUIBarButtonBlue.tag = 2
-        // ボタン3を生成
-        let myUIBarButtonRed: UIBarButtonItem = UIBarButtonItem(title: "Red", style:.plain, target: self, action: #selector(onClickBarButton))
-        myUIBarButtonRed.tag = 3
-        // スペースを確保
-        let myUIBarItemSpace: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
-        myUIBarItemSpace.width = 100
-        // ボタン4を生成
-        let myUIBarButtonCancel: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(onClickBarButton))
-        myUIBarButtonCancel.tag = 4
-        // スペースを確保
-        let myUIBarItemSpace2: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
-        myUIBarItemSpace2.width = 20
-        // ボタン5を生成
-        let myUIBarButtonSave: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(onClickBarButton))
-        myUIBarButtonSave.tag = 5
         // ボタンをツールバーに入れる.
-        myToolbar.items = [myUIBarButtonGreen, myUIBarButtonBlue, myUIBarButtonRed,myUIBarItemSpace,myUIBarButtonCancel,myUIBarItemSpace2,myUIBarButtonSave]
+        myToolbar.items = toolBar[0]
         // ツールバーに追加する.
         self.view.addSubview(myToolbar)
         //scrollView.addSubview(myToolbar)
+        
+        
+        fontPickerView = FontPickerViewController(frame: self.view.frame)
+        self.view.addSubview(fontPickerView)
         /************************************/
         //  テストコード↑
         /************************************/
@@ -162,11 +164,41 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollVie
             }
         }
     }
+    func initToolBarItem(){
+        self.toolBar = [[UIBarButtonItem]]()
+        myUIBarButtonGreen = UIBarButtonItem(title: "Green", style:.plain, target: self, action: #selector(onClickBarButton))
+        myUIBarButtonGreen?.tag = 1
+        myUIBarButtonBlue = UIBarButtonItem(title: "Yellow", style:.plain, target: self, action: #selector(onClickBarButton))
+        myUIBarButtonBlue?.tag = 2
+        myUIBarButtonRed = UIBarButtonItem(title: "Red", style:.plain, target: self, action: #selector(onClickBarButton))
+        myUIBarButtonRed?.tag = 3
+        myUIBarItemSpace100 = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
+        myUIBarItemSpace100?.width = 100
+        myUIBarButtonCancel = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(onClickBarButton))
+        myUIBarButtonCancel?.tag = 4
+        myUIBarItemSpace20 = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
+        myUIBarItemSpace20?.width = 20
+        myUIBarButtonSave = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(onClickBarButton))
+        myUIBarButtonSave?.tag = 5
+        myUIBarButtonColorPalet = UIBarButtonItem(title: "Color", style:.plain, target: self,action:#selector(onClickBarButton))
+        myUIBarButtonColorPalet?.tag = 6
+        myUIBarButtonFontSeloctor = UIBarButtonItem(title: "Font", style:.plain, target: self,action:#selector(onClickBarButton))
+        myUIBarButtonFontSeloctor?.tag = 7
+        
+        self.toolBar.append([myUIBarButtonGreen!,myUIBarButtonBlue!,myUIBarButtonRed!,myUIBarItemSpace100!,myUIBarButtonCancel!,myUIBarItemSpace20!,myUIBarButtonSave!])
+        self.toolBar.append([myUIBarButtonGreen!,myUIBarButtonBlue!,myUIBarButtonRed!,myUIBarItemSpace100!,myUIBarButtonCancel!,myUIBarItemSpace20!,myUIBarButtonSave!])
+        self.toolBar.append([myUIBarButtonColorPalet!,myUIBarButtonFontSeloctor!,myUIBarItemSpace100!,myUIBarItemSpace100!,myUIBarButtonCancel!,myUIBarItemSpace20!,myUIBarButtonSave!])
+        
+        
+        print("ImageEditor - initToolBarItem - toolBar[0]:",toolBar[0])
+        
+    }
     /// 選択されたサブメニューを取得
     func selectedSubMenu(state: Int) {
         if state == 1{
             selectedSubMenuItemState = 1
             setGPSLabel()
+            myToolbar.items = toolBar[2]
         }else if state == 2{
             selectedSubMenuItemState = 2
             setColor()
@@ -236,6 +268,7 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollVie
     @objc func onClickBarButton(sender: UIBarButtonItem) {
         switch sender.tag {
         case 1:
+            //myToolbar.items = [myUIBarButtonGreen, myUIBarButtonBlue, myUIBarButtonRed,myUIBarItemSpace,myUIBarButtonCancel,myUIBarItemSpace2,myUIBarButtonSave]
             self.imageView?.backgroundColor = UIColor.green
         case 2:
             self.imageView?.backgroundColor = UIColor.yellow
@@ -248,11 +281,42 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollVie
             // CoreDataを更新
             print("ImageEditor - onClickBarButton - save:",self.delegateParamId)
             self.dispSaveAlert()
- 
+        case 6:
+            displayColorPalet()
+        case 7:
+            displayFontSelector()
         default:
             print("ImageEditor - onClickBarButton - error")
         }
     }
+    func displayColorPalet(){
+        print("ImageEditor - displayColorPalet")
+    }
+    
+    func displayFontSelector(){
+        print("ImageEditor - displayFontSelector")
+    }
+    /*
+    //ピッカーに表示される配列の値です
+    
+    var Arr: [String] = ["date1" ,"date2","date3"]
+    //配列の値に対して指定するフォント名です
+    //suusikiというフォントは外部から持ってきたフォントのため勝手に反映はされませぬ
+    //DBLCDTempBlackとMarkerFelt-Thinは勝手に反映されます
+    var fontArray = ["suusiki","DBLCDTempBlack","MarkerFelt-Thin"]
+    //fontを変える
+    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView{
+    // 表示するラベルを生成する
+    let label = UILabel(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 50))
+    
+    //ラベルをセンターにします
+    label.textAlignment = .center   //ラベルのテキスト（値）に配列の値を指定します
+    label.text = Arr[row]   //ラベルのテキストのフォントにフォントを入れた配列の値を指定します
+    label.font = UIFont(name: fontArray[row],size:20)
+    // リターンでラベルを返す
+    return label
+    }
+    */
     /// TODO:
     /// Imageを編集し保存後、再編集するとTagの番号が誤って追加される
     /// タッチした座標にあるimageView上のアイテムを管理
