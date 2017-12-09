@@ -115,8 +115,7 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollVie
         //scrollView.addSubview(myToolbar)
         
         
-        fontPickerView = FontPickerViewController(frame: self.view.frame)
-        self.view.addSubview(fontPickerView)
+        
         /************************************/
         //  テストコード↑
         /************************************/
@@ -294,6 +293,17 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollVie
     }
     
     func displayFontSelector(){
+        //fontPickerView = FontPickerViewController(frame: self.view.frame)
+        //self.view.addSubview(fontPickerView)
+        fontPickerView = FontPickerViewController()
+//        fontPickerView.view.frame = CGRect(x:0,y:self.view.frame.height/2,width:self.view.frame.width,height:self.view.frame.height/2)
+//        fontPickerView.view.backgroundColor = UIColor.clear
+        self.view.addSubview(fontPickerView.view)
+        self.addChildViewController(fontPickerView)
+        
+        
+        fontPickerView.didMove(toParentViewController: self)
+        
         print("ImageEditor - displayFontSelector")
     }
     /*
