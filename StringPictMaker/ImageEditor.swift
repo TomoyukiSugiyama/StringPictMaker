@@ -16,7 +16,7 @@ import UIKit
 /// ＊ディスプレイを反転した時の処理がない
 
 /// Imageを編集するためのコントローラー
-class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollViewDelegate{
+class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,UIToolbarDelegate,UIScrollViewDelegate{
     // delegate
     // ImageListControllerから選択されたセルのid、imageView/Dataを取得
     var delegateParamId: Int = 0
@@ -43,7 +43,7 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollVie
     var myUIBarButtonSave: UIBarButtonItem? = nil
     var myUIBarButtonColorPalet: UIBarButtonItem? = nil
     var myUIBarButtonFontSeloctor: UIBarButtonItem? = nil
-    
+    // ピッカービューを生成
     var fontPickerView: FontPickerViewController!
     /// DataManagerのオブジェクトを生成し、CoreDataからデータを読み出す
     override func viewDidLoad() {
@@ -98,7 +98,7 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollVie
         /************************************/
         //  テストコード↓
         /************************************/
-        initToolBarItem()
+        self.initToolBarItem()
         // ツールバーのサイズを決定
         myToolbar = UIToolbar(frame: CGRect(x:0, y:self.view.bounds.size.height - 44, width:self.view.bounds.size.width, height:40.0))
         // ツールバーの位置を決定
@@ -113,9 +113,6 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollVie
         // ツールバーに追加する.
         self.view.addSubview(myToolbar)
         //scrollView.addSubview(myToolbar)
-        
-        
-        
         /************************************/
         //  テストコード↑
         /************************************/
@@ -163,6 +160,7 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollVie
             }
         }
     }
+    /// ツールバーのアイテムを初期化
     func initToolBarItem(){
         self.toolBar = [[UIBarButtonItem]]()
         myUIBarButtonGreen = UIBarButtonItem(title: "Green", style:.plain, target: self, action: #selector(onClickBarButton))
@@ -183,34 +181,35 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollVie
         myUIBarButtonColorPalet?.tag = 6
         myUIBarButtonFontSeloctor = UIBarButtonItem(title: "Font", style:.plain, target: self,action:#selector(onClickBarButton))
         myUIBarButtonFontSeloctor?.tag = 7
-        
+        // 選択されたサブメニュー毎のアイテムを設定
         self.toolBar.append([myUIBarButtonGreen!,myUIBarButtonBlue!,myUIBarButtonRed!,myUIBarItemSpace100!,myUIBarButtonCancel!,myUIBarItemSpace20!,myUIBarButtonSave!])
         self.toolBar.append([myUIBarButtonGreen!,myUIBarButtonBlue!,myUIBarButtonRed!,myUIBarItemSpace100!,myUIBarButtonCancel!,myUIBarItemSpace20!,myUIBarButtonSave!])
         self.toolBar.append([myUIBarButtonColorPalet!,myUIBarButtonFontSeloctor!,myUIBarItemSpace100!,myUIBarItemSpace100!,myUIBarButtonCancel!,myUIBarItemSpace20!,myUIBarButtonSave!])
-        
-        
-        print("ImageEditor - initToolBarItem - toolBar[0]:",toolBar[0])
-        
+        print("ImageEditor - initToolBarItem")
     }
     /// 選択されたサブメニューを取得
-    func selectedSubMenu(state: Int) {
-        if state == 1{
+    func selectedSubMenu(state: DataManager.MenuTypes) {
+        if state == DataManager.MenuTypes.typeGPS{
             selectedSubMenuItemState = 1
             setGPSLabel()
             myToolbar.items = toolBar[2]
-        }else if state == 2{
+        }else if state == DataManager.MenuTypes.typeColor{
             selectedSubMenuItemState = 2
             setColor()
-        }else if state == 3{
+        }else if state == DataManager.MenuTypes.typeImage{
             selectedSubMenuItemState = 3
             setImage()
-        }else if state == 4{
+        }else if state == DataManager.MenuTypes.typeTime{
             selectedSubMenuItemState = 4
             setTime()
-        }else if state == 5{
+        }else if state == DataManager.MenuTypes.typePen{
             selectedSubMenuItemState = 5
             setPen()
         }
+    }
+    
+    func selectedFont(state: UILabel){
+        print("ImageEditor - selectedFont - font:",state.font)
     }
     /// TODO:
     /// Imageを編集し保存後、再編集するとTagの番号が誤って追加される
@@ -235,7 +234,7 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollVie
         GPSlabel.sizeToFit()
         // ラベルをviewの中心に移動
         GPSlabel.center = self.view.center
-        /// TODO
+        /// TODO:
         /// tagの値変更
         GPSlabel.tag = gpsTag + DataManager.TagIDs.typeGPS.rawValue
         gpsTag += 1024
@@ -288,45 +287,19 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollVie
             print("ImageEditor - onClickBarButton - error")
         }
     }
+    /// カラーパレットを表示
     func displayColorPalet(){
         print("ImageEditor - displayColorPalet")
     }
-    
+    /// 文字フォントを選択するピッカーを表示
     func displayFontSelector(){
-        //fontPickerView = FontPickerViewController(frame: self.view.frame)
-        //self.view.addSubview(fontPickerView)
         fontPickerView = FontPickerViewController()
-//        fontPickerView.view.frame = CGRect(x:0,y:self.view.frame.height/2,width:self.view.frame.width,height:self.view.frame.height/2)
-//        fontPickerView.view.backgroundColor = UIColor.clear
+        fontPickerView.delegate = self
         self.view.addSubview(fontPickerView.view)
         self.addChildViewController(fontPickerView)
-        
-        
         fontPickerView.didMove(toParentViewController: self)
-        
         print("ImageEditor - displayFontSelector")
     }
-    /*
-    //ピッカーに表示される配列の値です
-    
-    var Arr: [String] = ["date1" ,"date2","date3"]
-    //配列の値に対して指定するフォント名です
-    //suusikiというフォントは外部から持ってきたフォントのため勝手に反映はされませぬ
-    //DBLCDTempBlackとMarkerFelt-Thinは勝手に反映されます
-    var fontArray = ["suusiki","DBLCDTempBlack","MarkerFelt-Thin"]
-    //fontを変える
-    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView{
-    // 表示するラベルを生成する
-    let label = UILabel(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 50))
-    
-    //ラベルをセンターにします
-    label.textAlignment = .center   //ラベルのテキスト（値）に配列の値を指定します
-    label.text = Arr[row]   //ラベルのテキストのフォントにフォントを入れた配列の値を指定します
-    label.font = UIFont(name: fontArray[row],size:20)
-    // リターンでラベルを返す
-    return label
-    }
-    */
     /// TODO:
     /// Imageを編集し保存後、再編集するとTagの番号が誤って追加される
     /// タッチした座標にあるimageView上のアイテムを管理
@@ -338,7 +311,7 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollVie
         switch sender.state {
         case UIGestureRecognizerState.began:
             tagList.removeAll()
-            let location:CGPoint=sender.location(in: imageView)
+            let location:CGPoint = sender.location(in: imageView)
             // タッチされた座標にあるサブビューを取得
             //let hitImageView:UIView? = self.imageView?.hitTest(location, with: UIEvent?)
             print("ImageEditor - handlePanGesture - view.tag:",sender.view?.tag as Any)
@@ -415,7 +388,6 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollVie
             break
         default:
             break
-            
         }
     }
     /// ズーム機能を追加するviewをimageViewに設定
@@ -482,8 +454,7 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollVie
             let prevVC = self.getPreviousViewController() as! ImageListController
             prevVC.updateView()
             self.navigationController?.setNavigationBarHidden(false, animated: false)
-            self.navigationController?.popViewController(animated: true)
-            
+            self.navigationController?.popViewController(animated: true)            
         })
         // キャンセルボタン
         let cancelAction: UIAlertAction = UIAlertAction(title: "キャンセル", style: UIAlertActionStyle.cancel, handler:{
@@ -580,6 +551,21 @@ class ImageEditor: UIViewController, ViewDelegate, UIToolbarDelegate,UIScrollVie
         // 文字サイズに合わせてラベルのサイズを調整する
         textLabel.sizeToFit()
      }
+    /// コンテナをスーパービューに追加
+    func displayContentController(content:UIViewController, container:UIView){
+        print("ImageEditor - displayContentController")
+        addChildViewController(content)
+        content.view.frame = container.bounds
+        container.addSubview(content.view)
+        content.didMove(toParentViewController: self)
+    }
+    /// コンテナをスーパービューから削除
+    func hideContentController(content:UIViewController){
+        print("ImageEditor - hideContentController")
+        content.willMove(toParentViewController: self)
+        content.view.removeFromSuperview()
+        content.removeFromParentViewController()
+    }
 }
 
 // MARK: - 以前のViewControllerのインスタンスを取得

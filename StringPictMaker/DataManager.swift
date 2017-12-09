@@ -29,7 +29,16 @@ class DataManager{
         case typeGPS = 1
         case typeScale
         case typeDUMMY
-    }    
+    }
+    // Viewにセットするtagの種類を管理
+    enum MenuTypes : Int{
+        case typeGPS = 1
+        case typeColor
+        case typeImage
+        case typeTime
+        case typePen
+        case typeDUMMY
+    }
     let DUMMY:Int
     init() {
         // CoreData : 管理オブジェクトコンテキストを取得

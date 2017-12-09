@@ -10,9 +10,9 @@ import Foundation
 import UIKit
 
 /// 選択されたサブメニューの番号をImageEditorに送付するデリゲートメソッド
-protocol ViewDelegate {
+protocol SubMenuDelegate {
     // デリゲートメソッド定義
-    func selectedSubMenu(state:Int)
+    func selectedSubMenu(state:DataManager.MenuTypes)
 }
 
 /// CustomButton Class (Menu/Sub Menu Button)
@@ -82,7 +82,7 @@ class MenuButtonActionController: UIButton {
         }){ (Bool) -> Void in
         }
     }
-    var delegate: ViewDelegate?
+    var delegate: SubMenuDelegate?
     // subボタン(飛び出すボタン)を生成
     var subButton_1: UIButton = UIButton()
     var subButton_2: UIButton = UIButton()
@@ -190,23 +190,23 @@ class MenuButtonActionController: UIButton {
         switch(sender.tag) {
         case 1:
             // デリゲートメソッドを呼出
-            self.delegate?.selectedSubMenu(state: 1)
+            self.delegate?.selectedSubMenu(state: DataManager.MenuTypes.typeGPS)
             fadeAnimation()
         case 2:
             // デリゲートメソッドを呼出(処理をデリゲートインスタンスに委譲)
-            self.delegate?.selectedSubMenu(state: 2)
+            self.delegate?.selectedSubMenu(state: DataManager.MenuTypes.typeColor)
             fadeAnimation()
         case 3:
             // デリゲートメソッドを呼出(処理をデリゲートインスタンスに委譲)
-            self.delegate?.selectedSubMenu(state: 3)
+            self.delegate?.selectedSubMenu(state: DataManager.MenuTypes.typeImage)
             fadeAnimation()
         case 4:
             // デリゲートメソッドを呼出(処理をデリゲートインスタンスに委譲)
-            self.delegate?.selectedSubMenu(state: 4)
+            self.delegate?.selectedSubMenu(state: DataManager.MenuTypes.typePen)
             fadeAnimation()
         case 5:
             // デリゲートメソッドを呼出(処理をデリゲートインスタンスに委譲)
-            self.delegate?.selectedSubMenu(state: 5)
+            self.delegate?.selectedSubMenu(state: DataManager.MenuTypes.typeTime)
             fadeAnimation()
         default: break
         }
