@@ -22,6 +22,7 @@
 		C8F22EDD1FBC80BD00632109 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C8F22EDB1FBC80BD00632109 /* LaunchScreen.storyboard */; };
 		C8F22EE81FBC80BD00632109 /* StringPictMakerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F22EE71FBC80BD00632109 /* StringPictMakerTests.swift */; };
 		C8F22EF31FBC80BD00632109 /* StringPictMakerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F22EF21FBC80BD00632109 /* StringPictMakerUITests.swift */; };
+		C8F75AE11FDC41BC006FA649 /* ColorPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F75AE01FDC41BC006FA649 /* ColorPickerViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +64,7 @@
 		C8F22EEE1FBC80BD00632109 /* StringPictMakerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StringPictMakerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C8F22EF21FBC80BD00632109 /* StringPictMakerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringPictMakerUITests.swift; sourceTree = "<group>"; };
 		C8F22EF41FBC80BD00632109 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C8F75AE01FDC41BC006FA649 /* ColorPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPickerViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +124,7 @@
 				C891DD711FC4555F00C126BF /* MenuButtonActionController.swift */,
 				C891DD751FC46AEF00C126BF /* DataManager.swift */,
 				C8B59D831FD6DB4500DCB67B /* FontPickerViewController.swift */,
+				C8F75AE01FDC41BC006FA649 /* ColorPickerViewController.swift */,
 				C8F22ED31FBC80BD00632109 /* Main.storyboard */,
 				C888FF6C1FCCCB92000F7738 /* StringPictMaker.xcdatamodeld */,
 				C8F22ED91FBC80BD00632109 /* Assets.xcassets */,
@@ -287,6 +290,7 @@
 				C891DD761FC46AEF00C126BF /* DataManager.swift in Sources */,
 				C8F22ED21FBC80BD00632109 /* SplashController.swift in Sources */,
 				C8F22ED01FBC80BD00632109 /* AppDelegate.swift in Sources */,
+				C8F75AE11FDC41BC006FA649 /* ColorPickerViewController.swift in Sources */,
 				C891DD721FC4555F00C126BF /* MenuButtonActionController.swift in Sources */,
 				C8B59D841FD6DB4500DCB67B /* FontPickerViewController.swift in Sources */,
 				C82DFCDF1FBF0E3D00B65F92 /* ImageListController.swift in Sources */,

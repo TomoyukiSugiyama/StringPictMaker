@@ -1,37 +1,33 @@
 //
-//  FontPickerViewController.swift
+//  ColorPickerViewController.swift
 //  StringPictMaker
 //
-//  Created by 杉山智之 on 2017/12/05.
+//  Created by 杉山智之 on 2017/12/10.
 //  Copyright © 2017年 杉山智之. All rights reserved.
 //
 
 import Foundation
 import UIKit
-
-/// 選択されたフォントをImageEditorに送付するデリゲートメソッド
-protocol FontPickerDelegate {
+/// 選択された色をImageEditorに送付するデリゲートメソッド
+protocol ColorPickerDelegate {
     // デリゲートメソッド定義
-    func selectedFont(state:UILabel)
+    func selectedColor(state:UIColor)
 }
-class FontPickerViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource{
+class ColorPickerViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource{
+    var delegate : ColorPickerDelegate!
     // UIPickerViewの変数の宣言
     var picker: UIPickerView!
-    // delegate
-    //var testLabel: UILabel!
-    var delegate : FontPickerDelegate!
-    // 表示するデータの配列
-    var dataArray = ["Font 1","Font 2","Font 3","Font 4","Font 5",
-                     "Font 6","Font 7","Font 8","Font 9","Font 10"]
-    var fontArray = ["Zapfino","DBLCDTempBlack","MarkerFelt-Thin","Academy Engraved LET","Al Nile",
-                     "American Typewriter","Apple Color Emoji","Apple SD Gothic Neo","Arial","Arial Hebrew"]
+   // 表示するデータの配列
+    var dataArray = ["Black","White","Blue","Yellow","Red",
+                     "Green","Gray","Orange","Purple","Brown"]
+    var colorArray = [UIColor.black,UIColor.white,UIColor.blue,UIColor.yellow,UIColor.red,
+                      UIColor.green,UIColor.gray,UIColor.orange,UIColor.purple,UIColor.brown]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("FontPickerViewController - viewDidLoad - frame:",self.view.frame)
         self.view.frame = CGRect(x:0,y:self.view.frame.height - 150 - 40,width:self.view.frame.width,height:150)
-        print("FontPickerViewController - viewDidLoad - frame:",self.view.frame)
+        print("ColorPickerViewController - viewDidLoad - frame:",self.view.frame)
         self.view.backgroundColor = UIColor.black
-        //self.view.frame = CGRect(x:0,y:self.view.frame.height - 100 - 4,width:self.view.frame.width,height:100.0)
         // toolbarを追加
         let toolbar = UIToolbar(frame: CGRect(x:0, y:0, width:self.view.frame.width, height:35))
         let doneItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(done))
@@ -50,7 +46,7 @@ class FontPickerViewController: UIViewController, UIPickerViewDelegate, UIPicker
         // dataSourceの設定
         picker.dataSource = self
         self.view.addSubview(picker)
-        print("FontPickerViewController")
+        print("ColorPickerViewController")
     }
     // PickerViewの個数
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -61,38 +57,27 @@ class FontPickerViewController: UIViewController, UIPickerViewDelegate, UIPicker
         return dataArray.count
     }
     // 表示する値
-//    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
-        // 表示するラベルを生成する
-        let label = UILabel(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 50))
-        label.textAlignment = .center
-        label.text = dataArray[row]
-        label.font = UIFont(name: fontArray[row],size:16)
-        return label
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return dataArray[row]
     }
     // 選択された時
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        // 表示するラベルを生成する
-        let label = UILabel(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 50))
-        label.textAlignment = .center
-        label.text = dataArray[row]
-        label.font = UIFont(name: fontArray[row],size:16)
-        self.delegate?.selectedFont(state: label)
+        delegate?.selectedColor(state: colorArray[row])
         print("value : \(dataArray[row])")
     }
     // toolbarのキャンセルを選択
     @objc func cancel(){
-        print("FontPickerViewController - cancel")
+        print("ColorPickerViewController - cancel")
         hideContentController(content: self)
     }
     // toolbarの完了を選択
     @objc func done(){
-        print("FontPickerViewController - done")
+        print("ColorPickerViewController - done")
         hideContentController(content: self)
     }
     /// コンテナをスーパービューに追加
     func displayContentController(content:UIViewController, container:UIView){
-        print("FontPickerViewController - displayContentController")
+        print("ColorPickerViewController - displayContentController")
         addChildViewController(content)
         content.view.frame = container.bounds
         container.addSubview(content.view)
@@ -100,7 +85,7 @@ class FontPickerViewController: UIViewController, UIPickerViewDelegate, UIPicker
     }
     /// コンテナをスーパービューから削除
     func hideContentController(content:UIViewController){
-        print("FontPickerViewController - hideContentController")
+        print("ColorPickerViewController - hideContentController")
         content.willMove(toParentViewController: self)
         content.view.removeFromSuperview()
         content.removeFromParentViewController()
