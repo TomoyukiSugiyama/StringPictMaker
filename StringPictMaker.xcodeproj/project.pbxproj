@@ -23,6 +23,7 @@
 		C8F22EE81FBC80BD00632109 /* StringPictMakerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F22EE71FBC80BD00632109 /* StringPictMakerTests.swift */; };
 		C8F22EF31FBC80BD00632109 /* StringPictMakerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F22EF21FBC80BD00632109 /* StringPictMakerUITests.swift */; };
 		C8F75AE11FDC41BC006FA649 /* ColorPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F75AE01FDC41BC006FA649 /* ColorPickerViewController.swift */; };
+		C8F75AE31FDCC7FB006FA649 /* LayerPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F75AE21FDCC7FB006FA649 /* LayerPickerViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +66,7 @@
 		C8F22EF21FBC80BD00632109 /* StringPictMakerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringPictMakerUITests.swift; sourceTree = "<group>"; };
 		C8F22EF41FBC80BD00632109 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C8F75AE01FDC41BC006FA649 /* ColorPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPickerViewController.swift; sourceTree = "<group>"; };
+		C8F75AE21FDCC7FB006FA649 /* LayerPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayerPickerViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,12 +121,13 @@
 				C8F22ED11FBC80BD00632109 /* SplashController.swift */,
 				C82DFCDE1FBF0E3D00B65F92 /* ImageListController.swift */,
 				C82DFCE01FBFB98C00B65F92 /* ImageCell.swift */,
-				C89E070F1FC04C6E00C527BC /* ImageEditor.swift */,
 				C891DD6F1FC1BC1800C126BF /* ImageBoard.swift */,
+				C89E070F1FC04C6E00C527BC /* ImageEditor.swift */,
 				C891DD711FC4555F00C126BF /* MenuButtonActionController.swift */,
-				C891DD751FC46AEF00C126BF /* DataManager.swift */,
 				C8B59D831FD6DB4500DCB67B /* FontPickerViewController.swift */,
 				C8F75AE01FDC41BC006FA649 /* ColorPickerViewController.swift */,
+				C8F75AE21FDCC7FB006FA649 /* LayerPickerViewController.swift */,
+				C891DD751FC46AEF00C126BF /* DataManager.swift */,
 				C8F22ED31FBC80BD00632109 /* Main.storyboard */,
 				C888FF6C1FCCCB92000F7738 /* StringPictMaker.xcdatamodeld */,
 				C8F22ED91FBC80BD00632109 /* Assets.xcassets */,
@@ -286,6 +289,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C8F75AE31FDCC7FB006FA649 /* LayerPickerViewController.swift in Sources */,
 				C891DD701FC1BC1800C126BF /* ImageBoard.swift in Sources */,
 				C891DD761FC46AEF00C126BF /* DataManager.swift in Sources */,
 				C8F22ED21FBC80BD00632109 /* SplashController.swift in Sources */,

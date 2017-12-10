@@ -14,6 +14,8 @@ import UIKit
 /// ＊編集し保存すると文字サイズ変更アイコンが残る
 /// ＊Image上のアイテムを選択したタイミングに、強調枠が表示されない
 /// ＊ディスプレイを反転した時の処理がない
+/// ＊Imageを縮小して保存した後、ImageBoardで見ると、縮小されたままになる
+/// 　→frameのサイズが変更されるため
 
 /// Imageを編集するためのコントローラー
 class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPickerDelegate,UIToolbarDelegate,UIScrollViewDelegate{
@@ -39,6 +41,8 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
     var fontPickerView: FontPickerViewController!
     // カラーのピッカービューを生成
     var colorPickerView: ColorPickerViewController!
+    // レイヤーのピッカービューを生成
+    var layerPickerView: LayerPickerViewController!
     /// DataManagerのオブジェクトを生成し、CoreDataからデータを読み出す
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -165,6 +169,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
         var myUIBarButtonSave: UIBarButtonItem? = nil
         var myUIBarButtonColorPalet: UIBarButtonItem? = nil
         var myUIBarButtonFontSeloctor: UIBarButtonItem? = nil
+        var myUIBarButtonLayerSeloctor: UIBarButtonItem? = nil
         self.toolBar = [[UIBarButtonItem]]()
         myUIBarButtonGreen = UIBarButtonItem(title: "Green", style:.plain, target: self, action: #selector(onClickBarButton))
         myUIBarButtonGreen?.tag = 1
@@ -184,12 +189,15 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
         myUIBarButtonColorPalet?.tag = 6
         myUIBarButtonFontSeloctor = UIBarButtonItem(title: "Font", style:.plain, target: self,action:#selector(onClickBarButton))
         myUIBarButtonFontSeloctor?.tag = 7
+        myUIBarButtonLayerSeloctor = UIBarButtonItem(title: "Layer", style:.plain, target: self,action:#selector(onClickBarButton))
+        myUIBarButtonLayerSeloctor?.tag = 8
         // 選択されたサブメニュー毎のアイテムを設定
         self.toolBar.append([myUIBarButtonGreen!,myUIBarButtonBlue!,myUIBarButtonRed!,myUIBarItemSpace100!,myUIBarButtonCancel!,myUIBarItemSpace20!,myUIBarButtonSave!])
         self.toolBar.append([myUIBarButtonGreen!,myUIBarButtonBlue!,myUIBarButtonRed!,myUIBarItemSpace100!,myUIBarButtonCancel!,myUIBarItemSpace20!,myUIBarButtonSave!])
-        self.toolBar.append([myUIBarButtonColorPalet!,myUIBarButtonFontSeloctor!,myUIBarItemSpace100!,myUIBarItemSpace100!,myUIBarButtonCancel!,myUIBarItemSpace20!,myUIBarButtonSave!])
+        self.toolBar.append([myUIBarButtonColorPalet!,myUIBarButtonFontSeloctor!,myUIBarItemSpace100!,myUIBarButtonLayerSeloctor!,myUIBarButtonCancel!,myUIBarItemSpace20!,myUIBarButtonSave!])
         print("ImageEditor - initToolBarItem")
     }
+    /// 以下、デリゲート
     /// 選択されたサブメニューを取得
     func selectedSubMenu(state: DataManager.MenuTypes) {
         if state == DataManager.MenuTypes.typeGPS{
@@ -210,7 +218,8 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
             setPen()
         }
     }
-    
+    /// 以下、デリゲートによって選択されたメニュー毎の処理
+    /// FontPickerViewControllerで選択されたフォントをラベルに設定
     func selectedFont(state: UILabel){
         for tag:Int in tagList {
             print("ImageEditor - selectedFont - tag:",tag)
@@ -226,6 +235,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
         }
         print("ImageEditor - selectedFont - fontName:",state.font.fontName)
     }
+    /// ColorPickerViewControllerで選択されたカラーをラベルに設定
     func selectedColor(state: UIColor) {
         for tag:Int in tagList {
             print("ImageEditor - selectedColor - tag:",tag)
@@ -237,6 +247,9 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
             }
         }
         print("ImageEditor - selectedColor - UIColor:",state)
+    }
+    /// LayerPickerViewControllerで選択されたレイヤーをラベルに設定
+    func selectedLayer(){
     }
     /// TODO:
     /// Imageを編集し保存後、再編集するとTagの番号が誤って追加される
@@ -287,7 +300,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
     func setPen(){
         print("ImageEditor - setPen");
     }
-    /// ツールバーのアクション
+    /// 以下、ツールバーのアクション
     ///
     /// - Parameter sender: ツールバーのボタンを取得
     @objc func onClickBarButton(sender: UIBarButtonItem) {
@@ -301,18 +314,83 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
             self.imageView?.backgroundColor = UIColor.red
         case 4:
             print("ImageEditor - onClickBarButton - cancel")
-            self.dispCancelAlert()
+            displayCancelAlert()
         case 5:
             // CoreDataを更新
             print("ImageEditor - onClickBarButton - save:",self.delegateParamId)
-            self.dispSaveAlert()
+            displaySaveAlert()
         case 6:
             displayColorPalet()
         case 7:
             displayFontSelector()
+        case 8:
+            displayLayerSelector()
         default:
             print("ImageEditor - onClickBarButton - error")
         }
+    }
+    /// 以下、ツールバーで選択されたボタン毎の処理
+    /// 作成したImageを保存して終了するためのアラートを表示
+    func displaySaveAlert() {
+        // UIAlertControllerクラスのインスタンスを生成
+        // タイトル, メッセージ, Alertのスタイルを指定
+        // 第3引数のpreferredStyleでアラートの表示スタイルを指定
+        let alert: UIAlertController = UIAlertController(title: "イメージ", message: "保存して終了しますか？", preferredStyle:  UIAlertControllerStyle.alert)
+        // Actionの設定
+        // Action初期化時にタイトル, スタイル, 押された時に実行されるハンドラを指定
+        // 第3引数のUIAlertActionStyleでボタンのスタイルを指定する
+        // OKボタン
+        let defaultAction: UIAlertAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler:{
+            // ボタンが押された時（クロージャ実装）
+            (action: UIAlertAction!) -> Void in
+            print("ImageEditor - dispCancelAlert - SaveAlert: OK")
+            self.imageData?.updateImage(id: self.delegateParamId, view: self.imageView!)
+            // ImageListControllerを更新
+            let prevVC = self.getPreviousViewController() as! ImageListController
+            prevVC.updateView()
+            self.navigationController?.setNavigationBarHidden(false, animated: false)
+            self.navigationController?.popViewController(animated: true)
+        })
+        // キャンセルボタン
+        let cancelAction: UIAlertAction = UIAlertAction(title: "キャンセル", style: UIAlertActionStyle.cancel, handler:{
+            // ボタンが押された時（クロージャ実装）
+            (action: UIAlertAction!) -> Void in
+            print("ImageEditor - dispCancelAlert - SaveAlert: Cancel")
+        })
+        // UIAlertControllerにActionを追加
+        alert.addAction(cancelAction)
+        alert.addAction(defaultAction)
+        // Alertを表示
+        present(alert, animated: true, completion: nil)
+    }
+    /// 作成したImageを保存せず終了するためのアラートを表示
+    func displayCancelAlert() {
+        // UIAlertControllerクラスのインスタンスを生成
+        // タイトル, メッセージ, Alertのスタイルを指定
+        // 第3引数のpreferredStyleでアラートの表示スタイルを指定
+        let alert: UIAlertController = UIAlertController(title: "イメージ", message: "保存せず終了してもいいですか？", preferredStyle:  UIAlertControllerStyle.alert)
+        // Actionの設定
+        // Action初期化時にタイトル, スタイル, 押された時に実行されるハンドラを指定
+        // 第3引数のUIAlertActionStyleでボタンのスタイルを指定
+        // OKボタン
+        let defaultAction: UIAlertAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler:{
+            // ボタンが押された時の処理（クロージャ実装）
+            (action: UIAlertAction!) -> Void in
+            print("ImageEditor - dispCancelAlert - CancelAlert: OK")
+            self.navigationController?.setNavigationBarHidden(false, animated: false)
+            self.navigationController?.popViewController(animated: true)
+        })
+        // キャンセルボタン
+        let cancelAction: UIAlertAction = UIAlertAction(title: "キャンセル", style: UIAlertActionStyle.cancel, handler:{
+            // ボタンが押された時の処理（クロージャ実装）
+            (action: UIAlertAction!) -> Void in
+            print("ImageEditor - dispCancelAlert - CancelAlert: Cancel")
+        })
+        // UIAlertControllerにActionを追加
+        alert.addAction(cancelAction)
+        alert.addAction(defaultAction)
+        // Alertを表示
+        present(alert, animated: true, completion: nil)
     }
     /// カラーパレットを表示
     func displayColorPalet(){
@@ -333,16 +411,27 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
     func displayFontSelector(){
         print("ImageEditor - displayFontSelector")
         if(fontPickerView != nil){
-        hideContentController(content:fontPickerView)
+            hideContentController(content:fontPickerView)
         }
         if(colorPickerView != nil){
-        hideContentController(content:colorPickerView)
+            hideContentController(content:colorPickerView)
         }
         fontPickerView = FontPickerViewController()
         fontPickerView.delegate = self
         self.view.addSubview(fontPickerView.view)
         self.addChildViewController(fontPickerView)
         fontPickerView.didMove(toParentViewController: self)
+    }
+    /// レイヤー選択画面を表示
+    func displayLayerSelector(){
+        print("ImageEditor - displayLayerSelector");
+        if(layerPickerView != nil){
+            hideContentController(content:layerPickerView)
+        }
+        layerPickerView = LayerPickerViewController()
+        self.view.addSubview(layerPickerView.view)
+        self.addChildViewController(layerPickerView)
+        layerPickerView.didMove(toParentViewController: self)
     }
     /// TODO:
     /// Imageを編集し保存後、再編集するとTagの番号が誤って追加される
@@ -482,68 +571,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
         // ドラッグ開始時の処理
         //print("beginDragging")
     }
-    /// 作成したImageを保存して終了するためのアラートを表示
-    func dispSaveAlert() {
-        // UIAlertControllerクラスのインスタンスを生成
-        // タイトル, メッセージ, Alertのスタイルを指定
-        // 第3引数のpreferredStyleでアラートの表示スタイルを指定
-        let alert: UIAlertController = UIAlertController(title: "イメージ", message: "保存して終了しますか？", preferredStyle:  UIAlertControllerStyle.alert)
-        // Actionの設定
-        // Action初期化時にタイトル, スタイル, 押された時に実行されるハンドラを指定
-        // 第3引数のUIAlertActionStyleでボタンのスタイルを指定する
-        // OKボタン
-        let defaultAction: UIAlertAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler:{
-            // ボタンが押された時（クロージャ実装）
-            (action: UIAlertAction!) -> Void in
-            print("ImageEditor - dispCancelAlert - SaveAlert: OK")
-            self.imageData?.updateImage(id: self.delegateParamId, view: self.imageView!)
-            // ImageListControllerを更新
-            let prevVC = self.getPreviousViewController() as! ImageListController
-            prevVC.updateView()
-            self.navigationController?.setNavigationBarHidden(false, animated: false)
-            self.navigationController?.popViewController(animated: true)            
-        })
-        // キャンセルボタン
-        let cancelAction: UIAlertAction = UIAlertAction(title: "キャンセル", style: UIAlertActionStyle.cancel, handler:{
-            // ボタンが押された時（クロージャ実装）
-            (action: UIAlertAction!) -> Void in
-            print("ImageEditor - dispCancelAlert - SaveAlert: Cancel")
-        })
-        // UIAlertControllerにActionを追加
-        alert.addAction(cancelAction)
-        alert.addAction(defaultAction)
-        // Alertを表示
-        present(alert, animated: true, completion: nil)
-    }
-    /// 作成したImageを保存せず終了するためのアラートを表示
-    func dispCancelAlert() {
-        // UIAlertControllerクラスのインスタンスを生成
-        // タイトル, メッセージ, Alertのスタイルを指定
-        // 第3引数のpreferredStyleでアラートの表示スタイルを指定
-        let alert: UIAlertController = UIAlertController(title: "イメージ", message: "保存せず終了してもいいですか？", preferredStyle:  UIAlertControllerStyle.alert)
-        // Actionの設定
-        // Action初期化時にタイトル, スタイル, 押された時に実行されるハンドラを指定
-        // 第3引数のUIAlertActionStyleでボタンのスタイルを指定
-        // OKボタン
-        let defaultAction: UIAlertAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler:{
-            // ボタンが押された時の処理（クロージャ実装）
-            (action: UIAlertAction!) -> Void in
-            print("ImageEditor - dispCancelAlert - CancelAlert: OK")
-            self.navigationController?.setNavigationBarHidden(false, animated: false)
-            self.navigationController?.popViewController(animated: true)
-        })
-        // キャンセルボタン
-        let cancelAction: UIAlertAction = UIAlertAction(title: "キャンセル", style: UIAlertActionStyle.cancel, handler:{
-            // ボタンが押された時の処理（クロージャ実装）
-            (action: UIAlertAction!) -> Void in
-            print("ImageEditor - dispCancelAlert - CancelAlert: Cancel")
-        })
-        // UIAlertControllerにActionを追加
-        alert.addAction(cancelAction)
-        alert.addAction(defaultAction)
-        // Alertを表示
-        present(alert, animated: true, completion: nil)
-    }
+    /// 以下、ラベルに関する処理
     /// 選択されたアイテムを強調
     /// 拡大・縮小アイコンを追加
     ///
@@ -581,7 +609,6 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
                 v.removeFromSuperview()
             //}
         }
-        
     }
     /// テキストの幅を調整
     ///
