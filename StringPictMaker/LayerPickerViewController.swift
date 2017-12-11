@@ -14,40 +14,29 @@ import UIKit
 /// ＊レイヤーオンオフの「目」
 /// ＊レイヤー切り替え後、ImageViewに反映
 class LayerPickerViewController: UIViewController,UICollectionViewDataSource,UICollectionViewDelegate{
-    // スクロールビューを生成
-    var scrollView: UIScrollView! = nil
     // コレクションビューを生成
     var collectionView : UICollectionView!
+//    var layerCell: UICollectionViewCell!
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.frame = CGRect(x:self.view.frame.width - 100,y:0,width:100,height:self.view.frame.height - 100)
         self.view.backgroundColor = UIColor.lightGray.withAlphaComponent(0.5)
-        // スクロールビューを設置
-        /*scrollView = UIScrollView()
-        scrollView.frame = CGRect(x:5,y:5,width:self.view.frame.width - 10,height:self.view.frame.height - 10)
-        scrollView.backgroundColor = UIColor.black.withAlphaComponent(0.5)
-        //scrollView.center = self.view.center
-        self.view.addSubview(scrollView)
-        */
         // コレクションビューを生成
         let layout = UICollectionViewFlowLayout()
         let frame = CGRect(x:10,y:10,width:self.view.frame.width - 20,height:self.view.frame.height - 20)
         collectionView = UICollectionView(frame:frame, collectionViewLayout: layout)
-        collectionView.register(ImageCell.self, forCellWithReuseIdentifier: "ImageCell_id")
+        collectionView.register(LayerCell.self, forCellWithReuseIdentifier: "LayerCell_id")
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.backgroundColor = UIColor.white
-        //scrollView.addSubview(collectionView)
         self.view.addSubview(collectionView)
         print("LayerPickerViewController - viewDidLoad")
     }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 30
     }
-    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        print("LayerPickerViewController - collectionView")
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCell_id", for: indexPath) as! ImageCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LayerCell_id", for: indexPath) as! LayerCell
         cell.textLabel?.text = indexPath.row.description
         cell.editButton?.setTitle("EDIT", for: .normal)
         return cell

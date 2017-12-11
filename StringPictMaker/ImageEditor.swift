@@ -136,8 +136,12 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
     /************************************/
     //  テストコード↑
     /************************************/
-    func initView(){        
-        for view in (imageView?.subviews)!
+    func initView(){
+        for layer in (imageView?.subviews)! {
+            if layer.tag == -1{
+                layer.removeFromSuperview()
+            }
+        for view in layer.subviews
         {
             // removed image from superview when tag is -1
             // because this image is dummy. ("noimage")
@@ -156,6 +160,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
                     
                 }
             }
+        }
         }
     }
     /// ツールバーのアイテムを初期化
@@ -223,7 +228,8 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
     func selectedFont(state: UILabel){
         for tag:Int in tagList {
             print("ImageEditor - selectedFont - tag:",tag)
-            for subview in (self.imageView?.subviews)! {
+            for layer in (self.imageView?.subviews)! {
+            for subview in layer.subviews {
                 // subview has a resize icon.
                 if(subview.subviews.count != 0){
                     /// TODO:
@@ -232,6 +238,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
                     (subview as! UILabel).sizeToFit()
                 }
             }
+            }
         }
         print("ImageEditor - selectedFont - fontName:",state.font.fontName)
     }
@@ -239,11 +246,13 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
     func selectedColor(state: UIColor) {
         for tag:Int in tagList {
             print("ImageEditor - selectedColor - tag:",tag)
-            for subview in (self.imageView?.subviews)! {
+            for layer in (self.imageView?.subviews)! {
+            for subview in layer.subviews {
                 // subview has a resize icon.
                 if(subview.subviews.count != 0){
                      (subview as! UILabel).textColor = state
                 }
+            }
             }
         }
         print("ImageEditor - selectedColor - UIColor:",state)
@@ -258,6 +267,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
     var gpsTag = 1024
     /// GPSをセット
     func setGPSLabel(){
+        let layer = UIView()
         let GPSlabel = UILabel()
         // 文字追加
         let str2 = "現在位置"
@@ -265,7 +275,6 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
         let font = UIFont.boldSystemFont(ofSize: pointSize)
         let width = str2.size(withAttributes: [NSAttributedStringKey.font : font])
         let labelWidth : CGFloat = 250
-        print("ImageEditor - setGPSLabel");
         GPSlabel.font = UIFont.boldSystemFont(ofSize: pointSize * getScreenRatio() * labelWidth / width.width)
         // label.layer.borderColor = UIColor.black.cgColor
         // label.layer.borderWidth = 2
@@ -277,10 +286,12 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
         /// TODO:
         /// tagの値変更
         GPSlabel.tag = gpsTag + DataManager.TagIDs.typeGPS.rawValue
+        print("ImageEditor - setGPSLabel - tag",GPSlabel.tag);
         gpsTag += 1024
         // touchイベントの有効化
         GPSlabel.isUserInteractionEnabled = true
-        self.imageView?.addSubview(GPSlabel)
+        layer.addSubview(GPSlabel)
+        self.imageView?.addSubview(layer)
     }
     /// Imageをセット
     func setImage(){
@@ -449,7 +460,8 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
             //let hitImageView:UIView? = self.imageView?.hitTest(location, with: UIEvent?)
             print("ImageEditor - handlePanGesture - view.tag:",sender.view?.tag as Any)
             // タッチされた座標の位置を含むサブビューを取得
-            for subview in (self.imageView?.subviews)! {
+            for layer in (self.imageView?.subviews)! {
+            for subview in layer.subviews {
                 // imageView上のアイテムが選択された時の処理
                 if (subview.frame.contains(location)) {
                     tagList.append(subview.tag)
@@ -459,7 +471,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
                     if(subview.tag != 0){
                         // 選択されたアイテムを強調
                         var operateView:UIView!
-                        operateView = (self.imageView?.viewWithTag(subview.tag))!
+                        operateView = layer.viewWithTag(subview.tag)
                         self.emphasisSelectedItem(selectedView: operateView)
                     }else{
                         /// TODO:
@@ -483,10 +495,11 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
                         if(iconIsSelected == false){
                             // 選択されたアイテムの強調を削除
                             var operateView:UIView!
-                            operateView = (self.imageView?.viewWithTag(subview.tag))!
+                            operateView = layer.viewWithTag(subview.tag)
                             self.clearEmphasisSelectedItem(selectedView: operateView)
                         }
                 }
+            }
             }
             break
         case UIGestureRecognizerState.changed:
@@ -494,27 +507,35 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
             //移動量を取得
             let move:CGPoint = sender.translation(in: self.imageView)
             var iconIsSelected:Bool = false
+            
             for tag:Int in tagList {
-                for subview in (self.imageView?.subviews)! {
-                    for icon in subview.subviews{
-                        //print("tag:",tag,icon.tag)
-                        if(tag  == icon.tag){
-                            //print("ImageEditor - handlePanGesture - subview.frame:",subview.frame)
-                            let moved = CGPoint(x: icon.center.x + move.x, y: icon.center.y)
-                            //print("ImageEditor - handlePanGesture - moved:",moved,"move:",move)
-                            self.resizeText(textLabel: subview as! UILabel, posX: icon.frame)
-                            icon.center = moved
-                            sender.setTranslation(CGPoint.zero, in: icon)
-                            iconIsSelected = true
+                print("tag:",tag)
+                for layer in (self.imageView?.subviews)! {
+                    for subview in layer.subviews {
+                        iconIsSelected = false
+                        for icon in subview.subviews{
+                            //print("tag:",tag,icon.tag)
+                            if(tag  == icon.tag){
+                                print("ImageEditor - handlePanGesture.changed - subview.frame:",subview.frame)
+                                let moved = CGPoint(x: icon.center.x + move.x, y: icon.center.y)
+                                //print("ImageEditor - handlePanGesture - moved:",moved,"move:",move)
+                                self.resizeText(textLabel: subview as! UILabel, posX: icon.frame)
+                                icon.center = moved
+                                sender.setTranslation(CGPoint.zero, in: icon)
+                                iconIsSelected = true
+                            }
+                        }
+                        if(tag == subview.tag){
+                        if(iconIsSelected == false){
+                            operateView = layer.viewWithTag(tag)
+                            print("ImageEditor - handlePanGesture.changed - operateView:",operateView)
+                            // 移動分を反映
+                            let moved = CGPoint(x: operateView.center.x + move.x, y: operateView.center.y + move.y)
+                            operateView.center = moved
+                            sender.setTranslation(CGPoint.zero, in:operateView)
+                        }
                         }
                     }
-                }
-                if(iconIsSelected == false){
-                operateView = (self.imageView?.viewWithTag(tag))!
-                // 移動分を反映
-                let moved = CGPoint(x: operateView.center.x + move.x, y: operateView.center.y + move.y)
-                operateView.center = moved
-                sender.setTranslation(CGPoint.zero, in:operateView)
                 }
             }
             break
