@@ -267,7 +267,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
     var gpsTag = 1024
     /// GPSをセット
     func setGPSLabel(){
-        let layer = UIView()
+        let layer = UIView(frame:self.view.frame)
         let GPSlabel = UILabel()
         // 文字追加
         let str2 = "現在位置"
@@ -440,6 +440,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
             hideContentController(content:layerPickerView)
         }
         layerPickerView = LayerPickerViewController()
+        layerPickerView.setImageView(view: imageView!)
         self.view.addSubview(layerPickerView.view)
         self.addChildViewController(layerPickerView)
         layerPickerView.didMove(toParentViewController: self)
