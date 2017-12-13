@@ -18,7 +18,7 @@ import UIKit
 /// 　→frameのサイズが変更されるため
 
 /// Imageを編集するためのコントローラー
-class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPickerDelegate,UIToolbarDelegate,UIScrollViewDelegate{
+class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPickerDelegate,LayerPickerDelegate,UIToolbarDelegate,UIScrollViewDelegate{
     // delegate
     // ImageListControllerから選択されたセルのid、imageView/Dataを取得
     var delegateParamId: Int = 0
@@ -258,8 +258,10 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
         print("ImageEditor - selectedColor - UIColor:",state)
     }
     /// LayerPickerViewControllerで選択されたレイヤーをラベルに設定
-    func selectedLayer(){
+    func selectedLayer(num: Int) {
+        print("ImageEditor - selectedLayer - num:",num)
     }
+    
     /// TODO:
     /// Imageを編集し保存後、再編集するとTagの番号が誤って追加される
     /// ImageViewに追加するアイテムがGPSの場合、
@@ -440,6 +442,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
             hideContentController(content:layerPickerView)
         }
         layerPickerView = LayerPickerViewController()
+        layerPickerView.delegate = self
         layerPickerView.setImageView(view: imageView!)
         self.view.addSubview(layerPickerView.view)
         self.addChildViewController(layerPickerView)

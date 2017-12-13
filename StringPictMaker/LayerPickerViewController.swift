@@ -13,7 +13,14 @@ import UIKit
 /// ＊コレクションビュー、セルのレイアウト
 /// ＊レイヤーオンオフの「目」
 /// ＊レイヤー切り替え後、ImageViewに反映
+
+/// 選択されたレイヤーの番号をImageEditorに送付するデリゲートメソッド
+protocol LayerPickerDelegate {
+    // デリゲートメソッド定義
+    func selectedLayer(num:Int)
+}
 class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableViewDelegate{
+    var delegate : LayerPickerDelegate!
     var imageView:UIView!
     func setImageView(view: UIView) {
         self.imageView = view
@@ -55,11 +62,17 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
         //cell.textLabel?.text = indexPath.row.description
         cell.layerLabel?.text = "Layer" + String(indexPath.row)
         cell.imageLabel?.image = imageView.subviews[indexPath.row].GetImage()
-        print("indexPath:",indexPath.row,imageView.subviews[indexPath.row].GetImage())
+        //print("indexPath:",indexPath.row,imageView.subviews[indexPath.row].GetImage())
         cell.editButton?.setTitle("EYE", for: .normal)
         return cell
     }
 
+    //データ選択後に呼び出されるメソッド
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath){
+        print("LayerPickerViewController - indexPath:",indexPath.row)
+        delegate?.selectedLayer(num: indexPath.row)
+    }
+    
     /// コンテナをスーパービューに追加
     func displayContentController(content:UIViewController, container:UIView){
         print("ColorPickerViewController - displayContentController")
