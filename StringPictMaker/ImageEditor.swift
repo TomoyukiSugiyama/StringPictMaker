@@ -43,6 +43,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
     var colorPickerView: ColorPickerViewController!
     // レイヤーのピッカービューを生成
     var layerPickerView: LayerPickerViewController!
+    var selectedLayerNumber: Int = -1
     /// DataManagerのオブジェクトを生成し、CoreDataからデータを読み出す
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -260,8 +261,23 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
     /// LayerPickerViewControllerで選択されたレイヤーをラベルに設定
     func selectedLayer(num: Int) {
         print("ImageEditor - selectedLayer - num:",num)
+        selectedLayerNumber = num
     }
     
+    func changeVisibleLayer(num: Int) {
+        print("ImageEditor - switchLayer - num:",num)
+        changeVisible(visible: (imageView?.subviews[num].isHidden)!, label: (imageView?.subviews[num])!)
+        
+    }
+    func changeVisible(visible: Bool,label: UIView) {
+        if visible {
+            label.isHidden = false
+            //labelHeightConstraint.constant = 44
+        } else {
+            label.isHidden = true
+            //labelHeightConstraint.constant = 0
+        }
+    }
     /// TODO:
     /// Imageを編集し保存後、再編集するとTagの番号が誤って追加される
     /// ImageViewに追加するアイテムがGPSの場合、
@@ -464,7 +480,13 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
             //let hitImageView:UIView? = self.imageView?.hitTest(location, with: UIEvent?)
             print("ImageEditor - handlePanGesture - view.tag:",sender.view?.tag as Any)
             // タッチされた座標の位置を含むサブビューを取得
-            for layer in (self.imageView?.subviews)! {
+            var view:[UIView]!
+            if(selectedLayerNumber == -1){
+                view = self.imageView?.subviews
+            }else{
+                view = [(self.imageView?.subviews[selectedLayerNumber])!]
+            }
+            for layer in view {
             for subview in layer.subviews {
                 // imageView上のアイテムが選択された時の処理
                 if (subview.frame.contains(location)) {
@@ -511,10 +533,15 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
             //移動量を取得
             let move:CGPoint = sender.translation(in: self.imageView)
             var iconIsSelected:Bool = false
-            
+            var view:[UIView]!
+            if(selectedLayerNumber == -1){
+                view = self.imageView?.subviews
+            }else{
+                view = [(self.imageView?.subviews[selectedLayerNumber])!]
+            }
             for tag:Int in tagList {
                 print("tag:",tag)
-                for layer in (self.imageView?.subviews)! {
+                for layer in view {
                     for subview in layer.subviews {
                         iconIsSelected = false
                         for icon in subview.subviews{

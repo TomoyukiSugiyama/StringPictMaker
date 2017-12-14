@@ -11,13 +11,14 @@ import UIKit
 
 /// TODO:
 /// ＊コレクションビュー、セルのレイアウト
-/// ＊レイヤーオンオフの「目」
+/// ＊レイヤーオンオフ時、サイズ０に
 /// ＊レイヤー切り替え後、ImageViewに反映
 
 /// 選択されたレイヤーの番号をImageEditorに送付するデリゲートメソッド
 protocol LayerPickerDelegate {
     // デリゲートメソッド定義
     func selectedLayer(num:Int)
+    func changeVisibleLayer(num:Int)
 }
 class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableViewDelegate{
     var delegate : LayerPickerDelegate!
@@ -64,6 +65,8 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
         cell.imageLabel?.image = imageView.subviews[indexPath.row].GetImage()
         //print("indexPath:",indexPath.row,imageView.subviews[indexPath.row].GetImage())
         cell.editButton?.setTitle("EYE", for: .normal)
+        cell.editButton?.tag = indexPath.row
+        cell.editButton?.addTarget(self, action: #selector(onClickEditButtons), for: UIControlEvents.touchUpInside)
         return cell
     }
 
@@ -72,7 +75,10 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
         print("LayerPickerViewController - indexPath:",indexPath.row)
         delegate?.selectedLayer(num: indexPath.row)
     }
-    
+    /// - Parameter sender: 編集ボタン
+    @objc func onClickEditButtons(sender: UIButton) {
+        self.delegate?.changeVisibleLayer(num: sender.tag)
+    }
     /// コンテナをスーパービューに追加
     func displayContentController(content:UIViewController, container:UIView){
         print("ColorPickerViewController - displayContentController")
