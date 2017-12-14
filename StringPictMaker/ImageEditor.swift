@@ -137,6 +137,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
     /************************************/
     //  テストコード↑
     /************************************/
+    /// imageViewを初期化
     func initView(){
         for layer in (imageView?.subviews)! {
             if layer.tag == -1{
@@ -263,12 +264,13 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
         print("ImageEditor - selectedLayer - num:",num)
         selectedLayerNumber = num
     }
-    
+    /// 表示・非表示を切り替えるレイヤーの番号を取得
     func changeVisibleLayer(num: Int) {
         print("ImageEditor - switchLayer - num:",num)
         changeVisible(visible: (imageView?.subviews[num].isHidden)!, label: (imageView?.subviews[num])!)
         
     }
+    /// レイヤーの表示・非表示、切り替え
     func changeVisible(visible: Bool,label: UIView) {
         if visible {
             label.isHidden = false
@@ -464,6 +466,10 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
         self.addChildViewController(layerPickerView)
         layerPickerView.didMove(toParentViewController: self)
     }
+    // 選択されたアイテムをレイヤーから削除
+    func removeItemFromLayer(){
+        print("ImageEditor - removeItemFromLayer");
+    }
     /// TODO:
     /// Imageを編集し保存後、再編集するとTagの番号が誤って追加される
     /// タッチした座標にあるimageView上のアイテムを管理
@@ -481,6 +487,8 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
             print("ImageEditor - handlePanGesture - view.tag:",sender.view?.tag as Any)
             // タッチされた座標の位置を含むサブビューを取得
             var view:[UIView]!
+            // 選択されたレイヤーをviewに設定
+            // 全てのレイヤーが選択状態の場合　-1
             if(selectedLayerNumber == -1){
                 view = self.imageView?.subviews
             }else{
@@ -490,6 +498,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
             for subview in layer.subviews {
                 // imageView上のアイテムが選択された時の処理
                 if (subview.frame.contains(location)) {
+                    // 選択されたアイテムのタグをタグリストに追加
                     tagList.append(subview.tag)
                     print("ImageEditor - handlePanGesture - subview.tag:",subview.tag)
                     /// TODO:
@@ -534,6 +543,8 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
             let move:CGPoint = sender.translation(in: self.imageView)
             var iconIsSelected:Bool = false
             var view:[UIView]!
+            // 選択されたレイヤーをviewに設定
+            // 全てのレイヤーが選択状態の場合　-1
             if(selectedLayerNumber == -1){
                 view = self.imageView?.subviews
             }else{

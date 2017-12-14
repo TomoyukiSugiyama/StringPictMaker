@@ -13,6 +13,7 @@ protocol ColorPickerDelegate {
     // デリゲートメソッド定義
     func selectedColor(state:UIColor)
 }
+/// 文字列の色を変更するためのピッカービューコントローラ
 class ColorPickerViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource{
     var delegate : ColorPickerDelegate!
     // UIPickerViewの変数の宣言
@@ -22,7 +23,7 @@ class ColorPickerViewController: UIViewController, UIPickerViewDelegate, UIPicke
                      "Green","Gray","Orange","Purple","Brown"]
     var colorArray = [UIColor.black,UIColor.white,UIColor.blue,UIColor.yellow,UIColor.red,
                       UIColor.green,UIColor.gray,UIColor.orange,UIColor.purple,UIColor.brown]
-    
+    /// ピッカービューを生成
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.frame = CGRect(x:0,y:self.view.frame.height - 150 - 40,width:self.view.frame.width,height:150)

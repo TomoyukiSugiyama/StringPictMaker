@@ -52,7 +52,7 @@ class LayerCell: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         layerLabel?.frame = CGRect(x: 0, y  : 0, width: 100, height: 20)
-        imageLabel?.frame = CGRect(x: 0, y: 20, width: 150, height: 150)
+        imageLabel?.frame = CGRect(x: 0, y: 20, width: 140, height: 140)
         editButton?.frame = CGRect(x: 100, y: 0, width: 100, height: 20)
  //       print("LayerCell - init - frame:",frame,"tableView.frame:",imageLabel?.frame,"editButton.frame:",editButton?.frame);
     }

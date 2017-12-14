@@ -14,6 +14,7 @@ protocol FontPickerDelegate {
     // デリゲートメソッド定義
     func selectedFont(state:UILabel)
 }
+/// 文字列のフォントを変更するためのピッカービューコントローラ
 class FontPickerViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource{
     // UIPickerViewの変数の宣言
     var picker: UIPickerView!
@@ -25,6 +26,7 @@ class FontPickerViewController: UIViewController, UIPickerViewDelegate, UIPicker
                      "Font 6","Font 7","Font 8","Font 9","Font 10"]
     var fontArray = ["Zapfino","DBLCDTempBlack","MarkerFelt-Thin","Academy Engraved LET","Al Nile",
                      "American Typewriter","Apple Color Emoji","Apple SD Gothic Neo","Arial","Arial Hebrew"]
+    /// ピッカービューを生成
     override func viewDidLoad() {
         super.viewDidLoad()
         print("FontPickerViewController - viewDidLoad - frame:",self.view.frame)
