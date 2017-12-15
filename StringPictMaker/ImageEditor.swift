@@ -345,7 +345,8 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
             self.imageView?.backgroundColor = UIColor.red
         case 4:
             print("ImageEditor - onClickBarButton - cancel")
-            displayCancelAlert()
+            removeItemFromLayer()
+            //displayCancelAlert()
         case 5:
             // CoreDataを更新
             print("ImageEditor - onClickBarButton - save:",self.delegateParamId)
@@ -469,6 +470,17 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
     // 選択されたアイテムをレイヤーから削除
     func removeItemFromLayer(){
         print("ImageEditor - removeItemFromLayer");
+        for layer in (self.imageView?.subviews)!{
+            for item in layer.subviews{
+                if(item.subviews.count != 0){
+                    item.removeFromSuperview()
+                    if(layer.subviews.count == 0){
+                        layer.removeFromSuperview()
+                    }
+                }
+                
+            }
+        }
     }
     /// TODO:
     /// Imageを編集し保存後、再編集するとTagの番号が誤って追加される
