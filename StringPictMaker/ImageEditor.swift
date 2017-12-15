@@ -177,6 +177,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
         var myUIBarButtonColorPalet: UIBarButtonItem? = nil
         var myUIBarButtonFontSeloctor: UIBarButtonItem? = nil
         var myUIBarButtonLayerSeloctor: UIBarButtonItem? = nil
+        var myUIBarButtonAdjustCenter: UIBarButtonItem? = nil
         self.toolBar = [[UIBarButtonItem]]()
         myUIBarButtonGreen = UIBarButtonItem(title: "Green", style:.plain, target: self, action: #selector(onClickBarButton))
         myUIBarButtonGreen?.tag = 1
@@ -198,10 +199,13 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
         myUIBarButtonFontSeloctor?.tag = 7
         myUIBarButtonLayerSeloctor = UIBarButtonItem(title: "Layer", style:.plain, target: self,action:#selector(onClickBarButton))
         myUIBarButtonLayerSeloctor?.tag = 8
+        myUIBarButtonAdjustCenter = UIBarButtonItem(title: "Center", style:.plain, target: self, action: #selector(onClickBarButton))
+        myUIBarButtonAdjustCenter?.tag = 9
         // 選択されたサブメニュー毎のアイテムを設定
         self.toolBar.append([myUIBarButtonGreen!,myUIBarButtonBlue!,myUIBarButtonRed!,myUIBarItemSpace100!,myUIBarButtonCancel!,myUIBarItemSpace20!,myUIBarButtonSave!])
-        self.toolBar.append([myUIBarButtonGreen!,myUIBarButtonBlue!,myUIBarButtonRed!,myUIBarItemSpace100!,myUIBarButtonCancel!,myUIBarItemSpace20!,myUIBarButtonSave!])
         self.toolBar.append([myUIBarButtonColorPalet!,myUIBarButtonFontSeloctor!,myUIBarItemSpace100!,myUIBarButtonLayerSeloctor!,myUIBarButtonCancel!,myUIBarItemSpace20!,myUIBarButtonSave!])
+        self.toolBar.append([myUIBarButtonGreen!,myUIBarButtonBlue!,myUIBarButtonAdjustCenter!,myUIBarItemSpace100!,myUIBarButtonCancel!,myUIBarItemSpace20!,myUIBarButtonSave!])
+
         print("ImageEditor - initToolBarItem")
     }
     /// 以下、デリゲート
@@ -210,18 +214,22 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
         if state == DataManager.MenuTypes.typeGPS{
             selectedSubMenuItemState = 1
             setGPSLabel()
-            myToolbar.items = toolBar[2]
+            myToolbar.items = toolBar[1]
         }else if state == DataManager.MenuTypes.typeColor{
             selectedSubMenuItemState = 2
             setColor()
+            myToolbar.items = toolBar[0]
         }else if state == DataManager.MenuTypes.typeImage{
             selectedSubMenuItemState = 3
             setImage()
+            myToolbar.items = toolBar[2]
         }else if state == DataManager.MenuTypes.typeTime{
             selectedSubMenuItemState = 4
+            myToolbar.items = toolBar[0]
             setTime()
         }else if state == DataManager.MenuTypes.typePen{
             selectedSubMenuItemState = 5
+            myToolbar.items = toolBar[0]
             setPen()
         }
     }
@@ -357,6 +365,8 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
             displayFontSelector()
         case 8:
             displayLayerSelector()
+        case 9:
+            adjustItemPositionCenter()
         default:
             print("ImageEditor - onClickBarButton - error")
         }
@@ -477,6 +487,20 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
                     if(layer.subviews.count == 0){
                         layer.removeFromSuperview()
                     }
+                }
+                
+            }
+        }
+    }
+    
+    func adjustItemPositionCenter(){
+        print("ImageEditor - adjustPositionCenter");
+        for layer in (self.imageView?.subviews)!{
+            for item in layer.subviews{
+                if(item.subviews.count != 0){
+                    print("ImageEditor - item.center",item.center);
+                    item.center = (self.imageView?.center)!
+                    print("ImageEditor - item.center",item.center);
                 }
                 
             }
