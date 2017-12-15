@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 /// TODO:
-/// ＊再編集すると、スクロールが効かなくなる
+/// ＊保存後、ImageBoardを表示し戻ってくると、スクロールが効かなくなる
 /// ＊編集し保存すると文字サイズ変更アイコンが残る
 /// ＊Image上のアイテムを選択したタイミングに、強調枠が表示されない
 /// ＊ディスプレイを反転した時の処理がない
@@ -387,9 +387,8 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			// ボタンが押された時（クロージャ実装）
 			(action: UIAlertAction!) -> Void in
 			print("ImageEditor - dispCancelAlert - SaveAlert: OK")
-			print("ImageEditor - dispCancelAlert - frame:",self.imageView?.frame as Any,self.view.frame)
-			self.imageView?.frame = self.view.frame
-			
+			// 拡大、縮小されたimageViewを元のサイズに変更
+			self.imageView?.transform = CGAffineTransform.identity
 			self.imageData?.updateImage(id: self.delegateParamId, view: self.imageView!)
 			// ImageListControllerを更新
 			let prevVC = self.getPreviousViewController() as! ImageListController

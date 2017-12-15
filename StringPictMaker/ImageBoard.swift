@@ -9,7 +9,13 @@
 import Foundation
 import UIKit
 import CoreLocation
-
+/// TODO:
+/// ＊レイヤー追加したため、テキストが処理されない
+/// ＊住所を正しく切り分ける
+/// ＊
+/// ＊
+/// ＊
+/// ＊
 /// ImageEditorで編集したImageを表示
 class ImageBoard: UIViewController, CLLocationManagerDelegate{
 	// delegate
