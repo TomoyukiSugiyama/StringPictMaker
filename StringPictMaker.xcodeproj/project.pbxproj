@@ -51,7 +51,7 @@
 		C891DD6F1FC1BC1800C126BF /* ImageBoard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageBoard.swift; sourceTree = "<group>"; };
 		C891DD711FC4555F00C126BF /* MenuButtonActionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuButtonActionController.swift; sourceTree = "<group>"; };
 		C891DD751FC46AEF00C126BF /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
-		C89E070F1FC04C6E00C527BC /* ImageEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageEditor.swift; sourceTree = "<group>"; };
+		C89E070F1FC04C6E00C527BC /* ImageEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageEditor.swift; sourceTree = "<group>"; usesTabs = 1; };
 		C8B59D831FD6DB4500DCB67B /* FontPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontPickerViewController.swift; sourceTree = "<group>"; };
 		C8F22ECC1FBC80BD00632109 /* StringPictMaker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StringPictMaker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C8F22ECF1FBC80BD00632109 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -139,6 +139,7 @@
 			);
 			path = StringPictMaker;
 			sourceTree = "<group>";
+			usesTabs = 1;
 		};
 		C8F22EE61FBC80BD00632109 /* StringPictMakerTests */ = {
 			isa = PBXGroup;
