@@ -15,8 +15,8 @@ protocol SubMenuDelegate {
 	func selectedSubMenu(state:DataManager.MenuTypes)
 }
 /// TODO:
-/// メインメニューボタンを移動した時、サブメニューを閉じる
-/// サブメニューが画面外に出る
+/// 必要なアイコンに変更
+/// メニューを増やす場合、スライドウィンドウにする
 
 /// CustomButton Class (Menu/Sub Menu Button)
 /// ImageEditorでメイン/サブメニューボタンが押された時の、アクションを定義
@@ -25,6 +25,8 @@ class MenuButtonActionController: UIButton {
 	var position: CGPoint!
 	let buttonSize:CGFloat = 80
 	let toolBarSize:CGFloat = 40
+	var subMenuOpened: Bool = false
+	
 	/// began to touch menu butoon
 	///
 	/// - Parameters:
@@ -42,6 +44,10 @@ class MenuButtonActionController: UIButton {
 	override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
 		super.touchesMoved(touches, with: event)
 		isMoveing = true
+		if(subMenuOpened){
+			fadeAnimation()
+			subMenuOpened = false
+		}
 		let touchEvent = touches.first!
 		// ドラッグ前の座標
 		let preDx = touchEvent.previousLocation(in: superview).x
@@ -96,7 +102,15 @@ class MenuButtonActionController: UIButton {
 		super.touchesEnded(touches, with: event)
 		isMoveing = false
 		if position == self.frame.origin {
-			 self.sendActions(for: .touchUpOutside)
+			if(subMenuOpened){
+				subMenuOpened = false
+				fadeAnimation()
+			}else{
+				subMenuOpened = true
+				self.sendActions(for: .touchUpOutside)
+			}
+			
+			
 		}
 	}
 	/// メインメニューボタンイベント(Down)
@@ -119,7 +133,7 @@ class MenuButtonActionController: UIButton {
 	var subButton_2: UIButton = UIButton()
 	var subButton_3: UIButton = UIButton()
 	var subButton_4: UIButton = UIButton()
-	var subButton_5: UIButton = UIButton()
+	//var subButton_5: UIButton = UIButton()
 	var colors: NSMutableArray!
 	/// サブメニューボタンの座標を返すメソッド
 	///
@@ -128,8 +142,20 @@ class MenuButtonActionController: UIButton {
 	///   - radius: ラジアン
 	/// - Returns: サブメニューボタンの座標
 	func getPosition(angle: CGFloat, radius: CGFloat) -> CGPoint {
+		let windowX:CGFloat = (self.window?.screen.bounds.width)!
+		let windowY:CGFloat = (self.window?.screen.bounds.height)!
+		var makeAngle:CGFloat = 0
+		if(self.position.x >= windowX / 2 && self.position.y >= windowY / 2){
+			makeAngle = angle - 90
+		}else if(self.position.x >= windowX / 2 && self.position.y < windowY / 2){
+			makeAngle = angle - 180
+		}else if(self.position.x < windowX / 2 && self.position.y < windowY / 2){
+			makeAngle = angle - 270
+		}else{
+			makeAngle = angle
+		}
 		// 度からラジアンに変換.
-		let radian = angle * CGFloat(Double.pi) / 180.0
+		let radian = makeAngle * CGFloat(Double.pi) / 180.0
 		// x座標を計算.
 		let x_position:CGFloat = self.layer.position.x + radius * cos(radian)
 		// y座標を計算.
@@ -145,7 +171,8 @@ class MenuButtonActionController: UIButton {
 	/// - Parameter sender: 選択されたメインメニューボタン
 	@objc  func onUpMainButton(sender: UIButton) {
 		// subボタンを配列に格納
-		let buttons = [subButton_1, subButton_2, subButton_3, subButton_4, subButton_5]
+		//let buttons = [subButton_1, subButton_2, subButton_3, subButton_4, subButton_5]
+		let buttons = [subButton_1, subButton_2, subButton_3, subButton_4]
 		// subボタン用の　UIColorを配列に格納
 		colors = [UIColor.green, UIColor.yellow, UIColor.cyan, UIColor.magenta, UIColor.purple] as NSMutableArray
 		// mainボタンからの距離(半径)
@@ -163,9 +190,9 @@ class MenuButtonActionController: UIButton {
 		buttons[3].setTitle("TIME", for: .normal)
 		buttons[3].setImage(UIImage(named: "time_icon"), for: .normal)
 		buttons[3].setTitleColor(UIColor.black, for: .normal)
-		buttons[4].setTitle("PEN", for: .normal)
-		buttons[4].setImage(UIImage(named: "pen_icon"), for: .normal)
-		buttons[4].setTitleColor(UIColor.black, for: .normal)
+		//buttons[4].setTitle("PEN", for: .normal)
+		//buttons[4].setImage(UIImage(named: "pen_icon"), for: .normal)
+		//buttons[4].setTitleColor(UIColor.black, for: .normal)
 		// subボタンに各種設定
 		//		for var i = 0; i < buttons.count; i++ {
 		for i in 0 ..< buttons.count {
@@ -205,11 +232,16 @@ class MenuButtonActionController: UIButton {
 			// アニメーション中の処理
 			animations: { () -> Void in
 						// サブメニューボタンに座標を設定
-						self.subButton_1.layer.position = self.getPosition(angle: -90, radius: radius)
+						self.subButton_1.layer.position = self.getPosition(angle: 0, radius: radius)
 						self.subButton_2.layer.position = self.getPosition(angle: -30, radius: radius)
 						self.subButton_3.layer.position = self.getPosition(angle: -60, radius: radius)
-						self.subButton_4.layer.position = self.getPosition(angle: -120, radius: radius)
-						self.subButton_5.layer.position = self.getPosition(angle: -150, radius: radius)
+						self.subButton_4.layer.position = self.getPosition(angle: -90, radius: radius)
+						//self.subButton_5.layer.position = self.getPosition(angle: -150, radius: radius)
+				/*self.subButton_1.layer.position = self.getPosition(angle: -90, radius: radius)
+				self.subButton_2.layer.position = self.getPosition(angle: -30, radius: radius)
+				self.subButton_3.layer.position = self.getPosition(angle: -60, radius: radius)
+				self.subButton_4.layer.position = self.getPosition(angle: -120, radius: radius)
+				self.subButton_5.layer.position = self.getPosition(angle: -150, radius: radius)*/
 		}) { (Bool) -> Void in
 		}		
 	}
@@ -256,14 +288,14 @@ class MenuButtonActionController: UIButton {
 						// subボタンに座標を設定.
 						self.subButton_4.layer.position = CGPoint(x: self.layer.position.x, y: self.layer.position.y)
 						// subボタンに座標を設定.
-						self.subButton_5.layer.position = CGPoint(x: self.layer.position.x, y: self.layer.position.y)
+						//self.subButton_5.layer.position = CGPoint(x: self.layer.position.x, y: self.layer.position.y)
 		}
 			, completion: { (Bool) -> Void in
 						self.subButton_1.removeFromSuperview()
 						self.subButton_2.removeFromSuperview()
 						self.subButton_3.removeFromSuperview()
 						self.subButton_4.removeFromSuperview()
-						self.subButton_5.removeFromSuperview()
+						//self.subButton_5.removeFromSuperview()
 		}
 		)
 	}
