@@ -10,9 +10,9 @@ import Foundation
 import UIKit
 import CoreLocation
 /// TODO:
-/// ＊レイヤー追加したため、テキストが処理されない
 /// ＊住所を正しく切り分ける
-/// ＊
+/// ＊文字サイズをframeに合わせて調整
+/// ＊横画面の作成
 /// ＊
 /// ＊
 /// ＊
@@ -53,21 +53,28 @@ class ImageBoard: UIViewController, CLLocationManagerDelegate{
 	// ダブルタップ時、ImageListControllerに戻る
 	@objc func doubleTap(gesture: UITapGestureRecognizer) -> Void {
 		print("ImageBoard - doubleTap")
+		// imageViewに追加したジェスチャーを削除
+		// 追加したまま、ImageEditorに移るとスクロールが効かなくなるため
+		self.imageView?.gestureRecognizers?.removeAll()
 		self.navigationController?.setNavigationBarHidden(false, animated: false)
 		self.navigationController?.popViewController(animated: true)
 	}
 	// ピンチ時、ImageListControllerに戻る
 	@objc func pinchAction(gesture: UITapGestureRecognizer) -> Void {
 		print("ImageBoard - pinchAction")
+		// imageViewに追加したジェスチャーを削除
+		// 追加したまま、ImageEditorに移るとスクロールが効かなくなるため
+		self.imageView?.gestureRecognizers?.removeAll()
 		self.navigationController?.setNavigationBarHidden(false, animated: false)
 		self.navigationController?.popViewController(animated: true)
 	}
 	// imageView上のアイテムを種類毎に分別
 	func initView(){
-		for view in (imageView?.subviews)!
+		for layer in (imageView?.subviews)!
 		{
+			for view in layer.subviews{
 			// remove image from superview when tag is -1
-			// because this image is "noimage"
+			// this image is "noimage"
 			if view.tag == -1{
 				view.removeFromSuperview()
 			}else{
@@ -78,6 +85,7 @@ class ImageBoard: UIViewController, CLLocationManagerDelegate{
 				}else if view.tag == DataManager.TagIDs.typeDUMMY.rawValue {
 					
 				}
+			}
 			}
 		}
 		self.getGPS()
@@ -184,7 +192,6 @@ class ImageBoard: UIViewController, CLLocationManagerDelegate{
 					for tag in self.gpsTagArray{
 						let view:UILabel = self.imageView?.viewWithTag(tag) as! UILabel
 						view.text = pm.administrativeArea!
-						//view.text = pm.administrativeArea!
 					}
 					//self.setLabel()
 					/*					print(pm.country)
