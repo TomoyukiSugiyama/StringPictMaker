@@ -12,12 +12,12 @@ import UIKit
 /// TODO:
 /// ＊保存後、ImageBoardを表示し戻ってくると、スクロールが効かなくなる
 /// ＊編集し保存すると文字サイズ変更アイコンが残る
-/// ＊Image上のアイテムを選択したタイミングに、強調枠が表示されない
 /// ＊ディスプレイを反転した時の処理がない
 /// ＊Imageを縮小して保存した後、ImageBoardで見ると、縮小されたままになる
 /// 　→frameのサイズが変更されるため
 /// ＊テキスト、メニューボタン画面からはみ出る
 /// ＊メニューボタン、ツールバーに余分なアイコン
+/// ＊アイテム削除後、他のUIViewを動かすと落ちる
 
 /// Imageを編集するためのコントローラー
 class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPickerDelegate,LayerPickerDelegate,UIToolbarDelegate,UIScrollViewDelegate{
@@ -52,9 +52,13 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		self.view.backgroundColor = UIColor.gray
 		// スクロールビューを設置
 		scrollView = UIScrollView()
-		let singleTap = UIPanGestureRecognizer(target:self, action:#selector(handlePanGesture))
-		singleTap.maximumNumberOfTouches = 1
-		scrollView.addGestureRecognizer(singleTap)
+		//scrollView = MyScrollView()
+		let singlePan = UIPanGestureRecognizer(target:self, action:#selector(handlePanGesture))
+		singlePan.maximumNumberOfTouches = 1
+		let tap = UITapGestureRecognizer(target:self, action:#selector(handleTapGesture))
+
+		scrollView.addGestureRecognizer(singlePan)
+		scrollView.addGestureRecognizer(tap)
 		scrollView.frame = CGRect(x:0,y:0,width:self.view.frame.width,height:self.view.frame.height)
 		scrollView.center = self.view.center
 		print("ImageEditor - viewDidLoad - self.imageView.frame:",self.imageView?.frame as Any)
@@ -317,8 +321,6 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		GPSlabel.tag = gpsTag + DataManager.TagIDs.typeGPS.rawValue
 		print("ImageEditor - setGPSLabel - tag",GPSlabel.tag);
 		gpsTag += 1024
-		// touchイベントの有効化
-		GPSlabel.isUserInteractionEnabled = true
 		layer.addSubview(GPSlabel)
 		self.imageView?.addSubview(layer)
 	}
@@ -509,10 +511,74 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			}
 		}
 	}
+	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+		print("ImageEditor - touchesBegan")
+	}
 	/// TODO:
 	/// Imageを編集し保存後、再編集するとTagの番号が誤って追加される
 	/// タッチした座標にあるimageView上のアイテムを管理
 	var tagList = [Int]()
+	@objc func handleTapGesture(sender: UITapGestureRecognizer){
+		print("ImageEditor - handleTapGesture")
+		tagList.removeAll()
+		let location:CGPoint = sender.location(in: imageView)
+		// タッチされた座標にあるサブビューを取得
+		//let hitImageView:UIView? = self.imageView?.hitTest(location, with: UIEvent?)
+		print("ImageEditor - handlePanGesture - view.tag:",sender.view?.tag as Any)
+		// タッチされた座標の位置を含むサブビューを取得
+		var view:[UIView]!
+		// 選択されたレイヤーをviewに設定
+		// 全てのレイヤーが選択状態の場合　-1
+		if(selectedLayerNumber == -1){
+			view = self.imageView?.subviews
+		}else{
+			view = [(self.imageView?.subviews[selectedLayerNumber])!]
+		}
+		for layer in view {
+			for subview in layer.subviews {
+				// imageView上のアイテムが選択された時の処理
+				if (subview.frame.contains(location)) {
+					// 選択されたアイテムのタグをタグリストに追加
+					tagList.append(subview.tag)
+					print("ImageEditor - handlePanGesture - subview.tag:",subview.tag)
+					/// TODO:
+					/// タグの種類確認
+					if(subview.tag != 0){
+						// 選択されたアイテムを強調
+						var operateView:UIView!
+						operateView = layer.viewWithTag(subview.tag)
+						self.emphasisSelectedItem(selectedView: operateView)
+					}else{
+						/// TODO:
+						/// 必要な処理を書く　なければ消す
+					}
+				}else{
+					// リサイズアイコンが選択された時の処理
+					var iconIsSelected:Bool = false
+					for icon in subview.subviews{
+						print("subview:",subview.frame,"icon:",icon.frame,"location:",location)
+						var iconframe = icon.frame
+						iconframe.origin.x += subview.frame.origin.x
+						iconframe.origin.y += subview.frame.origin.y
+						print("subview:",subview.frame,"iconframe:",iconframe,"location:",location)
+						if(iconframe.contains(location)){
+							tagList.append(icon.tag)
+							print("ImageEditor - handlePanGesture - icon.tag:",icon.tag)
+							iconIsSelected = true
+						}
+					}
+					if(iconIsSelected == false){
+						// 選択されたアイテムの強調を削除
+						var operateView:UIView!
+						operateView = layer.viewWithTag(subview.tag)
+						self.clearEmphasisSelectedItem(selectedView: operateView)
+					}
+				}
+			}
+		}
+
+	}
+	
 	/// imageView上のアイテムをタッチ、パンした時のアクションを定義
 	///
 	/// - Parameter sender: sender
@@ -534,26 +600,26 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 				view = [(self.imageView?.subviews[selectedLayerNumber])!]
 			}
 			for layer in view {
-			for subview in layer.subviews {
-				// imageView上のアイテムが選択された時の処理
-				if (subview.frame.contains(location)) {
-					// 選択されたアイテムのタグをタグリストに追加
-					tagList.append(subview.tag)
-					print("ImageEditor - handlePanGesture - subview.tag:",subview.tag)
-					/// TODO:
-					/// タグの種類確認
-					if(subview.tag != 0){
-						// 選択されたアイテムを強調
-						var operateView:UIView!
-						operateView = layer.viewWithTag(subview.tag)
-						self.emphasisSelectedItem(selectedView: operateView)
-					}else{
+				for subview in layer.subviews {
+					// imageView上のアイテムが選択された時の処理
+					if (subview.frame.contains(location)) {
+						// 選択されたアイテムのタグをタグリストに追加
+						tagList.append(subview.tag)
+						print("ImageEditor - handlePanGesture - subview.tag:",subview.tag)
 						/// TODO:
-						/// 必要な処理を書く　なければ消す
-					}
-				}else{
-					// リサイズアイコンが選択された時の処理
-					var iconIsSelected:Bool = false
+						/// タグの種類確認
+						if(subview.tag != 0){
+							// 選択されたアイテムを強調
+							var operateView:UIView!
+							operateView = layer.viewWithTag(subview.tag)
+							self.emphasisSelectedItem(selectedView: operateView)
+						}else{
+							/// TODO:
+							/// 必要な処理を書く　なければ消す
+						}
+					}else{
+						// リサイズアイコンが選択された時の処理
+						var iconIsSelected:Bool = false
 						for icon in subview.subviews{
 							print("subview:",subview.frame,"icon:",icon.frame,"location:",location)
 							var iconframe = icon.frame
@@ -572,9 +638,11 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 							operateView = layer.viewWithTag(subview.tag)
 							self.clearEmphasisSelectedItem(selectedView: operateView)
 						}
+					}
 				}
 			}
-			}
+			
+
 			break
 		case UIGestureRecognizerState.changed:
 			var operateView:UIView!
@@ -762,4 +830,11 @@ public extension UIViewController
 		// 実装ミスの場合、nilを返す
 		return nil
 	}
+}
+
+class MyScrollView: UIScrollView {
+	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+		superview?.touchesBegan(touches, with: event)
+	}
+	
 }
