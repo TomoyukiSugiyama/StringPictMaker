@@ -14,12 +14,17 @@ protocol SubMenuDelegate {
 	// デリゲートメソッド定義
 	func selectedSubMenu(state:DataManager.MenuTypes)
 }
+/// TODO:
+/// メインメニューボタンを移動した時、サブメニューを閉じる
+/// サブメニューが画面外に出る
 
 /// CustomButton Class (Menu/Sub Menu Button)
 /// ImageEditorでメイン/サブメニューボタンが押された時の、アクションを定義
 class MenuButtonActionController: UIButton {
 	var isMoveing: Bool = false
 	var position: CGPoint!
+	let buttonSize:CGFloat = 80
+	let toolBarSize:CGFloat = 40
 	/// began to touch menu butoon
 	///
 	/// - Parameters:
@@ -44,6 +49,7 @@ class MenuButtonActionController: UIButton {
 		// ドラッグ後の座標
 		let newDx = touchEvent.location(in: superview).x
 		let newDy = touchEvent.location(in: superview).y
+		
 		// ドラッグしたx座標の移動距離
 		let dx = newDx - preDx
 		// ドラッグしたy座標の移動距離
@@ -52,8 +58,33 @@ class MenuButtonActionController: UIButton {
 		var viewFrame: CGRect = self.frame
 		// 移動分を反映させる
 		/// TODO フレームの外に出ないように設定
-		viewFrame.origin.x += dx
-		viewFrame.origin.y += dy
+		//print("MenuButtonActionController - bounds",self.window?.screen.bounds)
+		if(dx > 0){
+			if(viewFrame.origin.x + dx >= (self.window?.screen.bounds.width)! - buttonSize){
+				
+			}else{
+				viewFrame.origin.x += dx
+			}
+		}else{
+			if(viewFrame.origin.x + dx <= (self.window?.screen.bounds.origin.x)!){
+				
+			}else{
+				viewFrame.origin.x += dx
+			}
+		}
+		if(dy > 0){
+			if(viewFrame.origin.y + dy >= (self.window?.screen.bounds.height)! - buttonSize - toolBarSize){
+				
+			}else{
+				viewFrame.origin.y += dy
+			}
+		}else{
+			if(viewFrame.origin.y + dy <= (self.window?.screen.bounds.origin.y)!){
+				
+			}else{
+				viewFrame.origin.y += dy
+			}
+		}
 		self.frame = viewFrame
 	}
 	/// touches ended

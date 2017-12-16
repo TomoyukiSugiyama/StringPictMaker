@@ -83,7 +83,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		menuButton.setImage(UIImage(named: "add-icon"), for: .normal)
 		menuButton.frame = CGRect(x: 0, y: 0, width: 80, height: 80)
 		menuButton.backgroundColor = UIColor.lightGray
-		menuButton.center = CGPoint(x: self.view.frame.width/2, y: self.view.frame.height-70)
+		menuButton.center = CGPoint(x: self.view.frame.width/2, y: self.view.frame.height-80)
 		menuButton.layer.cornerRadius = 40.0
 		// 影を付ける
 		menuButton.layer.shadowOffset = CGSize(width: 1.0, height: 3.0)
