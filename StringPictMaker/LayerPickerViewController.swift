@@ -12,7 +12,12 @@ import UIKit
 /// TODO:
 /// ＊コレクションビュー、セルのレイアウト
 /// ＊レイヤーオンオフ時、サイズ０に
-/// ＊レイヤー切り替え後、ImageViewに反映
+/// ＊
+/// ＊
+/// ＊
+/// ＊
+/// ＊
+/// ＊
 
 /// 選択されたレイヤーの番号をImageEditorに送付するデリゲートメソッド
 protocol LayerPickerDelegate {
@@ -26,9 +31,22 @@ protocol LayerPickerDelegate {
 class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableViewDelegate{
 	var delegate : LayerPickerDelegate!
 	var imageView:UIView!
+	var imageViewInEditor:UIView!
 	/// ImageEditorからImageViewを取得
-	func setImageView(view: UIView) {
-		self.imageView = view
+	func setImageView( view: UIView) {
+		// ImageEditorから受け取ったImageViewをアーカイブ
+		// 参照渡ししないようにするため
+		let viewArchive = NSKeyedArchiver.archivedData(withRootObject: view)
+		// アーカイブされたデータを元に戻す
+		let unarchivedView = (NSKeyedUnarchiver.unarchiveObject(with: viewArchive as Data) as? UIView)!
+		imageView = unarchivedView
+		for layer in imageView.subviews{
+			for item in layer.subviews{
+				clearEmphasisSelectedItem(selectedView: item)
+			}
+		}
+		self.imageViewInEditor = view
+		//self.imageView = view
 	}
 	// コレクションビューを生成
 	var tableView : UITableView!
@@ -80,6 +98,11 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 	/// データ選択後に呼び出されるメソッド
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath){
 		print("LayerPickerViewController - indexPath:",indexPath.row)
+		for layer in self.imageViewInEditor.subviews{
+			for item in layer.subviews{
+				clearEmphasisSelectedItem(selectedView: item)
+			}
+		}
 		delegate?.selectedLayer(num: indexPath.row)
 	}
 	/// - Parameter sender: 編集ボタン
@@ -87,7 +110,7 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 		if(sender.tag == -1){
 			hideContentController(content: self)
 		}else{
-		self.delegate?.changeVisibleLayer(num: sender.tag)
+			self.delegate?.changeVisibleLayer(num: sender.tag)
 		}
 	}
 	/// コンテナをスーパービューに追加
@@ -104,5 +127,20 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 		content.willMove(toParentViewController: self)
 		content.view.removeFromSuperview()
 		content.removeFromParentViewController()
+	}
+	/// 選択されたアイテムの強調を削除
+	/// 拡大・縮小アイコンを削除
+	///
+	/// - Parameter selectedView: 選択されたアイテム
+	func clearEmphasisSelectedItem(selectedView:UIView){
+		selectedView.layer.borderColor = UIColor.clear.cgColor
+		selectedView.layer.borderWidth = 4
+		for v in selectedView.subviews {
+			// オブジェクトの型がUIImageView型で、タグ番号が1〜5番のオブジェクトを取得する
+			//if let v = v as? UIImageView, v.tag >= 1 && v.tag <= 5  {
+			// そのオブジェクトを親のviewから取り除く
+			v.removeFromSuperview()
+			//}
+		}
 	}
 }

@@ -12,9 +12,15 @@ import UIKit
 /// TODO:
 /// ＊編集し保存すると文字サイズ変更アイコンが残る
 /// ＊ディスプレイを反転した時の処理がない
-/// ＊テキスト、メニューボタン画面からはみ出る
+/// ＊テキストが画面からはみ出る
 /// ＊メニューボタン、ツールバーに余分なアイコン
-/// ＊アイテム削除後、他のUIViewを動かすと落ちる
+/// ＊アイテム削除後、他のUIViewを動かすと落ちる　→　よくわからない
+/// ＊ピッカーのサイズ調整
+/// ＊レイヤーピッッカービューをリロードすると選択も消える
+/// ＊
+/// ＊
+/// ＊
+/// ＊
 
 /// Imageを編集するためのコントローラー
 class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPickerDelegate,LayerPickerDelegate,UIToolbarDelegate,UIScrollViewDelegate{
@@ -388,6 +394,11 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			print("ImageEditor - dispCancelAlert - SaveAlert: OK")
 			// 拡大、縮小されたimageViewを元のサイズに変更
 			self.imageView?.transform = CGAffineTransform.identity
+			for layer in (self.imageView?.subviews)!{
+				for item in layer.subviews{
+					self.clearEmphasisSelectedItem(selectedView: item)
+				}
+			}
 			self.imageData?.updateImage(id: self.delegateParamId, view: self.imageView!)
 			// ImageListControllerを更新
 			let prevVC = self.getPreviousViewController() as! ImageListController
@@ -503,6 +514,8 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 					print("ImageEditor - item.center",item.center);
 					item.center = (self.imageView?.center)!
 					print("ImageEditor - item.center",item.center);
+					// レイヤーピッカービューを更新
+					updateLayerPickerView()
 				}
 				
 			}
@@ -684,6 +697,8 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 					}
 				}
 			}
+			// レイヤーピッカービューを更新
+			updateLayerPickerView()
 			break
 		case UIGestureRecognizerState.ended:
 			break
@@ -806,6 +821,16 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		content.willMove(toParentViewController: self)
 		content.view.removeFromSuperview()
 		content.removeFromParentViewController()
+	}
+	/// レイヤーピッカービューを更新
+	func updateLayerPickerView(){
+		// レイヤーピッカービューが表示されていれば更新
+		if(layerPickerView != nil){
+			layerPickerView.setImageView(view: imageView!)
+			layerPickerView.tableView.reloadData()
+		}else{
+			// layerPickerView is not displayed.
+		}
 	}
 }
 

@@ -24,6 +24,7 @@ class MenuButtonActionController: UIButton {
 	var isMoveing: Bool = false
 	var position: CGPoint!
 	let buttonSize:CGFloat = 80
+	let buttonSizeOffset:CGFloat = 5
 	let toolBarSize:CGFloat = 40
 	var subMenuOpened: Bool = false
 	
@@ -66,7 +67,7 @@ class MenuButtonActionController: UIButton {
 		/// TODO フレームの外に出ないように設定
 		//print("MenuButtonActionController - bounds",self.window?.screen.bounds)
 		if(dx > 0){
-			if(viewFrame.origin.x + dx >= (self.window?.screen.bounds.width)! - buttonSize){
+			if(viewFrame.origin.x + dx >= (self.window?.screen.bounds.width)! - buttonSize + buttonSizeOffset){
 				
 			}else{
 				viewFrame.origin.x += dx
@@ -79,7 +80,7 @@ class MenuButtonActionController: UIButton {
 			}
 		}
 		if(dy > 0){
-			if(viewFrame.origin.y + dy >= (self.window?.screen.bounds.height)! - buttonSize - toolBarSize){
+			if(viewFrame.origin.y + dy >= (self.window?.screen.bounds.height)! - buttonSize - toolBarSize + buttonSizeOffset){
 				
 			}else{
 				viewFrame.origin.y += dy
