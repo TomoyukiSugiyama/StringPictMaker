@@ -9,6 +9,20 @@
 import Foundation
 import UIKit
 
+/// TODO:
+/// ＊レイアウト
+/// ＊cansel,doneボタンの中身を実装
+/// ＊横画面にした時のレイアウト
+/// ＊
+/// ＊
+/// ＊
+
+/// Future:
+/// ＊文字の影を調整する機能の追加
+/// ＊
+/// ＊
+/// ＊
+
 /// 選択されたフォントをImageEditorに送付するデリゲートメソッド
 protocol FontPickerDelegate {
 	// デリゲートメソッド定義

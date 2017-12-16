@@ -10,6 +10,25 @@ import Foundation
 import UIKit
 import CoreData
 
+/// TODO:
+/// ＊レイアウト
+/// ＊バックグラウンドを画像に変更
+/// ＊サンプルのイメージをあらかじめ追加
+/// ＊横画面にした時のレイアウト
+/// ＊新規作成ボタンをセルに表示
+/// ＊削除ボタンの追加
+/// ＊
+/// ＊
+/// ＊
+
+/// Future:
+/// ＊ツールバーを追加して、オンラインで共有
+/// ＊自由にデザインできるツールになったら、SNS投稿
+/// ＊（→ImageEditorのFuture機能が追加完了した時）
+/// ＊
+/// ＊
+/// ＊
+
 /// 作成したイメージのリストを表示するコントローラー
 class ImageListController: UIViewController, UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout{
 	// カスタマイズしたCollectionView

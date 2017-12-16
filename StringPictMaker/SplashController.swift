@@ -8,6 +8,17 @@
 
 import UIKit
 
+/// TODO:
+/// ＊アスペクト比がおかしい
+/// ＊
+/// ＊
+/// ＊
+
+/// Future:
+/// ＊
+/// ＊
+/// ＊
+
 /// スプラッシュビューを表示
 class SplashController: UIViewController {
 	var logoImageView: UIImageView!

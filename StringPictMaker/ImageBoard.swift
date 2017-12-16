@@ -9,13 +9,20 @@
 import Foundation
 import UIKit
 import CoreLocation
+
 /// TODO:
 /// ＊住所を正しく切り分ける
 /// ＊文字サイズをframeに合わせて調整
-/// ＊横画面の作成
+/// ＊横画面にした時のレイアウト
 /// ＊
 /// ＊
 /// ＊
+
+/// Future:
+/// ＊時計表示機能
+/// ＊
+/// ＊
+
 /// ImageEditorで編集したImageを表示
 class ImageBoard: UIViewController, CLLocationManagerDelegate{
 	// delegate

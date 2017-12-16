@@ -9,14 +9,24 @@
 import Foundation
 import UIKit
 
+/// TODO:
+/// ＊必要なアイコンに変更
+/// ＊横画面に変更した際のボタンの位置を変更
+/// ＊
+/// ＊
+/// ＊
+
+/// Future:
+/// ＊メニューを増やす場合、スライドウィンドウにする
+/// ＊
+/// ＊
+/// ＊
+
 /// 選択されたサブメニューの番号をImageEditorに送付するデリゲートメソッド
 protocol SubMenuDelegate {
 	// デリゲートメソッド定義
 	func selectedSubMenu(state:DataManager.MenuTypes)
 }
-/// TODO:
-/// 必要なアイコンに変更
-/// メニューを増やす場合、スライドウィンドウにする
 
 /// CustomButton Class (Menu/Sub Menu Button)
 /// ImageEditorでメイン/サブメニューボタンが押された時の、アクションを定義

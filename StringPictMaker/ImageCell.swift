@@ -9,6 +9,18 @@
 import Foundation
 import UIKit
 
+/// TODO:
+/// ＊レイアウト
+/// ＊バックグラウンドを画像に変更
+/// ＊
+/// ＊
+/// ＊
+
+/// Future:
+/// ＊
+/// ＊
+/// ＊
+
 /// ImageListControllerに追加するセルのデザインを作成
 class ImageCell: UICollectionViewCell {
 	var imageLabel: UIImageView?

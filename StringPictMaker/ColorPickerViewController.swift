@@ -8,6 +8,21 @@
 
 import Foundation
 import UIKit
+
+/// TODO:
+/// ＊レイアウト
+/// ＊cansel,doneボタンの中身を実装
+/// ＊横画面にした時のレイアウト
+/// ＊
+/// ＊
+/// ＊
+
+/// Future:
+/// ＊リッチなUIに変更（視覚的にわかるカラーピッカー）
+/// ＊
+/// ＊
+/// ＊
+
 /// 選択された色をImageEditorに送付するデリゲートメソッド
 protocol ColorPickerDelegate {
 	// デリゲートメソッド定義

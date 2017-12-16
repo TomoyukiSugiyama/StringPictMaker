@@ -10,6 +10,16 @@ import Foundation
 import UIKit
 import CoreData
 
+///TODO:
+/// ＊
+/// ＊
+/// ＊
+
+/// Future:
+/// ＊
+/// ＊
+/// ＊
+
 /// Data manager
 /// 様々なクラスで使用するデータ・メモリに保存するためのデータを管理
 class DataManager{

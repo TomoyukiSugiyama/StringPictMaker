@@ -13,11 +13,33 @@ import UIKit
 /// ＊編集し保存すると文字サイズ変更アイコンが残る
 /// ＊ディスプレイを反転した時の処理がない
 /// ＊テキストが画面からはみ出る
-/// ＊メニューボタン、ツールバーに余分なアイコン
+/// ＊メニューボタン、ツールバーの余分なアイコンを削除
 /// ＊アイテム削除後、他のUIViewを動かすと落ちる　→　よくわからない
 /// ＊ピッカーのサイズ調整
 /// ＊レイヤーピッッカービューをリロードすると選択も消える
+/// ＊横画面にした時のレイアウト
+/// ＊選択したアイテムによってツールバーのアイテムを変更
+/// ＊ツールバーのアイテムを画像に変更
+/// ＊アイテムを下に移動した時に、ツールバーとメニューボタンを透過
+/// ＊レイヤービューに３枚以上のレイヤーを追加した状態で、レイヤービューを上にスクロールし、
+/// ＊ImageView上のアイテムを動かすとレイヤービューの挙動がおかしくなる
 /// ＊
+/// ＊
+/// ＊
+
+/// Future:
+/// ＊グリッド表示
+/// ＊アイテムを移動した時、グリッドに合わせて位置調整
+/// ＊複数アイテムの整列
+/// ＊ペンツール（太さ等変更可能）
+/// ＊消しゴム
+/// ＊色吸い取り
+/// ＊範囲選択
+/// ＊画像追加
+/// ＊時間追加
+/// ＊テキスト追加
+/// ＊フレーム画像追加
+/// ＊スタンプ追加
 /// ＊
 /// ＊
 /// ＊
@@ -55,11 +77,9 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		self.view.backgroundColor = UIColor.gray
 		// スクロールビューを設置
 		scrollView = UIScrollView()
-		//scrollView = MyScrollView()
 		let singlePan = UIPanGestureRecognizer(target:self, action:#selector(handlePanGesture))
 		singlePan.maximumNumberOfTouches = 1
 		let tap = UITapGestureRecognizer(target:self, action:#selector(handleTapGesture))
-
 		scrollView.addGestureRecognizer(singlePan)
 		scrollView.addGestureRecognizer(tap)
 		scrollView.frame = CGRect(x:0,y:0,width:self.view.frame.width,height:self.view.frame.height)
@@ -77,8 +97,6 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		self.view.addSubview(scrollView)
 		self.initView()
 		imageView?.isUserInteractionEnabled = true
-		//self.view.addSubview(imageView!)
-		//imageView?.addGestureRecognizer(UIPanGestureRecognizer(target:self, action:#selector(handlePanGesture)))
 		scrollView.addSubview(imageView!)
 		// menuボタンを生成
 		// menuボタンにタッチイベントを追加
@@ -101,10 +119,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		//| UIControlEvents.touchDragOutside
 		// mainボタンをviewに追加
 		self.view.addSubview(menuButton)
-		//scrollView.addSubview(menuButton)
-		/************************************/
-		//  テストコード↓
-		/************************************/
+		// ツールバーを設置
 		self.initToolBarItem()
 		// ツールバーのサイズを決定
 		myToolbar = UIToolbar(frame: CGRect(x:0, y:self.view.bounds.size.height - 44, width:self.view.bounds.size.width, height:40.0))
@@ -119,9 +134,6 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		myToolbar.items = toolBar[0]
 		// ツールバーに追加
 		self.view.addSubview(myToolbar)
-		//scrollView.addSubview(myToolbar)
-		/************************************/
-		//  テストコード↑
 		/************************************/
 	}
 	// ナビゲーションバーを非表示
@@ -135,16 +147,12 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		let prevVC = self.getPreviousViewController() as! ImageListController
 		prevVC.updateView()
 	}
-	/************************************/
-	//  テストコード↓
-	/************************************/
+	// スクリーンサイズを変更するための変更率を決定
+	// Iphone7のスクリーンサイズをベースにする
 	private func getScreenRatio() -> CGFloat {
 		let baseScreenWidth : CGFloat = 375.0
 		return UIScreen.main.bounds.size.width / baseScreenWidth
 	}
-	/************************************/
-	//  テストコード↑
-	/************************************/
 	/// imageViewを初期化
 	func initView(){
 		for layer in (imageView?.subviews)! {
@@ -521,9 +529,6 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			}
 		}
 	}
-	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-		print("ImageEditor - touchesBegan")
-	}
 	/// TODO:
 	/// Imageを編集し保存後、再編集するとTagの番号が誤って追加される
 	/// タッチした座標にあるimageView上のアイテムを管理
@@ -588,7 +593,6 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		}
 
 	}
-	
 	/// imageView上のアイテムをタッチ、パンした時のアクションを定義
 	///
 	/// - Parameter sender: sender
@@ -651,8 +655,6 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 					}
 				}
 			}
-			
-
 			break
 		case UIGestureRecognizerState.changed:
 			var operateView:UIView!
@@ -753,7 +755,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		// ドラッグ開始時の処理
 		//print("beginDragging")
 	}
-	/// 以下、ラベルに関する処理
+	/// 以下、追加したラベルに関する処理
 	/// 選択されたアイテムを強調
 	/// 拡大・縮小アイコンを追加
 	///
@@ -807,6 +809,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		// 文字サイズに合わせてラベルのサイズを調整
 		textLabel.sizeToFit()
 	 }
+	/// 以下、レイヤーピッカービューのコンテナに関する処理
 	/// コンテナをスーパービューに追加
 	func displayContentController(content:UIViewController, container:UIView){
 		print("ImageEditor - displayContentController")
@@ -852,11 +855,4 @@ public extension UIViewController
 		// 実装ミスの場合、nilを返す
 		return nil
 	}
-}
-
-class MyScrollView: UIScrollView {
-	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-		superview?.touchesBegan(touches, with: event)
-	}
-	
 }

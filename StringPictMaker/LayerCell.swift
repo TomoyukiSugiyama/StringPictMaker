@@ -8,10 +8,18 @@
 
 import Foundation
 import UIKit
+
 ///TODO:
 /// ＊セルに表示するビューの変更
 /// ＊レイアウト
+/// ＊
+/// ＊
+/// ＊
 
+/// Future:
+/// ＊
+/// ＊
+/// ＊
 /// LayerPickerControllerに追加するセルのデザインを作成
 class LayerCell: UITableViewCell {
 	var imageLabel: UIImageView?
@@ -19,8 +27,7 @@ class LayerCell: UITableViewCell {
 	var editButton: UIButton?
 	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)!
-	}
-	
+	}	
 	override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 		// Initialization code
@@ -43,12 +50,9 @@ class LayerCell: UITableViewCell {
 		editButton?.setTitleColor(UIColor.blue, for: .normal)
 		self.contentView.addSubview(editButton!)
 	}
-	
-  
 	override func prepareForReuse() {
 		super.prepareForReuse()
 	}
-	
 	override func layoutSubviews() {
 		super.layoutSubviews()
 		layerLabel?.frame = CGRect(x: 0, y  : 0, width: 100, height: 20)
