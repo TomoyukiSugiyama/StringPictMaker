@@ -194,6 +194,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		var myUIBarButtonFontSeloctor: UIBarButtonItem? = nil
 		var myUIBarButtonLayerSeloctor: UIBarButtonItem? = nil
 		var myUIBarButtonAdjustCenter: UIBarButtonItem? = nil
+		var myUIBarButtonDeleteItem: UIBarButtonItem? = nil
 		self.toolBar = [[UIBarButtonItem]]()
 		myUIBarButtonGreen = UIBarButtonItem(title: "Green", style:.plain, target: self, action: #selector(onClickBarButton))
 		myUIBarButtonGreen?.tag = 1
@@ -217,9 +218,11 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		myUIBarButtonLayerSeloctor?.tag = 8
 		myUIBarButtonAdjustCenter = UIBarButtonItem(title: "Center", style:.plain, target: self, action: #selector(onClickBarButton))
 		myUIBarButtonAdjustCenter?.tag = 9
+		myUIBarButtonDeleteItem = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(onClickBarButton))
+		myUIBarButtonDeleteItem?.tag = 10
 		// 選択されたサブメニュー毎のアイテムを設定
 		self.toolBar.append([myUIBarButtonGreen!,myUIBarButtonBlue!,myUIBarButtonRed!,myUIBarItemSpace100!,myUIBarButtonCancel!,myUIBarItemSpace20!,myUIBarButtonSave!])
-		self.toolBar.append([myUIBarButtonColorPalet!,myUIBarButtonFontSeloctor!,myUIBarItemSpace100!,myUIBarButtonLayerSeloctor!,myUIBarButtonCancel!,myUIBarItemSpace20!,myUIBarButtonSave!])
+		self.toolBar.append([myUIBarButtonColorPalet!,myUIBarButtonFontSeloctor!,myUIBarItemSpace100!,myUIBarButtonLayerSeloctor!,myUIBarButtonDeleteItem!,myUIBarItemSpace20!,myUIBarButtonSave!])
 		self.toolBar.append([myUIBarButtonGreen!,myUIBarButtonBlue!,myUIBarButtonAdjustCenter!,myUIBarItemSpace100!,myUIBarButtonCancel!,myUIBarItemSpace20!,myUIBarButtonSave!])
 
 		print("ImageEditor - initToolBarItem")
@@ -288,21 +291,31 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		print("ImageEditor - selectedLayer - num:",num)
 		selectedLayerNumber = num
 	}
+	/// TODO:
+	/// デリゲートじゃなくてもレイヤーピッカービューで切り替えられるので、変更すること
 	/// 表示・非表示を切り替えるレイヤーの番号を取得
 	func changeVisibleLayer(num: Int) {
 		print("ImageEditor - switchLayer - num:",num)
-		changeVisible(visible: (imageView?.subviews[num].isHidden)!, label: (imageView?.subviews[num])!)
-		
+		//changeVisible(visible: (imageView?.subviews[num].isHidden)!, label: (imageView?.subviews[num])!)
+		changeVisible(layer: (imageView?.subviews[num])!)
 	}
 	/// レイヤーの表示・非表示、切り替え
-	func changeVisible(visible: Bool,label: UIView) {
-		if visible {
+	//func changeVisible(visible: Bool,label: UIView) {
+	func changeVisible(layer: UIView) {
+		//var constraint: NSLayoutConstraint!
+		if(layer.isHidden){
+			layer.isHidden = false
+		}else{
+			layer.isHidden = true
+			print("ImageEditor - cangeVisible - layer.layer",layer.alpha)
+		}
+		/*if visible {
 			label.isHidden = false
 			//labelHeightConstraint.constant = 44
 		} else {
 			label.isHidden = true
 			//labelHeightConstraint.constant = 0
-		}
+		}*/
 	}
 	/// TODO:
 	/// Imageを編集し保存後、再編集するとTagの番号が誤って追加される
@@ -367,8 +380,8 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			self.imageView?.backgroundColor = UIColor.red
 		case 4:
 			print("ImageEditor - onClickBarButton - cancel")
-			removeItemFromLayer()
-			//displayCancelAlert()
+			//removeItemFromLayer()
+			displayCancelAlert()
 		case 5:
 			// CoreDataを更新
 			print("ImageEditor - onClickBarButton - save:",self.delegateParamId)
@@ -381,6 +394,8 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			displayLayerSelector()
 		case 9:
 			adjustItemPositionCenter()
+		case 10:
+			removeItemFromLayer()
 		default:
 			print("ImageEditor - onClickBarButton - error")
 		}
@@ -403,6 +418,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			// 拡大、縮小されたimageViewを元のサイズに変更
 			self.imageView?.transform = CGAffineTransform.identity
 			for layer in (self.imageView?.subviews)!{
+				layer.isHidden = false
 				for item in layer.subviews{
 					self.clearEmphasisSelectedItem(selectedView: item)
 				}
@@ -550,6 +566,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			view = [(self.imageView?.subviews[selectedLayerNumber])!]
 		}
 		for layer in view {
+			if(!layer.isHidden){
 			for subview in layer.subviews {
 				// imageView上のアイテムが選択された時の処理
 				if (subview.frame.contains(location)) {
@@ -590,6 +607,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 					}
 				}
 			}
+			}
 		}
 
 	}
@@ -614,6 +632,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 				view = [(self.imageView?.subviews[selectedLayerNumber])!]
 			}
 			for layer in view {
+				if(!layer.isHidden){
 				for subview in layer.subviews {
 					// imageView上のアイテムが選択された時の処理
 					if (subview.frame.contains(location)) {
@@ -653,6 +672,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 							self.clearEmphasisSelectedItem(selectedView: operateView)
 						}
 					}
+				}
 				}
 			}
 			break

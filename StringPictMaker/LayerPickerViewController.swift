@@ -11,7 +11,6 @@ import UIKit
 
 /// TODO:
 /// ＊コレクションビューのレイアウト
-/// ＊レイヤーオンオフ時、サイズ０にしないと選択できてしまう
 /// ＊全レイヤーセレクトメニュー追加
 /// ＊横画面にした時のレイアウト
 /// ＊
@@ -46,6 +45,7 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 		let unarchivedView = (NSKeyedUnarchiver.unarchiveObject(with: viewArchive as Data) as? UIView)!
 		imageView = unarchivedView
 		for layer in imageView.subviews{
+			layer.isHidden = false
 			for item in layer.subviews{
 				clearEmphasisSelectedItem(selectedView: item)
 			}
