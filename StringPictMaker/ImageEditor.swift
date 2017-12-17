@@ -10,19 +10,22 @@ import Foundation
 import UIKit
 
 /// TODO:
-/// ＊編集し保存すると文字サイズ変更アイコンが残る
-/// ＊ディスプレイを反転した時の処理がない
 /// ＊テキストが画面からはみ出る
 /// ＊メニューボタン、ツールバーの余分なアイコンを削除
 /// ＊アイテム削除後、他のUIViewを動かすと落ちる　→　よくわからない
 /// ＊ピッカーのサイズ調整
 /// ＊レイヤーピッッカービューをリロードすると選択も消える
 /// ＊横画面にした時のレイアウト
+/// ＊ → サブメニューボタンが着いてこないので、閉じる
+/// ＊ → leyer上のアイテムのサイズと位置の調整が必要
+/// ＊ → ツールバー上のアイテムの位置調整が必要
+/// ＊ → ピッカーの位置がずれるため調整が必要が必要
 /// ＊選択したアイテムによってツールバーのアイテムを変更
 /// ＊ツールバーのアイテムを画像に変更
 /// ＊アイテムを下に移動した時に、ツールバーとメニューボタンを透過
 /// ＊レイヤービューに３枚以上のレイヤーを追加した状態で、レイヤービューを上にスクロールし、
-/// ＊ImageView上のアイテムを動かすとレイヤービューの挙動がおかしくなる
+/// ＊ - ImageView上のアイテムを動かすとレイヤービューの挙動がおかしくなる
+/// ＊レイヤーを表示した状態で、アイテムを削除してレイヤー上のアイテムがゼロになると落ちる
 /// ＊
 /// ＊
 /// ＊
@@ -55,6 +58,8 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	var selectedSubMenuItemState = 0
 	// スクロールビューを生成
 	var scrollView: UIScrollView! = nil
+	// メニューボタンを生成
+	var menuButton:MenuButtonActionController! = nil
 	// ツールバーを生成
 	var myToolbar: UIToolbar! = nil
 	// ツールバーのアイテム
@@ -100,7 +105,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		scrollView.addSubview(imageView!)
 		// menuボタンを生成
 		// menuボタンにタッチイベントを追加
-		let menuButton = MenuButtonActionController(type: .custom)
+		menuButton = MenuButtonActionController(type: .custom)
 		menuButton.setImage(UIImage(named: "add-icon"), for: .normal)
 		menuButton.frame = CGRect(x: 0, y: 0, width: 80, height: 80)
 		menuButton.backgroundColor = UIColor.lightGray
@@ -147,12 +152,48 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		let prevVC = self.getPreviousViewController() as! ImageListController
 		prevVC.updateView()
 	}
+	
+	// 画面回転時に呼び出される
+	override func willAnimateRotation(to toInterfaceOrientation: UIInterfaceOrientation, duration: TimeInterval){
+		// スクロールビューのサイズを決定
+		scrollView.frame = CGRect(x:0,y:0,width:self.view.frame.width,height:self.view.frame.height)
+		print("ImageEditor - willAnimateRotation - scrollView.center:",scrollView.center)
+		// ツールバーのサイズを決定
+		myToolbar.frame = CGRect(x:0, y:self.view.bounds.size.height - 44, width:self.view.bounds.size.width, height:40.0)
+		// ツールバーの位置を決定
+		myToolbar.layer.position = CGPoint(x: self.view.bounds.width/2, y: self.view.bounds.height-20.0)
+		// メニューボタンの位置を決定
+		menuButton.center = CGPoint(x: self.view.frame.width/2, y: self.view.frame.height-80)
+		let fWidth = (self.imageView?.frame.width)! * self.view.frame.width / (self.imageView?.bounds.width)!
+		let fHeight = (self.imageView?.frame.height)! * self.view.frame.height / (self.imageView?.bounds.height)!
+		self.imageView?.frame = CGRect(x:0,y:0,width:fWidth,height:fHeight)
+		self.imageView?.center = self.view.center
+		print("ImageEditor - willAnimateRotation - self.imageView?.frame:",self.imageView?.frame as Any)
+		print("ImageEditor - willAnimateRotation - self.imageView?.bounds:",self.imageView?.bounds as Any)
+		print("ImageEditor - willAnimateRotation - self.imageView?.center:",self.imageView?.center as Any)
+		for layer in (self.imageView?.subviews)!{
+			layer.frame = CGRect(x:0,y:0,width:self.view.frame.width,height:self.view.frame.height)
+			print("ImageEditor - willAnimateRotation - layer.frame:",layer.frame)
+			print("ImageEditor - willAnimateRotation - layer.bounds:",layer.bounds)
+			print("ImageEditor - willAnimateRotation - layer.center:",layer.center)
+			for item in layer.subviews{
+				print("ImageEditor - willAnimateRotation - item.frame:",item.frame)
+				print("ImageEditor - willAnimateRotation - item.bounds:",item.bounds)
+				print("ImageEditor - willAnimateRotation - item.center:",item.center)
+
+			}
+			
+		}
+
+	}
 	// スクリーンサイズを変更するための変更率を決定
 	// Iphone7のスクリーンサイズをベースにする
 	private func getScreenRatio() -> CGFloat {
 		let baseScreenWidth : CGFloat = 375.0
+		print("ImageEditor - getScreenRatio - UIScreen.main.bounds.size.width:",UIScreen.main.bounds.size.width)
 		return UIScreen.main.bounds.size.width / baseScreenWidth
 	}
+	
 	/// imageViewを初期化
 	func initView(){
 		for layer in (imageView?.subviews)! {
