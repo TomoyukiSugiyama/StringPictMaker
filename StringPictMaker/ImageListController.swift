@@ -57,7 +57,15 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
 		self.view.addSubview(myCollectionView)
 		imageData = DataManager()
 		imageData?.deleteAllData()
-		imageData?.saveEmptyImage(id: 0, frame: self.view.frame)
+		var imageViewRatio:CGFloat!
+		var frame:CGRect!
+		if(self.view.frame.width > self.view.frame.height){
+			frame = CGRect(x:0,y:0,width:self.view.frame.width,height:self.view.frame.height)
+		}else{
+			imageViewRatio = self.view.frame.width / self.view.frame.height
+			frame = CGRect(x:0,y:0,width:self.view.frame.height * imageViewRatio,height:self.view.frame.width * imageViewRatio)
+		}
+		imageData?.saveEmptyImage(id: 0, frame: frame)
 		// タイトルをセット
 		let num:Int = (self.imageData?.imageList.count)!
 		self.navigationItem.title = "ギャラリー(" + String(describing: num) + ")"

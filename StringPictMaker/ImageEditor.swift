@@ -12,7 +12,7 @@ import UIKit
 /// TODO:
 /// ＊テキストが画面からはみ出る
 /// ＊メニューボタン、ツールバーの余分なアイコンを削除
-/// ＊アイテム削除後、他のUIViewを動かすと落ちる　→　よくわからない
+/// ＊アイテム削除後、他のUIViewを動かすと落ちる　→　発生しなくなった。よくわからない
 /// ＊ピッカーのサイズ調整
 /// ＊レイヤーピッッカービューをリロードすると選択も消える
 /// ＊横画面にした時のレイアウト
@@ -76,6 +76,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	// レイヤーのピッカービューを生成
 	var layerPickerView: LayerPickerViewController!
 	var selectedLayerNumber: Int = -1
+	var imageViewRatio: CGFloat!
 	/// DataManagerのオブジェクトを生成し、CoreDataからデータを読み出す
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -164,19 +165,28 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		myToolbar.layer.position = CGPoint(x: self.view.bounds.width/2, y: self.view.bounds.height-20.0)
 		// メニューボタンの位置を決定
 		menuButton.center = CGPoint(x: self.view.frame.width/2, y: self.view.frame.height-80)
-		let fWidth = (self.imageView?.frame.width)! * self.view.frame.width / (self.imageView?.bounds.width)!
-		let fHeight = (self.imageView?.frame.height)! * self.view.frame.height / (self.imageView?.bounds.height)!
+		imageViewRatio = self.view.frame.width / (imageView?.bounds.width)!
+		//let fWidth = (self.imageView?.frame.width)! * self.view.frame.width / (self.imageView?.bounds.width)!
+		let fWidth = (self.imageView?.frame.width)! * imageViewRatio
+		//let fHeight = (self.imageView?.frame.height)! * self.view.frame.height / (self.imageView?.bounds.height)!
+		let fHeight = (self.imageView?.frame.height)! * imageViewRatio
 		self.imageView?.frame = CGRect(x:0,y:0,width:fWidth,height:fHeight)
 		self.imageView?.center = self.view.center
 		print("ImageEditor - willAnimateRotation - self.imageView?.frame:",self.imageView?.frame as Any)
 		print("ImageEditor - willAnimateRotation - self.imageView?.bounds:",self.imageView?.bounds as Any)
 		print("ImageEditor - willAnimateRotation - self.imageView?.center:",self.imageView?.center as Any)
 		for layer in (self.imageView?.subviews)!{
-			layer.frame = CGRect(x:0,y:0,width:self.view.frame.width,height:self.view.frame.height)
+			let layerCenter:CGPoint = layer.center
+			print("ImageEditor - willAnimateRotation - layer.center:",layer.center)
+			layer.frame = (self.imageView?.bounds)!
 			print("ImageEditor - willAnimateRotation - layer.frame:",layer.frame)
 			print("ImageEditor - willAnimateRotation - layer.bounds:",layer.bounds)
 			print("ImageEditor - willAnimateRotation - layer.center:",layer.center)
 			for item in layer.subviews{
+				let vectorX:CGFloat = (layerCenter.x - item.center.x) * imageViewRatio
+				let vectorY:CGFloat = (layerCenter.y - item.center.y) * imageViewRatio
+				item.center = CGPoint(x:layer.center.x - vectorX,y:layer.center.y - vectorY)
+				//item.center = layer.center
 				print("ImageEditor - willAnimateRotation - item.frame:",item.frame)
 				print("ImageEditor - willAnimateRotation - item.bounds:",item.bounds)
 				print("ImageEditor - willAnimateRotation - item.center:",item.center)
@@ -196,6 +206,13 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	
 	/// imageViewを初期化
 	func initView(){
+		imageViewRatio = self.view.frame.width / (imageView?.frame.width)!
+		print("ImageEditor - initView - imageView.frame",(imageView?.frame)! as Any)
+		let fwidth:CGFloat = (imageView?.frame.width)! * imageViewRatio
+		let fheight:CGFloat = (imageView?.frame.height)! * imageViewRatio
+		imageView?.frame = CGRect(x:0,y:0,width:fwidth,height:fheight)
+		imageView?.center = self.view.center
+		print("ImageEditor - initView - imageView.frame",(imageView?.frame)! as Any)
 		for layer in (imageView?.subviews)! {
 			if layer.tag == -1{
 				layer.removeFromSuperview()
@@ -210,7 +227,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 				if (view.tag & 0x3FF) == DataManager.TagIDs.typeGPS.rawValue {
 					print("ImageEditor - initView - tagGPS - view.tag:",view.tag)
 					let label = view as! UILabel
-					label.text = "現在位置"
+					label.text = "現在地"
 					if(gpsTag <= (view.tag & ~0x3FF)){
 						gpsTag += 1024
 						print("ImageEditor - initVies - tag:",gpsTag)
@@ -348,15 +365,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			layer.isHidden = false
 		}else{
 			layer.isHidden = true
-			print("ImageEditor - cangeVisible - layer.layer",layer.alpha)
 		}
-		/*if visible {
-			label.isHidden = false
-			//labelHeightConstraint.constant = 44
-		} else {
-			label.isHidden = true
-			//labelHeightConstraint.constant = 0
-		}*/
 	}
 	/// TODO:
 	/// Imageを編集し保存後、再編集するとTagの番号が誤って追加される
@@ -365,10 +374,11 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	var gpsTag = 1024
 	/// GPSをセット
 	func setGPSLabel(){
-		let layer = UIView(frame:self.view.frame)
+		let layer = UIView(frame:(self.imageView?.bounds)!)
+		layer.backgroundColor = UIColor.lightGray
 		let GPSlabel = UILabel()
 		// 文字追加
-		let str2 = "現在位置"
+		let str2 = "現在地"
 		let pointSize : CGFloat = 120
 		let font = UIFont.boldSystemFont(ofSize: pointSize)
 		let width = str2.size(withAttributes: [NSAttributedStringKey.font : font])
@@ -380,7 +390,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		// 文字サイズに合わせてラベルのサイズを調整
 		GPSlabel.sizeToFit()
 		// ラベルをviewの中心に移動
-		GPSlabel.center = self.view.center
+		GPSlabel.center = layer.center
 		/// TODO:
 		/// tagの値変更
 		GPSlabel.tag = gpsTag + DataManager.TagIDs.typeGPS.rawValue
