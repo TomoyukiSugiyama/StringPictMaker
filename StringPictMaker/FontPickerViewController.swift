@@ -30,7 +30,9 @@ protocol FontPickerDelegate {
 }
 /// 文字列のフォントを変更するためのピッカービューコントローラ
 class FontPickerViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource{
-	// UIPickerViewの変数の宣言
+	// UIToolVarを生成
+	var toolbar:UIToolbar!
+	// UIPickerViewの生成
 	var picker: UIPickerView!
 	// delegate
 	//var testLabel: UILabel!
@@ -49,7 +51,8 @@ class FontPickerViewController: UIViewController, UIPickerViewDelegate, UIPicker
 		self.view.backgroundColor = UIColor.black
 		//self.view.frame = CGRect(x:0,y:self.view.frame.height - 100 - 4,width:self.view.frame.width,height:100.0)
 		// toolbarを追加
-		let toolbar = UIToolbar(frame: CGRect(x:0, y:0, width:self.view.frame.width, height:35))
+		toolbar = UIToolbar()
+		toolbar.frame = CGRect(x:0, y:0, width:self.view.frame.width, height:35)
 		let doneItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(done))
 		let cancelItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancel))
 		toolbar.setItems([cancelItem, doneItem], animated: true)
@@ -120,5 +123,11 @@ class FontPickerViewController: UIViewController, UIPickerViewDelegate, UIPicker
 		content.willMove(toParentViewController: self)
 		content.view.removeFromSuperview()
 		content.removeFromParentViewController()
+	}
+	// 画面回転時に呼び出される
+	override func willAnimateRotation(to toInterfaceOrientation: UIInterfaceOrientation, duration: TimeInterval){
+		self.view.frame = CGRect(x:0,y:UIScreen.main.bounds.height-150-40,width:UIScreen.main.bounds.width,height:150)
+		self.toolbar.frame = CGRect(x:0, y:0, width:self.view.frame.width, height:35)
+		self.picker.frame = CGRect(x: 0, y: 35, width: self.view.frame.width, height: self.view.frame.height - 35)
 	}
 }

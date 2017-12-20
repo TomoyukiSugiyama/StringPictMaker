@@ -148,4 +148,8 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 			//}
 		}
 	}
+	func updateViewSize(){
+		self.view.frame = CGRect(x:self.view.frame.width/2,y:0,width:self.view.frame.width/2,height:self.view.frame.height - 100)
+
+	}
 }

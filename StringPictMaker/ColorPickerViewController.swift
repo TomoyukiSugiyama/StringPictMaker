@@ -30,9 +30,12 @@ protocol ColorPickerDelegate {
 }
 /// 文字列の色を変更するためのピッカービューコントローラ
 class ColorPickerViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource{
-	var delegate : ColorPickerDelegate!
+	// UIToolVarを生成
+	var toolbar:UIToolbar!
 	// UIPickerViewの変数の宣言
 	var picker: UIPickerView!
+	// delegate
+	var delegate : ColorPickerDelegate!
    // 表示するデータの配列
 	var dataArray = ["Black","White","Blue","Yellow","Red",
 					 "Green","Gray","Orange","Purple","Brown"]
@@ -45,7 +48,7 @@ class ColorPickerViewController: UIViewController, UIPickerViewDelegate, UIPicke
 		print("ColorPickerViewController - viewDidLoad - frame:",self.view.frame)
 		self.view.backgroundColor = UIColor.black
 		// toolbarを追加
-		let toolbar = UIToolbar(frame: CGRect(x:0, y:0, width:self.view.frame.width, height:35))
+		toolbar = UIToolbar(frame: CGRect(x:0, y:0, width:self.view.frame.width, height:35))
 		let doneItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(done))
 		let cancelItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancel))
 		toolbar.setItems([cancelItem, doneItem], animated: true)
@@ -105,5 +108,11 @@ class ColorPickerViewController: UIViewController, UIPickerViewDelegate, UIPicke
 		content.willMove(toParentViewController: self)
 		content.view.removeFromSuperview()
 		content.removeFromParentViewController()
+	}
+	// 画面回転時に呼び出される
+	override func willAnimateRotation(to toInterfaceOrientation: UIInterfaceOrientation, duration: TimeInterval){
+		self.view.frame = CGRect(x:0,y:UIScreen.main.bounds.height-150-40,width:UIScreen.main.bounds.width,height:150)
+		self.toolbar.frame = CGRect(x:0, y:0, width:self.view.frame.width, height:35)
+		self.picker.frame = CGRect(x: 0, y: 35, width: self.view.frame.width, height: self.view.frame.height - 35)
 	}
 }
