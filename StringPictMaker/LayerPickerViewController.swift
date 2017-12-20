@@ -56,13 +56,25 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 	// コレクションビューを生成
 	var tableView : UITableView!
 //	var layerCell: UICollectionViewCell!
+
+	let layerViewWidth:CGFloat = 200
+	var layerViewHight:CGFloat!
+	let margine:CGFloat = 20
+	var tableViewWidth:CGFloat!
+	var tableViewHight:CGFloat!
+	let toolBarHight:CGFloat = 40
+
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		self.view.frame = CGRect(x:self.view.frame.width/2,y:0,width:self.view.frame.width/2,height:self.view.frame.height - 100)
+		layerViewHight = UIScreen.main.bounds.height - toolBarHight
+		tableViewWidth = layerViewWidth - margine*2
+		tableViewHight = layerViewHight - margine*2
+
+		self.view.frame = CGRect(x:UIScreen.main.bounds.width - layerViewWidth,y:0,width:layerViewWidth,height:layerViewHight)
 		self.view.backgroundColor = UIColor.lightGray.withAlphaComponent(0.5)
 		// コレクションビューを生成
 //		let layout = UITableViewFlowLayout()
-		let frame = CGRect(x:20,y:20,width:self.view.frame.width - 30,height:self.view.frame.height - 30)
+		let frame = CGRect(x:margine,y:margine,width:tableViewWidth,height:tableViewHight)
 		print("LayerPickerViewController - viewDidLoad - frame:",frame)
 		tableView = UITableView(frame:frame, style: .plain)
 		tableView.register(LayerCell.self, forCellReuseIdentifier: "LayerCell_id")
@@ -70,7 +82,7 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 		tableView.delegate = self
 		tableView.dataSource = self
 		tableView.backgroundColor = UIColor.white
-		tableView.rowHeight = 200.0
+		tableView.rowHeight = 200
 		self.view.addSubview(tableView)
 		let closeButton = UIButton(frame: CGRect(x:0,y:0,width:20,height:20))
 		closeButton.backgroundColor = UIColor.white
@@ -150,6 +162,17 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 	}
 	func updateViewSize(){
 		self.view.frame = CGRect(x:self.view.frame.width/2,y:0,width:self.view.frame.width/2,height:self.view.frame.height - 100)
+	}
+	// 画面回転時に呼び出される
+	override func willAnimateRotation(to toInterfaceOrientation: UIInterfaceOrientation, duration: TimeInterval){
+		layerViewHight = UIScreen.main.bounds.height - toolBarHight
+		tableViewWidth = layerViewWidth - margine*2
+		tableViewHight = layerViewHight - margine*2
 
+		self.view.frame = CGRect(x:UIScreen.main.bounds.width - layerViewWidth,y:0,width:layerViewWidth,height:layerViewHight)
+		tableView.frame = CGRect(x:margine,y:margine,width:tableViewWidth,height:tableViewHight)
+		
+		//self.toolbar.frame = CGRect(x:0, y:0, width:self.view.frame.width, height:35)
+		//self.picker.frame = CGRect(x: 0, y: 35, width: self.view.frame.width, height: self.view.frame.height - 35)
 	}
 }

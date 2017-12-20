@@ -12,7 +12,7 @@ import UIKit
 /// TODO:
 /// ＊テキストが画面からはみ出る
 /// ＊メニューボタン、ツールバーの余分なアイコンを削除
-/// ＊アイテム削除後、他のUIViewを動かすと落ちる　→　発生しなくなった。よくわからない
+/// ＊レイヤービュー上のアイテム削除後、他のUIViewを動かすと落ちる
 /// ＊ピッカーのサイズ調整
 /// ＊レイヤーピッッカービューをリロードすると選択も消える
 /// ＊横画面にした時のレイアウト
@@ -375,7 +375,6 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	/// GPSをセット
 	func setGPSLabel(){
 		let layer = UIView(frame:(self.imageView?.bounds)!)
-		layer.backgroundColor = UIColor.lightGray
 		let GPSlabel = UILabel()
 		// 文字追加
 		let str2 = "現在地"
