@@ -110,7 +110,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		menuButton.setImage(UIImage(named: "add-icon"), for: .normal)
 		menuButton.frame = CGRect(x: 0, y: 0, width: 80, height: 80)
 		menuButton.backgroundColor = UIColor.lightGray
-		menuButton.center = CGPoint(x: self.view.frame.width/2, y: self.view.frame.height-80)
+		menuButton.center = CGPoint(x: self.view.frame.width - 40, y: self.view.frame.height-80)
 		menuButton.layer.cornerRadius = 40.0
 		// 影を付ける
 		menuButton.layer.shadowOffset = CGSize(width: 1.0, height: 3.0)
@@ -164,7 +164,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		// ツールバーの位置を決定
 		myToolbar.layer.position = CGPoint(x: self.view.bounds.width/2, y: self.view.bounds.height-20.0)
 		// メニューボタンの位置を決定
-		menuButton.center = CGPoint(x: self.view.frame.width/2, y: self.view.frame.height-80)
+		menuButton.center = CGPoint(x: self.view.frame.width - 40, y: self.view.frame.height-80)
 		imageViewRatio = self.view.frame.width / (imageView?.bounds.width)!
 		//let fWidth = (self.imageView?.frame.width)! * self.view.frame.width / (self.imageView?.bounds.width)!
 		let fWidth = (self.imageView?.frame.width)! * imageViewRatio
@@ -185,6 +185,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			for item in layer.subviews{
 				let vectorX:CGFloat = (layerCenter.x - item.center.x) * imageViewRatio
 				let vectorY:CGFloat = (layerCenter.y - item.center.y) * imageViewRatio
+				adjustItemToScreenSize(item:item,latio: imageViewRatio)
 				item.center = CGPoint(x:layer.center.x - vectorX,y:layer.center.y - vectorY)
 				//item.center = layer.center
 				print("ImageEditor - willAnimateRotation - item.frame:",item.frame)
@@ -878,7 +879,19 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		textLabel.font = UIFont.boldSystemFont(ofSize: refPointSize * width / (refWidth?.width)! )
 		// 文字サイズに合わせてラベルのサイズを調整
 		textLabel.sizeToFit()
-	 }
+	}
+	func adjustItemToScreenSize(item:UIView,latio:CGFloat){
+		let refPointSize: CGFloat = 100.0
+		let refFont = UIFont.boldSystemFont(ofSize: refPointSize)
+				let textLabel = item as! UILabel
+				let refWidth = textLabel.text?.size(withAttributes: [NSAttributedStringKey.font : refFont])
+				let itemWidth = textLabel.frame.width
+				print("ImageEditor - adjustItemToScreenSize - refWidth:",refWidth?.width as Any,"itemWidth:",itemWidth as Any,"ratio:",latio)
+				textLabel.font = UIFont.boldSystemFont(ofSize: refPointSize * itemWidth * latio / (refWidth?.width)! )
+				textLabel.sizeToFit()
+
+
+	}
 	/// 以下、レイヤーピッカービューのコンテナに関する処理
 	/// コンテナをスーパービューに追加
 	func displayContentController(content:UIViewController, container:UIView){
