@@ -10,16 +10,14 @@ import Foundation
 import UIKit
 
 /// TODO:
-/// ＊テキストが画面からはみ出る
+/// ＊テキストが画面からはみ出る??
 /// ＊メニューボタン、ツールバーの余分なアイコンを削除
 /// ＊レイヤービュー上のアイテム削除後、他のUIViewを動かすと落ちる
 /// ＊ピッカーのサイズ調整
 /// ＊レイヤーピッッカービューをリロードすると選択も消える
 /// ＊横画面にした時のレイアウト
-/// ＊ → サブメニューボタンが着いてこないので、閉じる
 /// ＊ → leyer上のアイテムのサイズと位置の調整が必要
 /// ＊ → ツールバー上のアイテムの位置調整が必要
-/// ＊ → ピッカーの位置がずれるため調整が必要が必要
 /// ＊選択したアイテムによってツールバーのアイテムを変更
 /// ＊ツールバーのアイテムを画像に変更
 /// ＊アイテムを下に移動した時に、ツールバーとメニューボタンを透過
@@ -153,7 +151,6 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		let prevVC = self.getPreviousViewController() as! ImageListController
 		prevVC.updateView()
 	}
-	
 	// 画面回転時に呼び出される
 	override func willAnimateRotation(to toInterfaceOrientation: UIInterfaceOrientation, duration: TimeInterval){
 		// スクロールビューのサイズを決定
@@ -165,6 +162,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		myToolbar.layer.position = CGPoint(x: self.view.bounds.width/2, y: self.view.bounds.height-20.0)
 		// メニューボタンの位置を決定
 		menuButton.center = CGPoint(x: self.view.frame.width - 40, y: self.view.frame.height-80)
+		// イメージビューのサイズを調整
 		imageViewRatio = self.view.frame.width / (imageView?.bounds.width)!
 		//let fWidth = (self.imageView?.frame.width)! * self.view.frame.width / (self.imageView?.bounds.width)!
 		let fWidth = (self.imageView?.frame.width)! * imageViewRatio
@@ -175,6 +173,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		print("ImageEditor - willAnimateRotation - self.imageView?.frame:",self.imageView?.frame as Any)
 		print("ImageEditor - willAnimateRotation - self.imageView?.bounds:",self.imageView?.bounds as Any)
 		print("ImageEditor - willAnimateRotation - self.imageView?.center:",self.imageView?.center as Any)
+		// レイヤーのサイズ、レイヤー上のアイテムのサイズを調整
 		for layer in (self.imageView?.subviews)!{
 			let layerCenter:CGPoint = layer.center
 			print("ImageEditor - willAnimateRotation - layer.center:",layer.center)
@@ -182,6 +181,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			print("ImageEditor - willAnimateRotation - layer.frame:",layer.frame)
 			print("ImageEditor - willAnimateRotation - layer.bounds:",layer.bounds)
 			print("ImageEditor - willAnimateRotation - layer.center:",layer.center)
+			// レイヤー上のアイテムのサイズを調整
 			for item in layer.subviews{
 				let vectorX:CGFloat = (layerCenter.x - item.center.x) * imageViewRatio
 				let vectorY:CGFloat = (layerCenter.y - item.center.y) * imageViewRatio
@@ -191,11 +191,14 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 				print("ImageEditor - willAnimateRotation - item.frame:",item.frame)
 				print("ImageEditor - willAnimateRotation - item.bounds:",item.bounds)
 				print("ImageEditor - willAnimateRotation - item.center:",item.center)
-
+				for resizeIcon in item.subviews{
+					let iconSize:CGFloat = 40.0
+					let posX = item.frame.width + iconSize / 2
+					let posY = item.frame.height / 2 - iconSize / 2
+					resizeIcon.frame = CGRect(x:posX,y:posY,width:iconSize,height:iconSize)
+				}
 			}
-			
 		}
-
 	}
 	// スクリーンサイズを変更するための変更率を決定
 	// Iphone7のスクリーンサイズをベースにする
@@ -749,9 +752,9 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 							//print("tag:",tag,icon.tag)
 							if(tag  == icon.tag){
 								print("ImageEditor - handlePanGesture.changed - subview.frame:",subview.frame)
-								let moved = CGPoint(x: icon.center.x + move.x, y: icon.center.y)
 								//print("ImageEditor - handlePanGesture - moved:",moved,"move:",move)
 								self.resizeText(textLabel: subview as! UILabel, posX: icon.frame)
+								let moved = CGPoint(x: icon.center.x + move.x, y: subview.frame.height / 2)
 								icon.center = moved
 								sender.setTranslation(CGPoint.zero, in: icon)
 								iconIsSelected = true
@@ -846,7 +849,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			scaleButton.backgroundColor = UIColor.blue
 			scaleButton.setTitle("↔︎", for: .normal)
 			scaleButton.tag = selectedView.tag & ~0x3FF + DataManager.TagIDs.typeScale.rawValue
-			print("ImageEditor - emphasisSelectedItem - tag:",scaleButton.tag)
+			print("ImageEditor - emphasisSelectedItem - scaleButton:",scaleButton)
 			selectedView.addSubview(scaleButton)
 		}
 	}
@@ -880,6 +883,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		// 文字サイズに合わせてラベルのサイズを調整
 		textLabel.sizeToFit()
 	}
+	/// スクリーンサイズにアイテムのサイズを合わせて調整
 	func adjustItemToScreenSize(item:UIView,latio:CGFloat){
 		let refPointSize: CGFloat = 100.0
 		let refFont = UIFont.boldSystemFont(ofSize: refPointSize)
@@ -889,8 +893,6 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 				print("ImageEditor - adjustItemToScreenSize - refWidth:",refWidth?.width as Any,"itemWidth:",itemWidth as Any,"ratio:",latio)
 				textLabel.font = UIFont.boldSystemFont(ofSize: refPointSize * itemWidth * latio / (refWidth?.width)! )
 				textLabel.sizeToFit()
-
-
 	}
 	/// 以下、レイヤーピッカービューのコンテナに関する処理
 	/// コンテナをスーパービューに追加
