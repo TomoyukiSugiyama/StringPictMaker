@@ -15,6 +15,10 @@
 		C891DD761FC46AEF00C126BF /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C891DD751FC46AEF00C126BF /* DataManager.swift */; };
 		C89E07101FC04C6E00C527BC /* ImageEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C89E070F1FC04C6E00C527BC /* ImageEditor.swift */; };
 		C8B59D841FD6DB4500DCB67B /* FontPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B59D831FD6DB4500DCB67B /* FontPickerViewController.swift */; };
+		C8BFE06C1FEE2B37000BC56E /* ラノベPOP.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C8BFE06B1FEE2B37000BC56E /* ラノベPOP.ttf */; };
+		C8BFE0701FEE38D7000BC56E /* 07にくまるフォント.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C8BFE06F1FEE38D7000BC56E /* 07にくまるフォント.ttf */; };
+		C8BFE0721FEE3ACF000BC56E /* 07ReallyScaryMinchotai.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C8BFE0711FEE3ACF000BC56E /* 07ReallyScaryMinchotai.ttf */; };
+		C8BFE0741FEE400D000BC56E /* gatasosyo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C8BFE0731FEE400D000BC56E /* gatasosyo.ttf */; };
 		C8F22ED01FBC80BD00632109 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F22ECF1FBC80BD00632109 /* AppDelegate.swift */; };
 		C8F22ED21FBC80BD00632109 /* SplashController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F22ED11FBC80BD00632109 /* SplashController.swift */; };
 		C8F22ED51FBC80BD00632109 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C8F22ED31FBC80BD00632109 /* Main.storyboard */; };
@@ -53,6 +57,10 @@
 		C891DD751FC46AEF00C126BF /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		C89E070F1FC04C6E00C527BC /* ImageEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageEditor.swift; sourceTree = "<group>"; usesTabs = 1; };
 		C8B59D831FD6DB4500DCB67B /* FontPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontPickerViewController.swift; sourceTree = "<group>"; };
+		C8BFE06B1FEE2B37000BC56E /* ラノベPOP.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ラノベPOP.ttf"; sourceTree = "<group>"; };
+		C8BFE06F1FEE38D7000BC56E /* 07にくまるフォント.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "07にくまるフォント.ttf"; sourceTree = "<group>"; };
+		C8BFE0711FEE3ACF000BC56E /* 07ReallyScaryMinchotai.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = 07ReallyScaryMinchotai.ttf; sourceTree = "<group>"; };
+		C8BFE0731FEE400D000BC56E /* gatasosyo.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = gatasosyo.ttf; sourceTree = "<group>"; };
 		C8F22ECC1FBC80BD00632109 /* StringPictMaker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StringPictMaker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C8F22ECF1FBC80BD00632109 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C8F22ED11FBC80BD00632109 /* SplashController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashController.swift; sourceTree = "<group>"; };
@@ -96,6 +104,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C8BFE0681FEE2004000BC56E /* Font */ = {
+			isa = PBXGroup;
+			children = (
+				C8BFE06B1FEE2B37000BC56E /* ラノベPOP.ttf */,
+				C8BFE06F1FEE38D7000BC56E /* 07にくまるフォント.ttf */,
+				C8BFE0711FEE3ACF000BC56E /* 07ReallyScaryMinchotai.ttf */,
+				C8BFE0731FEE400D000BC56E /* gatasosyo.ttf */,
+			);
+			name = Font;
+			sourceTree = "<group>";
+		};
 		C8F22EC31FBC80BD00632109 = {
 			isa = PBXGroup;
 			children = (
@@ -119,6 +138,7 @@
 		C8F22ECE1FBC80BD00632109 /* StringPictMaker */ = {
 			isa = PBXGroup;
 			children = (
+				C8BFE0681FEE2004000BC56E /* Font */,
 				C8F22ECF1FBC80BD00632109 /* AppDelegate.swift */,
 				C8F22ED11FBC80BD00632109 /* SplashController.swift */,
 				C82DFCDE1FBF0E3D00B65F92 /* ImageListController.swift */,
@@ -267,7 +287,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				C8F22EDD1FBC80BD00632109 /* LaunchScreen.storyboard in Resources */,
+				C8BFE0701FEE38D7000BC56E /* 07にくまるフォント.ttf in Resources */,
+				C8BFE0721FEE3ACF000BC56E /* 07ReallyScaryMinchotai.ttf in Resources */,
 				C8F22EDA1FBC80BD00632109 /* Assets.xcassets in Resources */,
+				C8BFE0741FEE400D000BC56E /* gatasosyo.ttf in Resources */,
+				C8BFE06C1FEE2B37000BC56E /* ラノベPOP.ttf in Resources */,
 				C8F22ED51FBC80BD00632109 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

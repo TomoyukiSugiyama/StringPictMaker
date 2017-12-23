@@ -37,10 +37,10 @@ class FontPickerViewController: UIViewController, UIPickerViewDelegate, UIPicker
 	//var testLabel: UILabel!
 	var delegate : FontPickerDelegate!
 	// 表示するデータの配列
-	var dataArray = ["Font 1","Font 2","Font 3","Font 4","Font 5",
-					 "Font 6","Font 7","Font 8","Font 9","Font 10"]
-	var fontArray = ["Zapfino","DBLCDTempBlack","MarkerFelt-Thin","Academy Engraved LET","Al Nile",
-					 "American Typewriter","Apple Color Emoji","Apple SD Gothic Neo","Arial","Arial Hebrew"]
+	var dataArray = ["アニメ風","かわいい","こわ〜い","草書"]
+	//var fontArray = ["07LightNovelPOP","DBLCDTempBlack","MarkerFelt-Thin","Academy Engraved LET","Al Nile","American Typewriter","Apple Color Emoji","Apple SD Gothic Neo","Arial","Arial Hebrew"]
+	var fontArray = ["07LightNovelPOP","07NikumaruFont","07ReallyScaryMinchotai","gatasosyo"]
+
 	/// ピッカービューを生成
 	override func viewDidLoad() {
 		super.viewDidLoad()

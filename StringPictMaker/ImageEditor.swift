@@ -323,10 +323,16 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			for subview in layer.subviews {
 				// subview has a resize icon.
 				if(subview.subviews.count != 0){
+					let center:CGPoint = subview.center
 					/// TODO:
 					/// サイズ調整
-					(subview as! UILabel).font  = UIFont(name: state.font.fontName,size:(subview as! UILabel).font.pointSize)
-					(subview as! UILabel).sizeToFit()
+					print("ImageEditor - selectedFont - 1subview.frame:",subview.frame,"subview.center",subview.center)
+				adjustTextWithFont(textLabel: subview as! UILabel, font: state)
+					//(subview as! UILabel).font  = UIFont(name: state.font.fontName,size:(subview as! UILabel).font.pointSize)
+					print("ImageEditor - selectedFont - 2subview.frame:",subview.frame,"subview.center",subview.center)
+					subview.center = center
+					print("ImageEditor - selectedFont - 3subview.frame:",subview.frame,"subview.center",subview.center)
+					//(subview as! UILabel).sizeToFit()
 				}
 			}
 			}
@@ -877,9 +883,19 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		let margine:CGFloat = 20.0
 		let width = posX.origin.x - margine
 		let refPointSize: CGFloat = 100.0
-		let refFont = UIFont.boldSystemFont(ofSize: refPointSize)
-		let refWidth = textLabel.text?.size(withAttributes: [NSAttributedStringKey.font : refFont])
-		textLabel.font = UIFont.boldSystemFont(ofSize: refPointSize * width / (refWidth?.width)! )
+		let refFont = UIFont(name: textLabel.font.fontName,size:refPointSize)
+		let refWidth = textLabel.text?.size(withAttributes: [NSAttributedStringKey.font : refFont!])
+		textLabel.font = UIFont(name: textLabel.font.fontName,size: refPointSize * width / (refWidth?.width)!)
+		// 文字サイズに合わせてラベルのサイズを調整
+		textLabel.sizeToFit()
+	}
+	// フォントに合わせてテキストの幅を調整
+	func adjustTextWithFont(textLabel:UILabel,font:UILabel){
+		let refPointSize: CGFloat = 100.0
+		let refFont = UIFont(name: font.font.fontName,size:refPointSize)
+		let refWidth = textLabel.text?.size(withAttributes: [NSAttributedStringKey.font : refFont!])
+		let width:CGFloat = textLabel.frame.width
+		textLabel.font = UIFont(name: font.font.fontName,size: refPointSize * width / (refWidth?.width)!)
 		// 文字サイズに合わせてラベルのサイズを調整
 		textLabel.sizeToFit()
 	}
