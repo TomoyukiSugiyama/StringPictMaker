@@ -134,13 +134,6 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		C8B924A71FEF6A8500D9C3B8 /* SupportingFiles */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = SupportingFiles;
-			sourceTree = "<group>";
-		};
 		C8B924B81FEF89C700D9C3B8 /* IVColorPicker */ = {
 			isa = PBXGroup;
 			children = (
@@ -156,7 +149,7 @@
 			path = IVColorPicker;
 			sourceTree = "<group>";
 		};
-		C8BFE0681FEE2004000BC56E /* Font */ = {
+		C8B924BA1FEF8FB900D9C3B8 /* Font */ = {
 			isa = PBXGroup;
 			children = (
 				C8BFE06B1FEE2B37000BC56E /* ラノベPOP.ttf */,
@@ -164,7 +157,7 @@
 				C8BFE0711FEE3ACF000BC56E /* 07ReallyScaryMinchotai.ttf */,
 				C8BFE0731FEE400D000BC56E /* gatasosyo.ttf */,
 			);
-			name = Font;
+			path = Font;
 			sourceTree = "<group>";
 		};
 		C8F22EC31FBC80BD00632109 = {
@@ -192,9 +185,8 @@
 		C8F22ECE1FBC80BD00632109 /* StringPictMaker */ = {
 			isa = PBXGroup;
 			children = (
+				C8B924BA1FEF8FB900D9C3B8 /* Font */,
 				C8B924B81FEF89C700D9C3B8 /* IVColorPicker */,
-				C8BFE0681FEE2004000BC56E /* Font */,
-				C8B924A71FEF6A8500D9C3B8 /* SupportingFiles */,
 				C8F22ECF1FBC80BD00632109 /* AppDelegate.swift */,
 				C8F22ED11FBC80BD00632109 /* SplashController.swift */,
 				C82DFCDE1FBF0E3D00B65F92 /* ImageListController.swift */,
