@@ -27,19 +27,15 @@ protocol ColorPickerDelegate {
 	func selectedColor(state:UIColor)
 }
 /// 文字列の色を変更するためのピッカービューコントローラ
-class ColorPickerViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource{
+class ColorPickerViewController: UIViewController{
 	// UIToolVarを生成
 	var toolbar:UIToolbar!
 	// UIPickerViewの変数の宣言
 	var picker: UIPickerView!
 	// delegate
 	var delegate : ColorPickerDelegate!
-   // 表示するデータの配列
-	var dataArray = ["Black","White","Blue","Yellow","Red",
-					 "Green","Gray","Orange","Purple","Brown"]
-	var colorArray = [UIColor.black,UIColor.white,UIColor.blue,UIColor.yellow,UIColor.red,
-					  UIColor.green,UIColor.gray,UIColor.orange,UIColor.purple,UIColor.brown]
-	var piclerView:ColorPickerView!
+	// カラーピッカービューを生成
+	var pickerView:ColorPickerView!
 	var selectButton:UIButton!
 	/// ピッカービューを生成
 	override func viewDidLoad() {
@@ -53,9 +49,9 @@ class ColorPickerViewController: UIViewController, UIPickerViewDelegate, UIPicke
 		self.view.backgroundColor = UIColor.black
 		print("ImageEditor - ColorPickerViewController - viewDidLoad - self.view.frame2:",self.view.frame)
 		let frame = CGRect(x:margine,y:self.view.frame.height/2 - width/2,width:width,height:width)
-		piclerView = ColorPickerView(frame:frame)
-		piclerView.setNeedsDisplay()
-		self.view.addSubview(piclerView)
+		pickerView = ColorPickerView(frame:frame)
+		pickerView.setNeedsDisplay()
+		self.view.addSubview(pickerView)
 		// toolbarを追加
 		toolbar = UIToolbar(frame: CGRect(x:0, y:0, width:self.view.frame.width, height:35))
 		let doneItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(done))
@@ -64,57 +60,19 @@ class ColorPickerViewController: UIViewController, UIPickerViewDelegate, UIPicke
 		self.view.addSubview(toolbar)
 		selectButton = UIButton()
 		selectButton.frame = CGRect(x:0, y:0, width:40, height:40)
-		selectButton.center = piclerView.center
+		selectButton.center = pickerView.center
 		selectButton.backgroundColor = UIColor.clear
 		selectButton.addTarget(self, action: #selector(changeColor), for: UIControlEvents.touchUpInside)
 		self.view.addSubview(selectButton)
-		/*self.view.frame = CGRect(x:0,y:self.view.frame.height - 150 - 40,width:self.view.frame.width,height:150)
-		print("ColorPickerViewController - viewDidLoad - frame:",self.view.frame)
-		self.view.backgroundColor = UIColor.black
-		// toolbarを追加
-		toolbar = UIToolbar(frame: CGRect(x:0, y:0, width:self.view.frame.width, height:35))
-		let doneItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(done))
-		let cancelItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancel))
-		toolbar.setItems([cancelItem, doneItem], animated: true)
-		self.view.addSubview(toolbar)
-		// PickerViewを追加
-		// UIPickerViewのインスタンスを生成
-		picker = UIPickerView()
-		//位置とサイズを設定
-		// picker.frame = CGRect(x: 0, y: self.view.frame.height - 100 - 40, width: self.view.frame.width, height: 100.0)
-		picker.frame = CGRect(x: 0, y: 35, width: self.view.frame.width, height: self.view.frame.height - 35)
-		picker.backgroundColor = UIColor.lightGray
-		// delegateの設定
-		picker.delegate = self
-		// dataSourceの設定
-		picker.dataSource = self
-		self.view.addSubview(picker)
-*/
 		print("ColorPickerViewController")
 	}
+	// 色変更ボタンが押された時、ImageEditorにUIColorを送付
 	@objc func changeColor(_ sender: ColorPickerView)
 	{
 		print("test")
-		print("ColorPickerViewController - changeColor - sender.selectedColor:",piclerView.selectedColor)
-		delegate?.selectedColor(state: piclerView.selectedColor)
+		print("ColorPickerViewController - changeColor - sender.selectedColor:",pickerView.selectedColor)
+		delegate?.selectedColor(state: pickerView.selectedColor)
 		done()
-	}
-	// PickerViewの個数
-	func numberOfComponents(in pickerView: UIPickerView) -> Int {
-		return 1
-	}
-	// 表示する行数。配列の個数を返している
-	func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-		return dataArray.count
-	}
-	// 表示する値
-	func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-		return dataArray[row]
-	}
-	// 選択された時
-	func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-		delegate?.selectedColor(state: colorArray[row])
-		print("value : \(dataArray[row])")
 	}
 	// toolbarのキャンセルを選択
 	@objc func cancel(){
