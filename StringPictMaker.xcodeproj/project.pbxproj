@@ -137,8 +137,6 @@
 		C8B924A71FEF6A8500D9C3B8 /* SupportingFiles */ = {
 			isa = PBXGroup;
 			children = (
-				C8BFE0681FEE2004000BC56E /* Font */,
-				C8B924B81FEF89C700D9C3B8 /* IVColorPicker */,
 			);
 			path = SupportingFiles;
 			sourceTree = "<group>";
@@ -167,7 +165,6 @@
 				C8BFE0731FEE400D000BC56E /* gatasosyo.ttf */,
 			);
 			name = Font;
-			path = ..;
 			sourceTree = "<group>";
 		};
 		C8F22EC31FBC80BD00632109 = {
@@ -195,6 +192,8 @@
 		C8F22ECE1FBC80BD00632109 /* StringPictMaker */ = {
 			isa = PBXGroup;
 			children = (
+				C8B924B81FEF89C700D9C3B8 /* IVColorPicker */,
+				C8BFE0681FEE2004000BC56E /* Font */,
 				C8B924A71FEF6A8500D9C3B8 /* SupportingFiles */,
 				C8F22ECF1FBC80BD00632109 /* AppDelegate.swift */,
 				C8F22ED11FBC80BD00632109 /* SplashController.swift */,
