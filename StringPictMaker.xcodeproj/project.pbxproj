@@ -15,6 +15,14 @@
 		C891DD761FC46AEF00C126BF /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C891DD751FC46AEF00C126BF /* DataManager.swift */; };
 		C89E07101FC04C6E00C527BC /* ImageEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C89E070F1FC04C6E00C527BC /* ImageEditor.swift */; };
 		C8B59D841FD6DB4500DCB67B /* FontPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B59D831FD6DB4500DCB67B /* FontPickerViewController.swift */; };
+		C8B924B01FEF6AA100D9C3B8 /* ColorApplyButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B924A81FEF6AA100D9C3B8 /* ColorApplyButton.swift */; };
+		C8B924B11FEF6AA100D9C3B8 /* ColorPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B924A91FEF6AA100D9C3B8 /* ColorPickerView.swift */; };
+		C8B924B21FEF6AA100D9C3B8 /* HSB.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B924AA1FEF6AA100D9C3B8 /* HSB.swift */; };
+		C8B924B31FEF6AA100D9C3B8 /* AngleGradientLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B924AB1FEF6AA100D9C3B8 /* AngleGradientLayer.swift */; };
+		C8B924B41FEF6AA100D9C3B8 /* ThumbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B924AC1FEF6AA100D9C3B8 /* ThumbView.swift */; };
+		C8B924B51FEF6AA100D9C3B8 /* ColorPicker+Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B924AD1FEF6AA100D9C3B8 /* ColorPicker+Math.swift */; };
+		C8B924B61FEF6AA100D9C3B8 /* CGRect+Core.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B924AE1FEF6AA100D9C3B8 /* CGRect+Core.swift */; };
+		C8B924B71FEF6AA100D9C3B8 /* ColorLightingPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B924AF1FEF6AA100D9C3B8 /* ColorLightingPicker.swift */; };
 		C8BFE06C1FEE2B37000BC56E /* ラノベPOP.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C8BFE06B1FEE2B37000BC56E /* ラノベPOP.ttf */; };
 		C8BFE0701FEE38D7000BC56E /* 07にくまるフォント.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C8BFE06F1FEE38D7000BC56E /* 07にくまるフォント.ttf */; };
 		C8BFE0721FEE3ACF000BC56E /* 07ReallyScaryMinchotai.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C8BFE0711FEE3ACF000BC56E /* 07ReallyScaryMinchotai.ttf */; };
@@ -57,6 +65,14 @@
 		C891DD751FC46AEF00C126BF /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		C89E070F1FC04C6E00C527BC /* ImageEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageEditor.swift; sourceTree = "<group>"; usesTabs = 1; };
 		C8B59D831FD6DB4500DCB67B /* FontPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontPickerViewController.swift; sourceTree = "<group>"; };
+		C8B924A81FEF6AA100D9C3B8 /* ColorApplyButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorApplyButton.swift; sourceTree = "<group>"; };
+		C8B924A91FEF6AA100D9C3B8 /* ColorPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorPickerView.swift; sourceTree = "<group>"; };
+		C8B924AA1FEF6AA100D9C3B8 /* HSB.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HSB.swift; sourceTree = "<group>"; };
+		C8B924AB1FEF6AA100D9C3B8 /* AngleGradientLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AngleGradientLayer.swift; sourceTree = "<group>"; };
+		C8B924AC1FEF6AA100D9C3B8 /* ThumbView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThumbView.swift; sourceTree = "<group>"; };
+		C8B924AD1FEF6AA100D9C3B8 /* ColorPicker+Math.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ColorPicker+Math.swift"; sourceTree = "<group>"; };
+		C8B924AE1FEF6AA100D9C3B8 /* CGRect+Core.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGRect+Core.swift"; sourceTree = "<group>"; };
+		C8B924AF1FEF6AA100D9C3B8 /* ColorLightingPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorLightingPicker.swift; sourceTree = "<group>"; };
 		C8BFE06B1FEE2B37000BC56E /* ラノベPOP.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ラノベPOP.ttf"; sourceTree = "<group>"; };
 		C8BFE06F1FEE38D7000BC56E /* 07にくまるフォント.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "07にくまるフォント.ttf"; sourceTree = "<group>"; };
 		C8BFE0711FEE3ACF000BC56E /* 07ReallyScaryMinchotai.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = 07ReallyScaryMinchotai.ttf; sourceTree = "<group>"; };
@@ -104,6 +120,44 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2BCB17B30F05AE22DE323983 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		3FD64178BECEE07B0680BB02 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		C8B924A71FEF6A8500D9C3B8 /* SupportingFiles */ = {
+			isa = PBXGroup;
+			children = (
+				C8BFE0681FEE2004000BC56E /* Font */,
+				C8B924B81FEF89C700D9C3B8 /* IVColorPicker */,
+			);
+			path = SupportingFiles;
+			sourceTree = "<group>";
+		};
+		C8B924B81FEF89C700D9C3B8 /* IVColorPicker */ = {
+			isa = PBXGroup;
+			children = (
+				C8B924AB1FEF6AA100D9C3B8 /* AngleGradientLayer.swift */,
+				C8B924AE1FEF6AA100D9C3B8 /* CGRect+Core.swift */,
+				C8B924A81FEF6AA100D9C3B8 /* ColorApplyButton.swift */,
+				C8B924AF1FEF6AA100D9C3B8 /* ColorLightingPicker.swift */,
+				C8B924AD1FEF6AA100D9C3B8 /* ColorPicker+Math.swift */,
+				C8B924A91FEF6AA100D9C3B8 /* ColorPickerView.swift */,
+				C8B924AA1FEF6AA100D9C3B8 /* HSB.swift */,
+				C8B924AC1FEF6AA100D9C3B8 /* ThumbView.swift */,
+			);
+			path = IVColorPicker;
+			sourceTree = "<group>";
+		};
 		C8BFE0681FEE2004000BC56E /* Font */ = {
 			isa = PBXGroup;
 			children = (
@@ -113,6 +167,7 @@
 				C8BFE0731FEE400D000BC56E /* gatasosyo.ttf */,
 			);
 			name = Font;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		C8F22EC31FBC80BD00632109 = {
@@ -122,6 +177,8 @@
 				C8F22EE61FBC80BD00632109 /* StringPictMakerTests */,
 				C8F22EF11FBC80BD00632109 /* StringPictMakerUITests */,
 				C8F22ECD1FBC80BD00632109 /* Products */,
+				3FD64178BECEE07B0680BB02 /* Pods */,
+				2BCB17B30F05AE22DE323983 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -138,7 +195,7 @@
 		C8F22ECE1FBC80BD00632109 /* StringPictMaker */ = {
 			isa = PBXGroup;
 			children = (
-				C8BFE0681FEE2004000BC56E /* Font */,
+				C8B924A71FEF6A8500D9C3B8 /* SupportingFiles */,
 				C8F22ECF1FBC80BD00632109 /* AppDelegate.swift */,
 				C8F22ED11FBC80BD00632109 /* SplashController.swift */,
 				C82DFCDE1FBF0E3D00B65F92 /* ImageListController.swift */,
@@ -203,9 +260,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C8F22EFA1FBC80BD00632109 /* Build configuration list for PBXNativeTarget "StringPictMakerTests" */;
 			buildPhases = (
+				957E7A529AD29218C2362C6C /* [CP] Check Pods Manifest.lock */,
 				C8F22EDF1FBC80BD00632109 /* Sources */,
 				C8F22EE01FBC80BD00632109 /* Frameworks */,
 				C8F22EE11FBC80BD00632109 /* Resources */,
+				F50DACCD34B17BB64643C5D2 /* [CP] Embed Pods Frameworks */,
+				FD970C8CADD71774D18304B7 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -221,9 +281,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C8F22EFD1FBC80BD00632109 /* Build configuration list for PBXNativeTarget "StringPictMakerUITests" */;
 			buildPhases = (
+				3EB127EA5973A4C644335F2F /* [CP] Check Pods Manifest.lock */,
 				C8F22EEA1FBC80BD00632109 /* Sources */,
 				C8F22EEB1FBC80BD00632109 /* Frameworks */,
 				C8F22EEC1FBC80BD00632109 /* Resources */,
+				46666980FE492AE1D4B8DC23 /* [CP] Embed Pods Frameworks */,
+				FA1A626F777262099AF72A2A /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -312,24 +375,131 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		3EB127EA5973A4C644335F2F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-StringPictMakerUITests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		46666980FE492AE1D4B8DC23 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-StringPictMakerUITests/Pods-StringPictMakerUITests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		957E7A529AD29218C2362C6C /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-StringPictMakerTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F50DACCD34B17BB64643C5D2 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-StringPictMakerTests/Pods-StringPictMakerTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		FA1A626F777262099AF72A2A /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-StringPictMakerUITests/Pods-StringPictMakerUITests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		FD970C8CADD71774D18304B7 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-StringPictMakerTests/Pods-StringPictMakerTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		C8F22EC81FBC80BD00632109 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				C8F75AE31FDCC7FB006FA649 /* LayerPickerViewController.swift in Sources */,
+				C8B924B21FEF6AA100D9C3B8 /* HSB.swift in Sources */,
 				C891DD701FC1BC1800C126BF /* ImageBoard.swift in Sources */,
 				C891DD761FC46AEF00C126BF /* DataManager.swift in Sources */,
 				C8F22ED21FBC80BD00632109 /* SplashController.swift in Sources */,
+				C8B924B01FEF6AA100D9C3B8 /* ColorApplyButton.swift in Sources */,
+				C8B924B71FEF6AA100D9C3B8 /* ColorLightingPicker.swift in Sources */,
 				C8F22ED01FBC80BD00632109 /* AppDelegate.swift in Sources */,
 				C8F75AE11FDC41BC006FA649 /* ColorPickerViewController.swift in Sources */,
+				C8B924B61FEF6AA100D9C3B8 /* CGRect+Core.swift in Sources */,
 				C891DD721FC4555F00C126BF /* MenuButtonActionController.swift in Sources */,
+				C8B924B31FEF6AA100D9C3B8 /* AngleGradientLayer.swift in Sources */,
 				C8B59D841FD6DB4500DCB67B /* FontPickerViewController.swift in Sources */,
 				C82DFCDF1FBF0E3D00B65F92 /* ImageListController.swift in Sources */,
 				C888FF6E1FCCCB92000F7738 /* StringPictMaker.xcdatamodeld in Sources */,
+				C8B924B41FEF6AA100D9C3B8 /* ThumbView.swift in Sources */,
 				C8F75AE51FDEAEDA006FA649 /* LayerCell.swift in Sources */,
 				C89E07101FC04C6E00C527BC /* ImageEditor.swift in Sources */,
+				C8B924B51FEF6AA100D9C3B8 /* ColorPicker+Math.swift in Sources */,
 				C82DFCE11FBFB98C00B65F92 /* ImageCell.swift in Sources */,
+				C8B924B11FEF6AA100D9C3B8 /* ColorPickerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

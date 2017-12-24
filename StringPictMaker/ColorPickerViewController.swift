@@ -17,7 +17,6 @@ import UIKit
 /// ＊
 
 /// Future:
-/// ＊リッチなUIに変更（視覚的にわかるカラーピッカー）
 /// ＊
 /// ＊
 /// ＊
@@ -40,10 +39,29 @@ class ColorPickerViewController: UIViewController, UIPickerViewDelegate, UIPicke
 					 "Green","Gray","Orange","Purple","Brown"]
 	var colorArray = [UIColor.black,UIColor.white,UIColor.blue,UIColor.yellow,UIColor.red,
 					  UIColor.green,UIColor.gray,UIColor.orange,UIColor.purple,UIColor.brown]
+	var piclerView:ColorPickerView!
 	/// ピッカービューを生成
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		self.view.frame = CGRect(x:0,y:self.view.frame.height - 150 - 40,width:self.view.frame.width,height:150)
+		print("ImageEditor - ColorPickerViewController - viewDidLoad - self.view.frame1:",self.view.frame)
+		let margine:CGFloat = 20
+		let width:CGFloat = self.view.frame.width - margine*2
+		let toolBarHeight:CGFloat = 40
+		//self.view.frame = CGRect(x:0,y:self.view.frame.height - width - toolBarHeight ,width:width,height:width)
+		self.view.frame = CGRect(x:0,y:0,width:self.view.frame.width,height:self.view.frame.height - toolBarHeight)
+		self.view.backgroundColor = UIColor.black
+		print("ImageEditor - ColorPickerViewController - viewDidLoad - self.view.frame2:",self.view.frame)
+		let frame = CGRect(x:margine,y:self.view.frame.height/2 - width/2,width:width,height:width)
+		piclerView = ColorPickerView(frame:frame)
+		piclerView.setNeedsDisplay()
+		self.view.addSubview(piclerView)
+		// toolbarを追加
+		toolbar = UIToolbar(frame: CGRect(x:0, y:0, width:self.view.frame.width, height:35))
+		let doneItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(done))
+		let cancelItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancel))
+		toolbar.setItems([cancelItem, doneItem], animated: true)
+		self.view.addSubview(toolbar)
+		/*self.view.frame = CGRect(x:0,y:self.view.frame.height - 150 - 40,width:self.view.frame.width,height:150)
 		print("ColorPickerViewController - viewDidLoad - frame:",self.view.frame)
 		self.view.backgroundColor = UIColor.black
 		// toolbarを追加
@@ -64,6 +82,7 @@ class ColorPickerViewController: UIViewController, UIPickerViewDelegate, UIPicke
 		// dataSourceの設定
 		picker.dataSource = self
 		self.view.addSubview(picker)
+*/
 		print("ColorPickerViewController")
 	}
 	// PickerViewの個数
@@ -112,6 +131,6 @@ class ColorPickerViewController: UIViewController, UIPickerViewDelegate, UIPicke
 	override func willAnimateRotation(to toInterfaceOrientation: UIInterfaceOrientation, duration: TimeInterval){
 		self.view.frame = CGRect(x:0,y:UIScreen.main.bounds.height-150-40,width:UIScreen.main.bounds.width,height:150)
 		self.toolbar.frame = CGRect(x:0, y:0, width:self.view.frame.width, height:35)
-		self.picker.frame = CGRect(x: 0, y: 35, width: self.view.frame.width, height: self.view.frame.height - 35)
+//		self.picker.frame = CGRect(x: 0, y: 35, width: self.view.frame.width, height: self.view.frame.height - 35)
 	}
 }
