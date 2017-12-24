@@ -160,6 +160,15 @@
 			path = Font;
 			sourceTree = "<group>";
 		};
+		C8B924BB1FEF911400D9C3B8 /* SupportingFiles */ = {
+			isa = PBXGroup;
+			children = (
+				C8B924BA1FEF8FB900D9C3B8 /* Font */,
+				C8B924B81FEF89C700D9C3B8 /* IVColorPicker */,
+			);
+			path = SupportingFiles;
+			sourceTree = "<group>";
+		};
 		C8F22EC31FBC80BD00632109 = {
 			isa = PBXGroup;
 			children = (
@@ -185,8 +194,7 @@
 		C8F22ECE1FBC80BD00632109 /* StringPictMaker */ = {
 			isa = PBXGroup;
 			children = (
-				C8B924BA1FEF8FB900D9C3B8 /* Font */,
-				C8B924B81FEF89C700D9C3B8 /* IVColorPicker */,
+				C8B924BB1FEF911400D9C3B8 /* SupportingFiles */,
 				C8F22ECF1FBC80BD00632109 /* AppDelegate.swift */,
 				C8F22ED11FBC80BD00632109 /* SplashController.swift */,
 				C82DFCDE1FBF0E3D00B65F92 /* ImageListController.swift */,
