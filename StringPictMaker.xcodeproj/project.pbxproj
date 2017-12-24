@@ -24,6 +24,9 @@
 		C8B924B61FEF6AA100D9C3B8 /* CGRect+Core.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B924AE1FEF6AA100D9C3B8 /* CGRect+Core.swift */; };
 		C8B924B71FEF6AA100D9C3B8 /* ColorLightingPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B924AF1FEF6AA100D9C3B8 /* ColorLightingPicker.swift */; };
 		C8B924BF1FEF936900D9C3B8 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C8B924BE1FEF936900D9C3B8 /* Settings.bundle */; };
+		C8B924C21FEFAA9900D9C3B8 /* IPA_Font_License_Agreement_v1.0.txt in Resources */ = {isa = PBXBuildFile; fileRef = C8B924C11FEFAA9900D9C3B8 /* IPA_Font_License_Agreement_v1.0.txt */; };
+		C8B924C41FEFAAD200D9C3B8 /* LICENSE_E in Resources */ = {isa = PBXBuildFile; fileRef = C8B924C31FEFAAD200D9C3B8 /* LICENSE_E */; };
+		C8B924C61FEFAADA00D9C3B8 /* LICENSE_J in Resources */ = {isa = PBXBuildFile; fileRef = C8B924C51FEFAAD900D9C3B8 /* LICENSE_J */; };
 		C8BFE06C1FEE2B37000BC56E /* ラノベPOP.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C8BFE06B1FEE2B37000BC56E /* ラノベPOP.ttf */; };
 		C8BFE0701FEE38D7000BC56E /* 07にくまるフォント.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C8BFE06F1FEE38D7000BC56E /* 07にくまるフォント.ttf */; };
 		C8BFE0721FEE3ACF000BC56E /* 07ReallyScaryMinchotai.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C8BFE0711FEE3ACF000BC56E /* 07ReallyScaryMinchotai.ttf */; };
@@ -75,6 +78,9 @@
 		C8B924AE1FEF6AA100D9C3B8 /* CGRect+Core.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGRect+Core.swift"; sourceTree = "<group>"; };
 		C8B924AF1FEF6AA100D9C3B8 /* ColorLightingPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorLightingPicker.swift; sourceTree = "<group>"; };
 		C8B924BE1FEF936900D9C3B8 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		C8B924C11FEFAA9900D9C3B8 /* IPA_Font_License_Agreement_v1.0.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = IPA_Font_License_Agreement_v1.0.txt; sourceTree = "<group>"; };
+		C8B924C31FEFAAD200D9C3B8 /* LICENSE_E */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE_E; sourceTree = "<group>"; };
+		C8B924C51FEFAAD900D9C3B8 /* LICENSE_J */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE_J; sourceTree = "<group>"; };
 		C8BFE06B1FEE2B37000BC56E /* ラノベPOP.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ラノベPOP.ttf"; sourceTree = "<group>"; };
 		C8BFE06F1FEE38D7000BC56E /* 07にくまるフォント.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "07にくまるフォント.ttf"; sourceTree = "<group>"; };
 		C8BFE0711FEE3ACF000BC56E /* 07ReallyScaryMinchotai.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = 07ReallyScaryMinchotai.ttf; sourceTree = "<group>"; };
@@ -154,6 +160,7 @@
 		C8B924BA1FEF8FB900D9C3B8 /* Font */ = {
 			isa = PBXGroup;
 			children = (
+				C8B924C01FEFAA5F00D9C3B8 /* License */,
 				C8BFE06B1FEE2B37000BC56E /* ラノベPOP.ttf */,
 				C8BFE06F1FEE38D7000BC56E /* 07にくまるフォント.ttf */,
 				C8BFE0711FEE3ACF000BC56E /* 07ReallyScaryMinchotai.ttf */,
@@ -170,6 +177,16 @@
 				C8B924BE1FEF936900D9C3B8 /* Settings.bundle */,
 			);
 			path = SupportingFiles;
+			sourceTree = "<group>";
+		};
+		C8B924C01FEFAA5F00D9C3B8 /* License */ = {
+			isa = PBXGroup;
+			children = (
+				C8B924C51FEFAAD900D9C3B8 /* LICENSE_J */,
+				C8B924C31FEFAAD200D9C3B8 /* LICENSE_E */,
+				C8B924C11FEFAA9900D9C3B8 /* IPA_Font_License_Agreement_v1.0.txt */,
+			);
+			path = License;
 			sourceTree = "<group>";
 		};
 		C8F22EC31FBC80BD00632109 = {
@@ -355,9 +372,12 @@
 				C8F22EDD1FBC80BD00632109 /* LaunchScreen.storyboard in Resources */,
 				C8BFE0701FEE38D7000BC56E /* 07にくまるフォント.ttf in Resources */,
 				C8BFE0721FEE3ACF000BC56E /* 07ReallyScaryMinchotai.ttf in Resources */,
+				C8B924C41FEFAAD200D9C3B8 /* LICENSE_E in Resources */,
+				C8B924C21FEFAA9900D9C3B8 /* IPA_Font_License_Agreement_v1.0.txt in Resources */,
 				C8F22EDA1FBC80BD00632109 /* Assets.xcassets in Resources */,
 				C8BFE0741FEE400D000BC56E /* gatasosyo.ttf in Resources */,
 				C8BFE06C1FEE2B37000BC56E /* ラノベPOP.ttf in Resources */,
+				C8B924C61FEFAADA00D9C3B8 /* LICENSE_J in Resources */,
 				C8F22ED51FBC80BD00632109 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -8,11 +8,19 @@
 	<array>
         <dict>
             <key>Title</key>
-            <string>謝辞</string>
+            <string>Acknowledgement</string>
             <key>Type</key>
             <string>PSChildPaneSpecifier</string>
             <key>File</key>
             <string>Acknowledgements</string>
+        </dict>
+        <dict>
+            <key>Title</key>
+            <string>License</string>
+            <key>Type</key>
+            <string>PSChildPaneSpecifier</string>
+            <key>File</key>
+            <string>License</string>
         </dict>
 	</array>
 </dict>
