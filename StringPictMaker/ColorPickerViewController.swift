@@ -40,6 +40,7 @@ class ColorPickerViewController: UIViewController, UIPickerViewDelegate, UIPicke
 	var colorArray = [UIColor.black,UIColor.white,UIColor.blue,UIColor.yellow,UIColor.red,
 					  UIColor.green,UIColor.gray,UIColor.orange,UIColor.purple,UIColor.brown]
 	var piclerView:ColorPickerView!
+	var selectButton:UIButton!
 	/// ピッカービューを生成
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -61,6 +62,12 @@ class ColorPickerViewController: UIViewController, UIPickerViewDelegate, UIPicke
 		let cancelItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancel))
 		toolbar.setItems([cancelItem, doneItem], animated: true)
 		self.view.addSubview(toolbar)
+		selectButton = UIButton()
+		selectButton.frame = CGRect(x:0, y:0, width:40, height:40)
+		selectButton.center = piclerView.center
+		selectButton.backgroundColor = UIColor.clear
+		selectButton.addTarget(self, action: #selector(changeColor), for: UIControlEvents.touchUpInside)
+		self.view.addSubview(selectButton)
 		/*self.view.frame = CGRect(x:0,y:self.view.frame.height - 150 - 40,width:self.view.frame.width,height:150)
 		print("ColorPickerViewController - viewDidLoad - frame:",self.view.frame)
 		self.view.backgroundColor = UIColor.black
@@ -84,6 +91,13 @@ class ColorPickerViewController: UIViewController, UIPickerViewDelegate, UIPicke
 		self.view.addSubview(picker)
 */
 		print("ColorPickerViewController")
+	}
+	@objc func changeColor(_ sender: ColorPickerView)
+	{
+		print("test")
+		print("ColorPickerViewController - changeColor - sender.selectedColor:",piclerView.selectedColor)
+		delegate?.selectedColor(state: piclerView.selectedColor)
+		done()
 	}
 	// PickerViewの個数
 	func numberOfComponents(in pickerView: UIPickerView) -> Int {
