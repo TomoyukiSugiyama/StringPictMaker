@@ -54,6 +54,7 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 	}
 	// コレクションビューを生成
 	var tableView : UITableView!
+	var indexpath: IndexPath!
 	var layerViewWidth:CGFloat!
 	var layerViewHight:CGFloat!
 	let margine:CGFloat = 5
@@ -79,11 +80,11 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 		}else{
 			imageHeight = imageWidth * UIScreen.main.bounds.size.width / UIScreen.main.bounds.size.height
 		}
-
 		self.view.frame = CGRect(x:UIScreen.main.bounds.width - layerViewWidth,y:0,width:layerViewWidth,height:layerViewHight)
 		self.view.backgroundColor = UIColor.lightGray.withAlphaComponent(0.5)
 		// コレクションビューを生成
 //		let layout = UITableViewFlowLayout()
+		indexpath = nil
 		let frame = CGRect(x:margine,y:margine*3 + closeButtonSize,width:tableViewWidth,height:tableViewHight)
 		print("LayerPickerViewController - viewDidLoad - frame:",frame)
 		tableView = UITableView(frame:frame, style: .plain)
@@ -138,6 +139,7 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 				clearEmphasisSelectedItem(selectedView: item)
 			}
 		}
+		self.indexpath = indexPath
 		delegate?.selectedLayer(num: indexPath.row)
 	}
 	/// - Parameter sender: 編集ボタン
@@ -145,6 +147,10 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 		if(sender.tag == -2){
 			hideContentController(content: self)
 		}else if(sender.tag == -1){
+			indexpath = tableView.indexPathForSelectedRow
+			if(indexpath != nil){
+				tableView.deselectRow(at: indexpath, animated: false)
+			}
 			delegate?.selectedLayer(num: sender.tag)
 		}else{
 			self.delegate?.changeVisibleLayer(num: sender.tag)
@@ -180,8 +186,12 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 			//}
 		}
 	}
-	func updateViewSize(){
-		self.view.frame = CGRect(x:self.view.frame.width/2,y:0,width:self.view.frame.width/2,height:self.view.frame.height - 100)
+	func updateTableView(){
+		//self.tableView.reloadData()
+		if(indexpath != nil){
+			self.tableView.reloadRows(at: [indexpath], with: .none)
+		}
+		tableView.selectRow(at: indexpath, animated: false, scrollPosition: .none)
 	}
 	// 画面回転時に呼び出される
 	override func willAnimateRotation(to toInterfaceOrientation: UIInterfaceOrientation, duration: TimeInterval){
@@ -201,6 +211,10 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 		closeButton.frame = CGRect(x:margine,y:margine,width:closeButtonSize,height:closeButtonSize)
 		selectAllLayerButton.frame = CGRect(x:margine,y:layerViewHight - selectAllButtonSize - margine,width:tableViewWidth,height:selectAllButtonSize)
 		tableView.rowHeight = labelHeight*2 + imageHeight
-		self.tableView.reloadData()
+		indexpath = tableView.indexPathForSelectedRow
+		if(indexpath != nil){
+			self.tableView.reloadRows(at: [indexpath], with: .none)
+		}
+		tableView.selectRow(at: indexpath, animated: false, scrollPosition: .none)
 	}
 }

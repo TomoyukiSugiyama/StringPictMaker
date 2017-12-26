@@ -24,6 +24,7 @@ import UIKit
 /// ＊レイヤービューに３枚以上のレイヤーを追加した状態で、レイヤービューを上にスクロールし、
 /// ＊ - ImageView上のアイテムを動かすとレイヤービューの挙動がおかしくなる
 /// ＊レイヤーを表示した状態で、アイテムを削除してレイヤー上のアイテムがゼロになると落ちる
+/// ＊アイテム追加ー＞レイヤー開くー＞１つ目選択ー＞レイヤー閉じるー＞アイテム追加ー＞移動すると落ちる
 /// ＊
 /// ＊
 /// ＊
@@ -573,6 +574,11 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		self.view.addSubview(layerPickerView.view)
 		self.addChildViewController(layerPickerView)
 		layerPickerView.didMove(toParentViewController: self)
+		if(selectedLayerNumber != -1){
+			let indexpath: IndexPath = IndexPath(row: selectedLayerNumber, section: 0)
+			layerPickerView.tableView.selectRow(at: indexpath, animated: true, scrollPosition: .bottom)
+			layerPickerView.indexpath = indexpath
+		}
 	}
 	// 選択されたアイテムをレイヤーから削除
 	func removeItemFromLayer(){
@@ -931,7 +937,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		// レイヤーピッカービューが表示されていれば更新
 		if(layerPickerView != nil){
 			layerPickerView.setImageView(view: imageView!)
-			layerPickerView.tableView.reloadData()
+			layerPickerView.updateTableView()
 		}else{
 			// layerPickerView is not displayed.
 		}
