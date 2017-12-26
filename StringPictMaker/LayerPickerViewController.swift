@@ -11,8 +11,7 @@ import UIKit
 
 /// TODO:
 /// ＊コレクションビューのレイアウト
-/// ＊全レイヤーセレクトメニュー追加
-/// ＊横画面にした時のレイアウト
+/// ＊レイヤービューのリロードが正しく行われていない
 /// ＊
 /// ＊
 /// ＊
@@ -55,41 +54,60 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 	}
 	// コレクションビューを生成
 	var tableView : UITableView!
-//	var layerCell: UICollectionViewCell!
-
-	let layerViewWidth:CGFloat = 200
+	var layerViewWidth:CGFloat!
 	var layerViewHight:CGFloat!
-	let margine:CGFloat = 20
+	let margine:CGFloat = 5
 	var tableViewWidth:CGFloat!
 	var tableViewHight:CGFloat!
 	let toolBarHight:CGFloat = 40
-
+	let labelHeight:CGFloat = 20
+	var imageWidth:CGFloat!
+	var imageHeight:CGFloat!
+	var closeButton:UIButton!
+	let closeButtonSize:CGFloat = 20
+	var selectAllLayerButton:UIButton!
+	let selectAllButtonSize:CGFloat = 20
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		layerViewWidth = UIScreen.main.bounds.size.width * 0.3
 		layerViewHight = UIScreen.main.bounds.height - toolBarHight
 		tableViewWidth = layerViewWidth - margine*2
-		tableViewHight = layerViewHight - margine*2
+		tableViewHight = layerViewHight - margine*6 - closeButtonSize - selectAllButtonSize
+		imageWidth = layerViewWidth - margine*2
+		if(UIScreen.main.bounds.size.width > UIScreen.main.bounds.size.height){
+			imageHeight = imageWidth * UIScreen.main.bounds.size.height / UIScreen.main.bounds.size.width
+		}else{
+			imageHeight = imageWidth * UIScreen.main.bounds.size.width / UIScreen.main.bounds.size.height
+		}
 
 		self.view.frame = CGRect(x:UIScreen.main.bounds.width - layerViewWidth,y:0,width:layerViewWidth,height:layerViewHight)
 		self.view.backgroundColor = UIColor.lightGray.withAlphaComponent(0.5)
 		// コレクションビューを生成
 //		let layout = UITableViewFlowLayout()
-		let frame = CGRect(x:margine,y:margine,width:tableViewWidth,height:tableViewHight)
+		let frame = CGRect(x:margine,y:margine*3 + closeButtonSize,width:tableViewWidth,height:tableViewHight)
 		print("LayerPickerViewController - viewDidLoad - frame:",frame)
 		tableView = UITableView(frame:frame, style: .plain)
 		tableView.register(LayerCell.self, forCellReuseIdentifier: "LayerCell_id")
 		//tableView.register(LayerCell.self, forCellWithReuseIdentifier: "LayerCell_id")
 		tableView.delegate = self
 		tableView.dataSource = self
-		tableView.backgroundColor = UIColor.white
-		tableView.rowHeight = 200
+		tableView.backgroundColor = UIColor.gray
+		tableView.rowHeight = labelHeight*2 + imageHeight
 		self.view.addSubview(tableView)
-		let closeButton = UIButton(frame: CGRect(x:0,y:0,width:20,height:20))
+		closeButton = UIButton(frame: CGRect(x:margine,y:margine,width:closeButtonSize,height:closeButtonSize))
 		closeButton.backgroundColor = UIColor.white
 		closeButton.setTitle(">", for: .normal)
-		closeButton.tag = -1
+		closeButton.tag = -2
 		closeButton.addTarget(self, action: #selector(onClickEditButtons), for: UIControlEvents.touchUpInside)
 		self.view.addSubview(closeButton)
+		
+		selectAllLayerButton = UIButton(frame: CGRect(x:margine,y:layerViewHight - selectAllButtonSize - margine,width:tableViewWidth,height:selectAllButtonSize))
+		//selectAllLayerButton.backgroundColor = UIColor.white
+		selectAllLayerButton.setTitle("Select All", for: .normal)
+		selectAllLayerButton.setTitleColor(UIColor.blue, for: .normal)
+		selectAllLayerButton.tag = -1
+		selectAllLayerButton.addTarget(self, action: #selector(onClickEditButtons), for: UIControlEvents.touchUpInside)
+		self.view.addSubview(selectAllLayerButton)
 		print("LayerPickerViewController - viewDidLoad")
 	}
 	/// セクション数
@@ -124,8 +142,10 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 	}
 	/// - Parameter sender: 編集ボタン
 	@objc func onClickEditButtons(sender: UIButton) {
-		if(sender.tag == -1){
+		if(sender.tag == -2){
 			hideContentController(content: self)
+		}else if(sender.tag == -1){
+			delegate?.selectedLayer(num: sender.tag)
 		}else{
 			self.delegate?.changeVisibleLayer(num: sender.tag)
 		}
@@ -165,14 +185,22 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 	}
 	// 画面回転時に呼び出される
 	override func willAnimateRotation(to toInterfaceOrientation: UIInterfaceOrientation, duration: TimeInterval){
+		layerViewWidth = UIScreen.main.bounds.size.width * 0.3
 		layerViewHight = UIScreen.main.bounds.height - toolBarHight
 		tableViewWidth = layerViewWidth - margine*2
-		tableViewHight = layerViewHight - margine*2
-
+		tableViewHight = layerViewHight - margine*6 - closeButtonSize - selectAllButtonSize
+		imageWidth = layerViewWidth - margine*2
+		if(UIScreen.main.bounds.size.width > UIScreen.main.bounds.size.height){
+			imageHeight = imageWidth * UIScreen.main.bounds.size.height / UIScreen.main.bounds.size.width
+		}else{
+			imageHeight = imageWidth * UIScreen.main.bounds.size.width / UIScreen.main.bounds.size.height
+		}
 		self.view.frame = CGRect(x:UIScreen.main.bounds.width - layerViewWidth,y:0,width:layerViewWidth,height:layerViewHight)
-		tableView.frame = CGRect(x:margine,y:margine,width:tableViewWidth,height:tableViewHight)
-		
-		//self.toolbar.frame = CGRect(x:0, y:0, width:self.view.frame.width, height:35)
-		//self.picker.frame = CGRect(x: 0, y: 35, width: self.view.frame.width, height: self.view.frame.height - 35)
+		let frame = CGRect(x:margine,y:margine*3 + closeButtonSize,width:tableViewWidth,height:tableViewHight)
+		tableView.frame = frame
+		closeButton.frame = CGRect(x:margine,y:margine,width:closeButtonSize,height:closeButtonSize)
+		selectAllLayerButton.frame = CGRect(x:margine,y:layerViewHight - selectAllButtonSize - margine,width:tableViewWidth,height:selectAllButtonSize)
+		tableView.rowHeight = labelHeight*2 + imageHeight
+		self.tableView.reloadData()
 	}
 }

@@ -30,22 +30,20 @@ class LayerCell: UITableViewCell {
 	}	
 	override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
+		self.contentView.backgroundColor = UIColor.gray
 		// Initialization code
-//		imageLabel = UIImageView(frame: CGRect(x:5, y:30, width:frame.width-20, height:frame.width-20))
 		imageLabel = UIImageView()
+		imageLabel?.backgroundColor = UIColor.white
 		self.contentView.addSubview(imageLabel!)
 		// UILabelを生成
 		layerLabel = UILabel()
-//		textLabel_ = UILabel(frame: CGRect(x:0, y:0, width:frame.width-20, height:20))
 		layerLabel?.text = "Layer"
 		layerLabel?.textAlignment = NSTextAlignment.center
-		layerLabel?.backgroundColor = UIColor.white
-//		textLabel_?.layer.shadowOffset = CGSize(width: 1.0, height: 3.0)
-//		textLabel_?.layer.shadowOpacity = 5.0
+		//layerLabel?.backgroundColor = UIColor.gray
 		self.contentView.addSubview(layerLabel!)
+		print("LayerCell - init - ImageLabel:",imageLabel as Any)
 		// UIButtonを生成
 		editButton = UIButton()
-		//editButton?.frame = CGRect(x: frame.width-10, y: frame.width, width: 20, height: 20)
 		editButton?.setTitle("EYE", for: .normal)
 		editButton?.setTitleColor(UIColor.blue, for: .normal)
 		self.contentView.addSubview(editButton!)
@@ -54,20 +52,21 @@ class LayerCell: UITableViewCell {
 		super.prepareForReuse()
 	}
 	override func layoutSubviews() {
+		let margine:CGFloat = 5
+		let labelWidth:CGFloat = 100
+		let labelHeight:CGFloat = 20
+		var imageWidth:CGFloat!
+		var imageHeight:CGFloat!
+		imageWidth = self.contentView.frame.width - margine*2
+		if(UIScreen.main.bounds.size.width > UIScreen.main.bounds.size.height){
+			imageHeight = imageWidth * UIScreen.main.bounds.size.height / UIScreen.main.bounds.size.width
+		}else{
+			imageHeight = imageWidth * UIScreen.main.bounds.size.width / UIScreen.main.bounds.size.height
+		}
 		super.layoutSubviews()
-		layerLabel?.frame = CGRect(x: 0, y  : 0, width: 100, height: 20)
-		imageLabel?.frame = CGRect(x: 0, y: 20, width: 140, height: 140)
-		editButton?.frame = CGRect(x: 100, y: 0, width: 100, height: 20)
- //	   print("LayerCell - init - frame:",frame,"tableView.frame:",imageLabel?.frame,"editButton.frame:",editButton?.frame);
+		layerLabel?.frame = CGRect(x: 0, y  : 0, width: labelWidth, height: labelHeight)
+		imageLabel?.frame = CGRect(x: margine, y: labelHeight, width: imageWidth, height: imageHeight)
+		print("LayerCell - layoutSubviews - ImageLabel:",imageLabel as Any)
+		editButton?.frame = CGRect(x: 0, y: labelHeight + imageHeight, width: labelWidth, height: labelHeight)
 	}
-	/*override func layoutSubviews() {
-		super.layoutSubviews()
-	}*/
-	/// LayerPickerControllerのセルをカスタマイズ
-	///
-	/// - Parameter frame: セルのフレーム
-//	override init(frame: CGRect) {
-//		super.init(frame: frame)
-  
-//	}
 }
