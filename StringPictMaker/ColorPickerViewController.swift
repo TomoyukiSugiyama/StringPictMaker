@@ -11,7 +11,6 @@ import UIKit
 
 /// TODO:
 /// ＊レイアウト
-/// ＊cansel,doneボタンの中身を実装
 /// ＊
 /// ＊
 /// ＊
@@ -54,9 +53,10 @@ class ColorPickerViewController: UIViewController{
 		self.view.addSubview(pickerView)
 		// toolbarを追加
 		toolbar = UIToolbar(frame: CGRect(x:0, y:0, width:self.view.frame.width, height:35))
-		let doneItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(done))
+		//let doneItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(done))
 		let cancelItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancel))
-		toolbar.setItems([cancelItem, doneItem], animated: true)
+		//toolbar.setItems([cancelItem, doneItem], animated: true)
+		toolbar.setItems([cancelItem], animated: true)
 		self.view.addSubview(toolbar)
 		selectButton = UIButton()
 		selectButton.frame = CGRect(x:0, y:0, width:40, height:40)

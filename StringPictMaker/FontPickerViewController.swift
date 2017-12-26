@@ -11,7 +11,6 @@ import UIKit
 
 /// TODO:
 /// ＊レイアウト
-/// ＊cansel,doneボタンの中身を実装
 /// ＊
 /// ＊
 /// ＊
@@ -40,7 +39,8 @@ class FontPickerViewController: UIViewController, UIPickerViewDelegate, UIPicker
 	var dataArray = ["アニメ風","かわいい","こわ〜い","草書"]
 	//var fontArray = ["07LightNovelPOP","DBLCDTempBlack","MarkerFelt-Thin","Academy Engraved LET","Al Nile","American Typewriter","Apple Color Emoji","Apple SD Gothic Neo","Arial","Arial Hebrew"]
 	var fontArray = ["07LightNovelPOP","07NikumaruFont","07ReallyScaryMinchotai","gatasosyo"]
-
+	// 選択されたフォント
+	var selectedLabel:UILabel!
 	/// ピッカービューを生成
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -91,11 +91,10 @@ class FontPickerViewController: UIViewController, UIPickerViewDelegate, UIPicker
 	// 選択された時
 	func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
 		// 表示するラベルを生成する
-		let label = UILabel(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 50))
-		label.textAlignment = .center
-		label.text = dataArray[row]
-		label.font = UIFont(name: fontArray[row],size:16)
-		self.delegate?.selectedFont(state: label)
+		selectedLabel = UILabel(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 50))
+		selectedLabel.textAlignment = .center
+		selectedLabel.text = dataArray[row]
+		selectedLabel.font = UIFont(name: fontArray[row],size:16)
 		print("value : \(dataArray[row])")
 	}
 	// toolbarのキャンセルを選択
@@ -106,6 +105,7 @@ class FontPickerViewController: UIViewController, UIPickerViewDelegate, UIPicker
 	// toolbarの完了を選択
 	@objc func done(){
 		print("FontPickerViewController - done")
+		self.delegate?.selectedFont(state: selectedLabel)
 		hideContentController(content: self)
 	}
 	/// コンテナをスーパービューに追加
