@@ -105,6 +105,14 @@ class FontPickerViewController: UIViewController, UIPickerViewDelegate, UIPicker
 	// toolbarの完了を選択
 	@objc func done(){
 		print("FontPickerViewController - done")
+		if(selectedLabel == nil){
+			// 表示するラベルを生成する
+			selectedLabel = UILabel(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 50))
+			selectedLabel.textAlignment = .center
+			selectedLabel.text = dataArray[0]
+			selectedLabel.font = UIFont(name: fontArray[0],size:16)
+
+		}
 		self.delegate?.selectedFont(state: selectedLabel)
 		hideContentController(content: self)
 	}
