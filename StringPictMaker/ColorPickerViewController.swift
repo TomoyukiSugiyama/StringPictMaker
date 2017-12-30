@@ -36,18 +36,24 @@ class ColorPickerViewController: UIViewController{
 	// カラーピッカービューを生成
 	var pickerView:ColorPickerView!
 	var selectButton:UIButton!
+	var margine:CGFloat!
+	var toolBarHeight:CGFloat!
+	var pickerViewSize:CGFloat!
 	/// ピッカービューを生成
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		print("ImageEditor - ColorPickerViewController - viewDidLoad - self.view.frame1:",self.view.frame)
-		let margine:CGFloat = 20
-		let width:CGFloat = self.view.frame.width - margine*2
-		let toolBarHeight:CGFloat = 40
-		//self.view.frame = CGRect(x:0,y:self.view.frame.height - width - toolBarHeight ,width:width,height:width)
-		self.view.frame = CGRect(x:0,y:0,width:self.view.frame.width,height:self.view.frame.height - toolBarHeight)
+		margine = 20
+		toolBarHeight = 35
+		if(UIScreen.main.bounds.height > UIScreen.main.bounds.width){
+			pickerViewSize = UIScreen.main.bounds.width - margine*2 - toolBarHeight
+		}else{
+			pickerViewSize = UIScreen.main.bounds.height - margine*2 - toolBarHeight
+		}
+		self.view.frame = CGRect(x:0,y:0,width:UIScreen.main.bounds.width,height:UIScreen.main.bounds.height)
 		self.view.backgroundColor = UIColor.black
 		print("ImageEditor - ColorPickerViewController - viewDidLoad - self.view.frame2:",self.view.frame)
-		let frame = CGRect(x:margine,y:self.view.frame.height/2 - width/2,width:width,height:width)
+		let frame = CGRect(x:UIScreen.main.bounds.width/2 - pickerViewSize/2,y:UIScreen.main.bounds.height/2 + toolBarHeight/2 - pickerViewSize/2,width:pickerViewSize,height:pickerViewSize)
 		pickerView = ColorPickerView(frame:frame)
 		pickerView.setNeedsDisplay()
 		self.view.addSubview(pickerView)
@@ -101,8 +107,10 @@ class ColorPickerViewController: UIViewController{
 	}
 	// 画面回転時に呼び出される
 	override func willAnimateRotation(to toInterfaceOrientation: UIInterfaceOrientation, duration: TimeInterval){
-		self.view.frame = CGRect(x:0,y:UIScreen.main.bounds.height-150-40,width:UIScreen.main.bounds.width,height:150)
+		self.view.frame = CGRect(x:0,y:0,width:UIScreen.main.bounds.width,height:UIScreen.main.bounds.height)
 		self.toolbar.frame = CGRect(x:0, y:0, width:self.view.frame.width, height:35)
+		pickerView.frame = CGRect(x:UIScreen.main.bounds.width/2 - pickerViewSize/2,y:UIScreen.main.bounds.height/2 + toolBarHeight/2 - pickerViewSize/2,width:pickerViewSize,height:pickerViewSize)
+		selectButton.center = pickerView.center
 //		self.picker.frame = CGRect(x: 0, y: 35, width: self.view.frame.width, height: self.view.frame.height - 35)
 	}
 }

@@ -54,7 +54,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	var imageView : UIView? = nil
 	var imageData : DataManager? = nil
 	// MenuButtonActionControllerで選択されたサブメニューアイテムの番号を取得
-	var selectedSubMenuItemState = 0
+	//var selectedSubMenuItemState = 0
 	// スクロールビューを生成
 	var scrollView: UIScrollView! = nil
 	// メニューボタンを生成
@@ -246,73 +246,60 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	}
 	/// ツールバーのアイテムを初期化
 	func initToolBarItem(){
-		var myUIBarButtonGreen: UIBarButtonItem? = nil
-		var myUIBarButtonBlue: UIBarButtonItem? = nil
-		var myUIBarButtonRed: UIBarButtonItem? = nil
-		var myUIBarItemSpace100: UIBarButtonItem? = nil
-		var myUIBarButtonCancel: UIBarButtonItem? = nil
-		var myUIBarItemSpace20: UIBarButtonItem? = nil
-		var myUIBarButtonSave: UIBarButtonItem? = nil
-		var myUIBarButtonColorPalet: UIBarButtonItem? = nil
-		var myUIBarButtonFontSeloctor: UIBarButtonItem? = nil
-		var myUIBarButtonLayerSeloctor: UIBarButtonItem? = nil
-		var myUIBarButtonAdjustCenter: UIBarButtonItem? = nil
-		var myUIBarButtonDeleteItem: UIBarButtonItem? = nil
-		self.toolBar = [[UIBarButtonItem]]()
-		myUIBarButtonGreen = UIBarButtonItem(title: "Green", style:.plain, target: self, action: #selector(onClickBarButton))
-		myUIBarButtonGreen?.tag = 1
-		myUIBarButtonBlue = UIBarButtonItem(title: "Yellow", style:.plain, target: self, action: #selector(onClickBarButton))
-		myUIBarButtonBlue?.tag = 2
-		myUIBarButtonRed = UIBarButtonItem(title: "Red", style:.plain, target: self, action: #selector(onClickBarButton))
-		myUIBarButtonRed?.tag = 3
-		myUIBarItemSpace100 = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
-		myUIBarItemSpace100?.width = 100
-		myUIBarButtonCancel = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(onClickBarButton))
-		myUIBarButtonCancel?.tag = 4
-		myUIBarItemSpace20 = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
-		myUIBarItemSpace20?.width = 20
-		myUIBarButtonSave = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(onClickBarButton))
-		myUIBarButtonSave?.tag = 5
-		myUIBarButtonColorPalet = UIBarButtonItem(title: "Color", style:.plain, target: self,action:#selector(onClickBarButton))
-		myUIBarButtonColorPalet?.tag = 6
-		myUIBarButtonFontSeloctor = UIBarButtonItem(title: "Font", style:.plain, target: self,action:#selector(onClickBarButton))
-		myUIBarButtonFontSeloctor?.tag = 7
-		myUIBarButtonLayerSeloctor = UIBarButtonItem(title: "Layer", style:.plain, target: self,action:#selector(onClickBarButton))
-		myUIBarButtonLayerSeloctor?.tag = 8
-		myUIBarButtonAdjustCenter = UIBarButtonItem(title: "Center", style:.plain, target: self, action: #selector(onClickBarButton))
-		myUIBarButtonAdjustCenter?.tag = 9
-		myUIBarButtonDeleteItem = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(onClickBarButton))
-		myUIBarButtonDeleteItem?.tag = 10
-		// 選択されたサブメニュー毎のアイテムを設定
-		self.toolBar.append([myUIBarButtonGreen!,myUIBarButtonBlue!,myUIBarButtonRed!,myUIBarItemSpace100!,myUIBarButtonCancel!,myUIBarItemSpace20!,myUIBarButtonSave!])
-		self.toolBar.append([myUIBarButtonColorPalet!,myUIBarButtonFontSeloctor!,myUIBarItemSpace100!,myUIBarButtonLayerSeloctor!,myUIBarButtonDeleteItem!,myUIBarItemSpace20!,myUIBarButtonSave!])
-		self.toolBar.append([myUIBarButtonGreen!,myUIBarButtonBlue!,myUIBarButtonAdjustCenter!,myUIBarItemSpace100!,myUIBarButtonCancel!,myUIBarItemSpace20!,myUIBarButtonSave!])
-
+		var SettingSave:UIBarButtonItem!
+		var SettingCancel:UIBarButtonItem!
+		var TextFont:UIBarButtonItem!
+		var TextPosition:UIBarButtonItem!
+		var TextAdd:UIBarButtonItem!
+		var TextDelete:UIBarButtonItem!
+		var PenSize:UIBarButtonItem!
+		var PenErase:UIBarButtonItem!
+		var Color:UIBarButtonItem!
+		var Layer:UIBarButtonItem!
+		var Space:UIBarButtonItem!
+		toolBar = [[UIBarButtonItem]]()
+		SettingSave = UIBarButtonItem(title: "Save", style:.plain, target: self, action: #selector(onClickBarButton))
+		SettingSave.tag = 1
+		SettingCancel = UIBarButtonItem(title: "Cancel", style:.plain, target: self, action: #selector(onClickBarButton))
+		SettingCancel.tag = 2
+		PenSize = UIBarButtonItem(title: "Size", style:.plain, target: self, action: #selector(onClickBarButton))
+		PenSize.tag = 3
+		PenErase = UIBarButtonItem(title: "Erase", style:.plain, target: self, action: #selector(onClickBarButton))
+		PenErase.tag = 4
+		TextFont = UIBarButtonItem(title: "Font", style:.plain, target: self, action: #selector(onClickBarButton))
+		TextFont.tag = 5
+		TextPosition = UIBarButtonItem(title: "Position", style:.plain, target: self, action: #selector(onClickBarButton))
+		TextPosition.tag = 6
+		TextAdd = UIBarButtonItem(title: "Add", style:.plain, target: self, action: #selector(onClickBarButton))
+		TextAdd.tag = 7
+		TextDelete = UIBarButtonItem(title: "Delet", style:.plain, target: self, action: #selector(onClickBarButton))
+		TextDelete.tag = 8
+		Color = UIBarButtonItem(title: "Color", style:.plain, target: self, action: #selector(onClickBarButton))
+		Color.tag = 9
+		Layer = UIBarButtonItem(title: "Layer", style:.plain, target: self, action: #selector(onClickBarButton))
+		Layer.tag = 10
+		Space = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil)
+		self.toolBar.append([Space])
+		self.toolBar.append([SettingSave,Space,SettingCancel])
+		self.toolBar.append([PenSize,Space,PenErase])
+		self.toolBar.append([TextAdd,Space,TextFont,Space,TextPosition,Space,Color,Space,Layer,Space,TextDelete])
+		self.toolBar.append([Color])
+		self.toolBar.append([Space])
 		print("ImageEditor - initToolBarItem")
 	}
 	/// 以下、デリゲート
 	/// 選択されたサブメニューを取得
 	func selectedSubMenu(state: DataManager.MenuTypes) {
-		if state == DataManager.MenuTypes.typeGPS{
-			selectedSubMenuItemState = 1
-			setGPSLabel()
-			myToolbar.items = toolBar[1]
-		}else if state == DataManager.MenuTypes.typeColor{
-			selectedSubMenuItemState = 2
-			setColor()
-			myToolbar.items = toolBar[0]
-		}else if state == DataManager.MenuTypes.typeImage{
-			selectedSubMenuItemState = 3
-			setImage()
-			myToolbar.items = toolBar[2]
-		}else if state == DataManager.MenuTypes.typeTime{
-			selectedSubMenuItemState = 4
-			myToolbar.items = toolBar[0]
-			setTime()
-		}else if state == DataManager.MenuTypes.typePen{
-			selectedSubMenuItemState = 5
-			myToolbar.items = toolBar[0]
+		if state == DataManager.MenuTypes.SETTING{
+			setSetting()
+		}else if state == DataManager.MenuTypes.PEN{
 			setPen()
+		}else if state == DataManager.MenuTypes.TEXT{
+			setText()
+		}else if state == DataManager.MenuTypes.COLOR{
+			setColor()
+		}else if state == DataManager.MenuTypes.DUMMY{
+			setDUMMY()
 		}
 	}
 	/// 以下、デリゲートによって選択されたメニュー毎の処理
@@ -378,13 +365,40 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			layer.isHidden = true
 		}
 	}
+	/// Settingをセット
+	func setSetting(){
+		myToolbar.items = toolBar[1]
+		print("ImageEditor - setSetting");
+	}
+	/// Penをセット
+	func setPen(){
+		myToolbar.items = toolBar[2]
+		print("ImageEditor - setPen");
+	}
+	/// Textをセット
+	func setText(){
+		myToolbar.items = toolBar[3]
+		setGPS()
+		print("ImageEditor - setText");
+	}
+	/// Colorをセット
+	func setColor(){
+		myToolbar.items = toolBar[4]
+		print("ImageEditor - setColor");
+	}
+	/// ダミーをセット
+	func setDUMMY(){
+		myToolbar.items = toolBar[5]
+		print("ImageEditor - setDummy");
+	}
 	/// TODO:
 	/// Imageを編集し保存後、再編集するとTagの番号が誤って追加される
 	/// ImageViewに追加するアイテムがGPSの場合、
 	/// タグ = 1024の整数倍 ＋ 0x001 (typeGPS:　アイテムの種類がGPSであることを示す値)
 	var gpsTag = 1024
 	/// GPSをセット
-	func setGPSLabel(){
+	func setGPS(){
+		print("ImageEditor - setGPS");
 		let layer = UIView(frame:(self.imageView?.bounds)!)
 		let GPSlabel = UILabel()
 		// 文字追加
@@ -409,56 +423,82 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		layer.addSubview(GPSlabel)
 		self.imageView?.addSubview(layer)
 	}
+	/// Future functions
 	/// Imageをセット
-	func setImage(){
-		print("ImageEditor - setImage");
+	func setPicture(){
+		print("ImageEditor - setPicture");
 		//self.navigationController?.setNavigationBarHidden(false, animated: false)
 		//self.navigationController?.popViewController(animated: true)
 	}
-	/// Colorをセット
-	func setColor(){
-		print("ImageEditor - setColor");
+	/// Stampをセット
+	func setStamp(){
+		print("ImageEditor - setStamp");
 	}
 	/// Timeをセット
 	func setTime(){
 		print("ImageEditor - setTime");
 	}
-	/// Penをセット
-	func setPen(){
-		print("ImageEditor - setPen");
+	/// Dateをセット
+	func setDate(){
+		print("ImageEditor - setDate");
 	}
 	/// 以下、ツールバーのアクション
 	///
 	/// - Parameter sender: ツールバーのボタンを取得
 	@objc func onClickBarButton(sender: UIBarButtonItem) {
+		/*
+		SettingSave = UIBarButtonItem(title: "Save", style:.plain, target: self, action: #selector(onClickBarButton))
+		SettingSave.tag = 1
+		SettingCancel = UIBarButtonItem(title: "Cancel", style:.plain, target: self, action: #selector(onClickBarButton))
+		SettingCancel.tag = 2
+		PenSize = UIBarButtonItem(title: "Size", style:.plain, target: self, action: #selector(onClickBarButton))
+		PenSize.tag = 3
+		PenErase = UIBarButtonItem(title: "Erase", style:.plain, target: self, action: #selector(onClickBarButton))
+		PenErase.tag = 4
+		TextFont = UIBarButtonItem(title: "Font", style:.plain, target: self, action: #selector(onClickBarButton))
+		TextFont.tag = 5
+		TextPosition = UIBarButtonItem(title: "Position", style:.plain, target: self, action: #selector(onClickBarButton))
+		TextPosition.tag = 6
+		TextAdd = UIBarButtonItem(title: "Add", style:.plain, target: self, action: #selector(onClickBarButton))
+		TextAdd.tag = 7
+		TextDelete = UIBarButtonItem(title: "Delet", style:.plain, target: self, action: #selector(onClickBarButton))
+		TextDelete.tag = 8
+		Color = UIBarButtonItem(title: "Color", style:.plain, target: self, action: #selector(onClickBarButton))
+		Color.tag = 9
+		Layer = UIBarButtonItem(title: "Layer", style:.plain, target: self, action: #selector(onClickBarButton))
+		Layer.tag = 10
+		*/
 		switch sender.tag {
 		case 1:
-			//myToolbar.items = [myUIBarButtonGreen, myUIBarButtonBlue, myUIBarButtonRed,myUIBarItemSpace,myUIBarButtonCancel,myUIBarItemSpace2,myUIBarButtonSave]
-			self.imageView?.backgroundColor = UIColor.green
-		case 2:
-			self.imageView?.backgroundColor = UIColor.yellow
-		case 3:
-			self.imageView?.backgroundColor = UIColor.red
-		case 4:
-			print("ImageEditor - onClickBarButton - cancel")
-			//removeItemFromLayer()
-			displayCancelAlert()
-		case 5:
-			// CoreDataを更新
-			print("ImageEditor - onClickBarButton - save:",self.delegateParamId)
+			print("ImageEditor - onClickBarButton - SettingSave")
 			displaySaveAlert()
-		case 6:
-			displayColorPalet()
-		case 7:
+		case 2:
+			print("ImageEditor - onClickBarButton - SettingCancel")
+			displayCancelAlert()
+		case 3:
+			print("ImageEditor - onClickBarButton - PenSize")
+		case 4:
+			print("ImageEditor - onClickBarButton - PenErase:")
+		case 5:
+			print("ImageEditor - onClickBarButton - TextFont")
 			displayFontSelector()
-		case 8:
-			displayLayerSelector()
-		case 9:
+		case 6:
+			print("ImageEditor - onClickBarButton - TextPosition")
 			adjustItemPositionCenter()
-		case 10:
+		case 7:
+			print("ImageEditor - onClickBarButton - TextAdd")
+			setGPS()
+		case 8:
+			print("ImageEditor - onClickBarButton - TextDelete")
 			removeItemFromLayer()
+		case 9:
+			print("ImageEditor - onClickBarButton - Color")
+			displayColorPalet()
+		case 10:
+			print("ImageEditor - onClickBarButton - Layer")
+			displayLayerSelector()
 		default:
-			print("ImageEditor - onClickBarButton - error")
+			print("ImageEditor - onClickBarButton - DUMMY")
 		}
 	}
 	/// 以下、ツールバーで選択されたボタン毎の処理

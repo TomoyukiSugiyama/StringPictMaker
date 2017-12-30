@@ -42,12 +42,11 @@ class DataManager{
 	}
 	// Viewにセットするtagの種類を管理
 	enum MenuTypes : Int{
-		case typeGPS = 1
-		case typeColor
-		case typeImage
-		case typeTime
-		case typePen
-		case typeDUMMY
+		case SETTING = 1
+		case PEN
+		case TEXT
+		case COLOR
+		case DUMMY
 	}
 	let DUMMY:Int
 	init() {

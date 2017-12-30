@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		C82DFCDF1FBF0E3D00B65F92 /* ImageListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82DFCDE1FBF0E3D00B65F92 /* ImageListController.swift */; };
 		C82DFCE11FBFB98C00B65F92 /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82DFCE01FBFB98C00B65F92 /* ImageCell.swift */; };
+		C84CBFB11FF75C1F00158BF5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C84CBFB01FF75C1E00158BF5 /* Assets.xcassets */; };
 		C888FF6E1FCCCB92000F7738 /* StringPictMaker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C888FF6C1FCCCB92000F7738 /* StringPictMaker.xcdatamodeld */; };
 		C891DD701FC1BC1800C126BF /* ImageBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = C891DD6F1FC1BC1800C126BF /* ImageBoard.swift */; };
 		C891DD721FC4555F00C126BF /* MenuButtonActionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C891DD711FC4555F00C126BF /* MenuButtonActionController.swift */; };
@@ -34,7 +35,6 @@
 		C8F22ED01FBC80BD00632109 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F22ECF1FBC80BD00632109 /* AppDelegate.swift */; };
 		C8F22ED21FBC80BD00632109 /* SplashController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F22ED11FBC80BD00632109 /* SplashController.swift */; };
 		C8F22ED51FBC80BD00632109 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C8F22ED31FBC80BD00632109 /* Main.storyboard */; };
-		C8F22EDA1FBC80BD00632109 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C8F22ED91FBC80BD00632109 /* Assets.xcassets */; };
 		C8F22EDD1FBC80BD00632109 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C8F22EDB1FBC80BD00632109 /* LaunchScreen.storyboard */; };
 		C8F22EE81FBC80BD00632109 /* StringPictMakerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F22EE71FBC80BD00632109 /* StringPictMakerTests.swift */; };
 		C8F22EF31FBC80BD00632109 /* StringPictMakerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F22EF21FBC80BD00632109 /* StringPictMakerUITests.swift */; };
@@ -63,6 +63,7 @@
 /* Begin PBXFileReference section */
 		C82DFCDE1FBF0E3D00B65F92 /* ImageListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageListController.swift; sourceTree = "<group>"; };
 		C82DFCE01FBFB98C00B65F92 /* ImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
+		C84CBFB01FF75C1E00158BF5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C888FF6D1FCCCB92000F7738 /* StringPictMaker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = StringPictMaker.xcdatamodel; sourceTree = "<group>"; };
 		C891DD6F1FC1BC1800C126BF /* ImageBoard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageBoard.swift; sourceTree = "<group>"; };
 		C891DD711FC4555F00C126BF /* MenuButtonActionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuButtonActionController.swift; sourceTree = "<group>"; };
@@ -89,7 +90,6 @@
 		C8F22ECF1FBC80BD00632109 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C8F22ED11FBC80BD00632109 /* SplashController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashController.swift; sourceTree = "<group>"; };
 		C8F22ED41FBC80BD00632109 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		C8F22ED91FBC80BD00632109 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C8F22EDC1FBC80BD00632109 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C8F22EDE1FBC80BD00632109 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C8F22EE31FBC80BD00632109 /* StringPictMakerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StringPictMakerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -227,9 +227,9 @@
 				C8F75AE21FDCC7FB006FA649 /* LayerPickerViewController.swift */,
 				C8F75AE41FDEAEDA006FA649 /* LayerCell.swift */,
 				C891DD751FC46AEF00C126BF /* DataManager.swift */,
+				C84CBFB01FF75C1E00158BF5 /* Assets.xcassets */,
 				C8F22ED31FBC80BD00632109 /* Main.storyboard */,
 				C888FF6C1FCCCB92000F7738 /* StringPictMaker.xcdatamodeld */,
-				C8F22ED91FBC80BD00632109 /* Assets.xcassets */,
 				C8F22EDB1FBC80BD00632109 /* LaunchScreen.storyboard */,
 				C8F22EDE1FBC80BD00632109 /* Info.plist */,
 			);
@@ -370,11 +370,11 @@
 			files = (
 				C8B924BF1FEF936900D9C3B8 /* Settings.bundle in Resources */,
 				C8F22EDD1FBC80BD00632109 /* LaunchScreen.storyboard in Resources */,
+				C84CBFB11FF75C1F00158BF5 /* Assets.xcassets in Resources */,
 				C8BFE0701FEE38D7000BC56E /* 07にくまるフォント.ttf in Resources */,
 				C8BFE0721FEE3ACF000BC56E /* 07ReallyScaryMinchotai.ttf in Resources */,
 				C8B924C41FEFAAD200D9C3B8 /* LICENSE_E in Resources */,
 				C8B924C21FEFAA9900D9C3B8 /* IPA_Font_License_Agreement_v1.0.txt in Resources */,
-				C8F22EDA1FBC80BD00632109 /* Assets.xcassets in Resources */,
 				C8BFE0741FEE400D000BC56E /* gatasosyo.ttf in Resources */,
 				C8BFE06C1FEE2B37000BC56E /* ラノベPOP.ttf in Resources */,
 				C8B924C61FEFAADA00D9C3B8 /* LICENSE_J in Resources */,

@@ -144,7 +144,6 @@ class MenuButtonActionController: UIButton {
 	var subButton_2: UIButton = UIButton()
 	var subButton_3: UIButton = UIButton()
 	var subButton_4: UIButton = UIButton()
-	//var subButton_5: UIButton = UIButton()
 	var colors: NSMutableArray!
 	/// サブメニューボタンの座標を返すメソッド
 	///
@@ -170,7 +169,6 @@ class MenuButtonActionController: UIButton {
 		// x座標を計算.
 		let x_position:CGFloat = self.layer.position.x + radius * cos(radian)
 		// y座標を計算.
-		//let y_position = mainPosition.y + radius * sin(radian)
 		let y_position = self.layer.position.y + radius * sin(radian)
 		
 		let position = CGPoint(x: x_position, y: y_position)
@@ -182,28 +180,24 @@ class MenuButtonActionController: UIButton {
 	/// - Parameter sender: 選択されたメインメニューボタン
 	@objc  func onUpMainButton(sender: UIButton) {
 		// subボタンを配列に格納
-		//let buttons = [subButton_1, subButton_2, subButton_3, subButton_4, subButton_5]
 		let buttons = [subButton_1, subButton_2, subButton_3, subButton_4]
 		// subボタン用の　UIColorを配列に格納
 		colors = [UIColor.green, UIColor.yellow, UIColor.cyan, UIColor.magenta, UIColor.purple] as NSMutableArray
 		// mainボタンからの距離(半径)
 		//let radius: CGFloat = 150
 		let radius: CGFloat = 140
-		buttons[0].setTitle("GPS", for: .normal)
-		buttons[0].setImage(UIImage(named: "gps_icon"), for: .normal)
+		//buttons[0].setTitle("SETTING", for: .normal)
+		buttons[0].setImage(UIImage(named: "setting_icon"), for: .normal)
 		buttons[0].setTitleColor(UIColor.black, for: .normal)
-		buttons[1].setTitle("COLOR", for: .normal)
-		buttons[1].setImage(UIImage(named: "palet_icon"), for: .normal)
+		//buttons[1].setTitle("PEN", for: .normal)
+		buttons[1].setImage(UIImage(named: "pen_icon"), for: .normal)
 		buttons[1].setTitleColor(UIColor.black, for: .normal)
-		buttons[2].setTitle("PICT", for: .normal)
-		buttons[2].setImage(UIImage(named: "save_icon"), for: .normal)
+		//buttons[2].setTitle("TEXT", for: .normal)
+		buttons[2].setImage(UIImage(named: "text_icon"), for: .normal)
 		buttons[2].setTitleColor(UIColor.black, for: .normal)
-		buttons[3].setTitle("TIME", for: .normal)
-		buttons[3].setImage(UIImage(named: "time_icon"), for: .normal)
+		//buttons[3].setTitle("PALET", for: .normal)
+		buttons[3].setImage(UIImage(named: "palet_icon"), for: .normal)
 		buttons[3].setTitleColor(UIColor.black, for: .normal)
-		//buttons[4].setTitle("PEN", for: .normal)
-		//buttons[4].setImage(UIImage(named: "pen_icon"), for: .normal)
-		//buttons[4].setTitleColor(UIColor.black, for: .normal)
 		// subボタンに各種設定
 		//		for var i = 0; i < buttons.count; i++ {
 		for i in 0 ..< buttons.count {
@@ -211,11 +205,10 @@ class MenuButtonActionController: UIButton {
 			buttons[i].frame = CGRect(x: 0, y: 0, width: 60, height: 60)
 			//buttons[i].layer.cornerRadius = 30.0
 			buttons[i].layer.cornerRadius = 30.0
-			//buttons[i].backgroundColor = colors[i] as? UIColor
 			//buttons[i].center = self.center
 			buttons[i].center = CGPoint(x: self.layer.position.x, y: self.layer.position.y)
 			buttons[i].addTarget(self, action: #selector(onClickSubButtons), for: UIControlEvents.touchUpInside)
-			buttons[i].backgroundColor = UIColor.blue
+			buttons[i].backgroundColor = colors[i] as? UIColor
 			buttons[i].layer.shadowOffset = CGSize(width: 1.0, height: 3.0)
 			buttons[i].layer.shadowOpacity = 5.0
 			buttons[i].tag = i+1
@@ -247,12 +240,6 @@ class MenuButtonActionController: UIButton {
 						self.subButton_2.layer.position = self.getPosition(angle: -30, radius: radius)
 						self.subButton_3.layer.position = self.getPosition(angle: -60, radius: radius)
 						self.subButton_4.layer.position = self.getPosition(angle: -90, radius: radius)
-						//self.subButton_5.layer.position = self.getPosition(angle: -150, radius: radius)
-				/*self.subButton_1.layer.position = self.getPosition(angle: -90, radius: radius)
-				self.subButton_2.layer.position = self.getPosition(angle: -30, radius: radius)
-				self.subButton_3.layer.position = self.getPosition(angle: -60, radius: radius)
-				self.subButton_4.layer.position = self.getPosition(angle: -120, radius: radius)
-				self.subButton_5.layer.position = self.getPosition(angle: -150, radius: radius)*/
 		}) { (Bool) -> Void in
 		}		
 	}
@@ -264,23 +251,23 @@ class MenuButtonActionController: UIButton {
 		switch(sender.tag) {
 		case 1:
 			// デリゲートメソッドを呼出
-			self.delegate?.selectedSubMenu(state: DataManager.MenuTypes.typeGPS)
+			self.delegate?.selectedSubMenu(state: DataManager.MenuTypes.SETTING)
 			fadeAnimation()
 		case 2:
 			// デリゲートメソッドを呼出(処理をデリゲートインスタンスに委譲)
-			self.delegate?.selectedSubMenu(state: DataManager.MenuTypes.typeColor)
+			self.delegate?.selectedSubMenu(state: DataManager.MenuTypes.PEN)
 			fadeAnimation()
 		case 3:
 			// デリゲートメソッドを呼出(処理をデリゲートインスタンスに委譲)
-			self.delegate?.selectedSubMenu(state: DataManager.MenuTypes.typeImage)
+			self.delegate?.selectedSubMenu(state: DataManager.MenuTypes.TEXT)
 			fadeAnimation()
 		case 4:
 			// デリゲートメソッドを呼出(処理をデリゲートインスタンスに委譲)
-			self.delegate?.selectedSubMenu(state: DataManager.MenuTypes.typePen)
+			self.delegate?.selectedSubMenu(state: DataManager.MenuTypes.COLOR)
 			fadeAnimation()
 		case 5:
 			// デリゲートメソッドを呼出(処理をデリゲートインスタンスに委譲)
-			self.delegate?.selectedSubMenu(state: DataManager.MenuTypes.typeTime)
+			self.delegate?.selectedSubMenu(state: DataManager.MenuTypes.DUMMY)
 			fadeAnimation()
 		default: break
 		}
