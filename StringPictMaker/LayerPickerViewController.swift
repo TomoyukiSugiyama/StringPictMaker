@@ -167,6 +167,7 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 	/// コンテナをスーパービューから削除
 	func hideContentController(content:UIViewController){
 		print("LayerPickerViewController - hideContentController")
+		tableView.isHidden = true
 		content.willMove(toParentViewController: self)
 		content.view.removeFromSuperview()
 		content.removeFromParentViewController()
@@ -188,10 +189,15 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 	}
 	func updateTableView(){
 		//self.tableView.reloadData()
+		print("LayerPickerViewController - updateTableView1")
+		indexpath = tableView.indexPathForSelectedRow
+		print("LayerPickerViewController - updateTableView2")
 		if(indexpath != nil){
 			self.tableView.reloadRows(at: [indexpath], with: .none)
+			print("LayerPickerViewController - updateTableView3")
+			tableView.selectRow(at: indexpath, animated: false, scrollPosition: .none)
 		}
-		tableView.selectRow(at: indexpath, animated: false, scrollPosition: .none)
+		print("LayerPickerViewController - updateTableView4")
 	}
 	// 画面回転時に呼び出される
 	override func willAnimateRotation(to toInterfaceOrientation: UIInterfaceOrientation, duration: TimeInterval){

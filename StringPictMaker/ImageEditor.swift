@@ -571,12 +571,13 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		layerPickerView = LayerPickerViewController()
 		layerPickerView.delegate = self
 		layerPickerView.setImageView(view: imageView!)
-		self.view.addSubview(layerPickerView.view)
-		self.addChildViewController(layerPickerView)
-		layerPickerView.didMove(toParentViewController: self)
+		//self.view.addSubview(layerPickerView.view)
+		//self.addChildViewController(layerPickerView)
+		displayContentController(content: layerPickerView, container: self.view)
+		//layerPickerView.didMove(toParentViewController: self)
 		if(selectedLayerNumber != -1){
 			let indexpath: IndexPath = IndexPath(row: selectedLayerNumber, section: 0)
-			layerPickerView.tableView.selectRow(at: indexpath, animated: true, scrollPosition: .bottom)
+			layerPickerView.tableView.selectRow(at: indexpath, animated: false, scrollPosition: .none)
 			layerPickerView.indexpath = indexpath
 		}
 	}
@@ -621,7 +622,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		let location:CGPoint = sender.location(in: imageView)
 		// タッチされた座標にあるサブビューを取得
 		//let hitImageView:UIView? = self.imageView?.hitTest(location, with: UIEvent?)
-		print("ImageEditor - handlePanGesture - view.tag:",sender.view?.tag as Any)
+		print("ImageEditor - handleTapGesture - view.tag:",sender.view?.tag as Any)
 		// タッチされた座標の位置を含むサブビューを取得
 		var view:[UIView]!
 		// 選択されたレイヤーをviewに設定
@@ -638,7 +639,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 				if (subview.frame.contains(location)) {
 					// 選択されたアイテムのタグをタグリストに追加
 					tagList.append(subview.tag)
-					print("ImageEditor - handlePanGesture - subview.tag:",subview.tag)
+					print("ImageEditor - handleTapGesture - subview.tag:",subview.tag)
 					/// TODO:
 					/// タグの種類確認
 					if(subview.tag != 0){
@@ -661,7 +662,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 						print("subview:",subview.frame,"iconframe:",iconframe,"location:",location)
 						if(iconframe.contains(location)){
 							tagList.append(icon.tag)
-							print("ImageEditor - handlePanGesture - icon.tag:",icon.tag)
+							print("ImageEditor - handleTapGesture - icon.tag:",icon.tag)
 							iconIsSelected = true
 						}
 					}
@@ -753,7 +754,9 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			if(selectedLayerNumber == -1){
 				view = self.imageView?.subviews
 			}else{
+				print("ImageEditor - handlePanGesture.changed1")
 				view = [(self.imageView?.subviews[selectedLayerNumber])!]
+				print("ImageEditor - handlePanGesture.changed2")
 			}
 			for tag:Int in tagList {
 				print("tag:",tag)
@@ -785,8 +788,14 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 					}
 				}
 			}
+			/// TODO:
+			/// isHiddenを設定しなくても、判定できるようにする
 			// レイヤーピッカービューを更新
-			updateLayerPickerView()
+			if(layerPickerView != nil){
+				if(!layerPickerView.tableView.isHidden){
+					updateLayerPickerView()
+				}
+			}
 			break
 		case UIGestureRecognizerState.ended:
 			break
@@ -920,10 +929,12 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	/// コンテナをスーパービューに追加
 	func displayContentController(content:UIViewController, container:UIView){
 		print("ImageEditor - displayContentController")
-		addChildViewController(content)
 		//content.view.frame = container.bounds
 		container.addSubview(content.view)
+		addChildViewController(content)
+		print("ImageEditor - displayContentController - didMove1:",content.isMovingToParentViewController)
 		content.didMove(toParentViewController: self)
+		print("ImageEditor - displayContentController - didMove2:",content.isMovingToParentViewController)
 	}
 	/// コンテナをスーパービューから削除
 	func hideContentController(content:UIViewController){
@@ -943,7 +954,6 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		}
 	}
 }
-
 // MARK: - 以前のViewControllerのインスタンスを取得
 public extension UIViewController
 {
