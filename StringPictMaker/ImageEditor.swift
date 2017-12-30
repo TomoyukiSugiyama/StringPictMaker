@@ -246,6 +246,8 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	}
 	/// ツールバーのアイテムを初期化
 	func initToolBarItem(){
+		let buttonSize: CGFloat = 25
+		
 		var SettingSave:UIBarButtonItem!
 		var SettingCancel:UIBarButtonItem!
 		var TextFont:UIBarButtonItem!
@@ -274,9 +276,34 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		TextAdd.tag = 7
 		TextDelete = UIBarButtonItem(title: "Delet", style:.plain, target: self, action: #selector(onClickBarButton))
 		TextDelete.tag = 8
-		Color = UIBarButtonItem(title: "Color", style:.plain, target: self, action: #selector(onClickBarButton))
+		var ColorView:UIImageView!
+		let image1:UIImage = UIImage(named:"text_icon")!
+		//let imageView = UIImageView(image:image1)
+		ColorView = UIImageView(image:image1)
+		ColorView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
+		
+		//ColorView.addSubview(imageView)
+		//ColorView.setImage(UIImage(named: "layer_icon"), for: .normal)
+		//ColorView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
+		//ColorView.backgroundColor = UIColor.blue
+		Color =  UIBarButtonItem(customView: ColorView)
+		
+		//Color = UIBarButtonItem(title: "Color", style:.plain, target: self, action: #selector(onClickBarButton))
 		Color.tag = 9
-		Layer = UIBarButtonItem(title: "Layer", style:.plain, target: self, action: #selector(onClickBarButton))
+		let LayerView = UIButton()
+		
+		LayerView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
+		print("ImageEditor - initToolBarItem - LayerView.frame:",LayerView.frame)
+		//LayerView.backgroundColor = UIColor.white
+		LayerView.setImage(UIImage(named: "text_icon"), for: .normal)
+		//LayerView.setBackgroundImage(UIImage(named: "layer_icon"), for: UIControlState())
+		//LayerView.target(forAction: #selector(onClickBarButton), withSender: self)
+		LayerView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
+		LayerView.tag = 10
+		Layer = UIBarButtonItem(customView: LayerView)
+		//Layer.action = #selector(onClickBarButton)
+		//Layer.target = self
+		//Layer = UIBarButtonItem(title: "Layer", style:.plain, target: self, action: #selector(onClickBarButton))
 		Layer.tag = 10
 		Space = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil)
 		self.toolBar.append([Space])
@@ -446,28 +473,6 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	///
 	/// - Parameter sender: ツールバーのボタンを取得
 	@objc func onClickBarButton(sender: UIBarButtonItem) {
-		/*
-		SettingSave = UIBarButtonItem(title: "Save", style:.plain, target: self, action: #selector(onClickBarButton))
-		SettingSave.tag = 1
-		SettingCancel = UIBarButtonItem(title: "Cancel", style:.plain, target: self, action: #selector(onClickBarButton))
-		SettingCancel.tag = 2
-		PenSize = UIBarButtonItem(title: "Size", style:.plain, target: self, action: #selector(onClickBarButton))
-		PenSize.tag = 3
-		PenErase = UIBarButtonItem(title: "Erase", style:.plain, target: self, action: #selector(onClickBarButton))
-		PenErase.tag = 4
-		TextFont = UIBarButtonItem(title: "Font", style:.plain, target: self, action: #selector(onClickBarButton))
-		TextFont.tag = 5
-		TextPosition = UIBarButtonItem(title: "Position", style:.plain, target: self, action: #selector(onClickBarButton))
-		TextPosition.tag = 6
-		TextAdd = UIBarButtonItem(title: "Add", style:.plain, target: self, action: #selector(onClickBarButton))
-		TextAdd.tag = 7
-		TextDelete = UIBarButtonItem(title: "Delet", style:.plain, target: self, action: #selector(onClickBarButton))
-		TextDelete.tag = 8
-		Color = UIBarButtonItem(title: "Color", style:.plain, target: self, action: #selector(onClickBarButton))
-		Color.tag = 9
-		Layer = UIBarButtonItem(title: "Layer", style:.plain, target: self, action: #selector(onClickBarButton))
-		Layer.tag = 10
-		*/
 		switch sender.tag {
 		case 1:
 			print("ImageEditor - onClickBarButton - SettingSave")

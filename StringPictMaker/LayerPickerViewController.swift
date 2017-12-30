@@ -94,6 +94,7 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 		tableView.dataSource = self
 		tableView.backgroundColor = UIColor.gray
 		tableView.rowHeight = labelHeight*2 + imageHeight
+		tableView.isHidden = false
 		self.view.addSubview(tableView)
 		closeButton = UIButton(frame: CGRect(x:margine,y:margine,width:closeButtonSize,height:closeButtonSize))
 		closeButton.backgroundColor = UIColor.white
@@ -191,11 +192,13 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 		//self.tableView.reloadData()
 		print("LayerPickerViewController - updateTableView1")
 		indexpath = tableView.indexPathForSelectedRow
-		print("LayerPickerViewController - updateTableView2")
+		print("LayerPickerViewController - updateTableView2:",indexpath)
 		if(indexpath != nil){
 			self.tableView.reloadRows(at: [indexpath], with: .none)
 			print("LayerPickerViewController - updateTableView3")
 			tableView.selectRow(at: indexpath, animated: false, scrollPosition: .none)
+		}else{
+			self.tableView.reloadData()
 		}
 		print("LayerPickerViewController - updateTableView4")
 	}
