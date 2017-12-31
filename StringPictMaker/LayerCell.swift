@@ -44,7 +44,7 @@ class LayerCell: UITableViewCell {
 		print("LayerCell - init - ImageLabel:",imageLabel as Any)
 		// UIButtonを生成
 		editButton = UIButton()
-		editButton?.setTitle("EYE", for: .normal)
+		editButton?.setImage(UIImage(named: "layeron_icon"), for: .normal)
 		editButton?.setTitleColor(UIColor.blue, for: .normal)
 		self.contentView.addSubview(editButton!)
 	}

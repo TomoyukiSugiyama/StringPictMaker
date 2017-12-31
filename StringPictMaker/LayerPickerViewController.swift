@@ -65,7 +65,7 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 	var imageWidth:CGFloat!
 	var imageHeight:CGFloat!
 	var closeButton:UIButton!
-	let closeButtonSize:CGFloat = 20
+	let closeButtonSize:CGFloat = 30
 	var selectAllLayerButton:UIButton!
 	let selectAllButtonSize:CGFloat = 20
 	override func viewDidLoad() {
@@ -96,11 +96,18 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 		tableView.rowHeight = labelHeight*2 + imageHeight
 		tableView.isHidden = false
 		self.view.addSubview(tableView)
-		closeButton = UIButton(frame: CGRect(x:margine,y:margine,width:closeButtonSize,height:closeButtonSize))
-		closeButton.backgroundColor = UIColor.white
-		closeButton.setTitle(">", for: .normal)
-		closeButton.tag = -2
+		//closeButton = UIButton(frame: CGRect(x:margine,y:margine,width:closeButtonSize,height:closeButtonSize))
+		//closeButton.backgroundColor = UIColor.white
+		//closeButton.setTitle(">", for: .normal)
+		//closeButton.tag = -2
+		//closeButton.addTarget(self, action: #selector(onClickEditButtons), for: UIControlEvents.touchUpInside)
+		//self.view.addSubview(closeButton)
+		
+		closeButton = UIButton()
+		closeButton.frame = CGRect(x:margine,y:margine,width:closeButtonSize,height:closeButtonSize)
+		closeButton.setImage(UIImage(named: "close_icon"), for: .normal)
 		closeButton.addTarget(self, action: #selector(onClickEditButtons), for: UIControlEvents.touchUpInside)
+		closeButton.tag = -2
 		self.view.addSubview(closeButton)
 		
 		selectAllLayerButton = UIButton(frame: CGRect(x:margine,y:layerViewHight - selectAllButtonSize - margine,width:tableViewWidth,height:selectAllButtonSize))
@@ -127,7 +134,7 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 		cell.layerLabel?.text = "Layer" + String(indexPath.row)
 		cell.imageLabel?.image = imageView.subviews[indexPath.row].GetImage()
 		//print("indexPath:",indexPath.row,imageView.subviews[indexPath.row].GetImage())
-		cell.editButton?.setTitle("EYE", for: .normal)
+		cell.editButton?.setImage(UIImage(named: "layeron_icon"), for: .normal)
 		cell.editButton?.tag = indexPath.row
 		cell.editButton?.addTarget(self, action: #selector(onClickEditButtons), for: UIControlEvents.touchUpInside)
 		return cell

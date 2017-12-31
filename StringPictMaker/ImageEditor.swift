@@ -127,14 +127,15 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		// ツールバーを設置
 		self.initToolBarItem()
 		// ツールバーのサイズを決定
-		myToolbar = UIToolbar(frame: CGRect(x:0, y:self.view.bounds.size.height - 44, width:self.view.bounds.size.width, height:40.0))
+		myToolbar = UIToolbar(frame: CGRect(x:0, y:self.view.bounds.size.height - 40, width:self.view.bounds.size.width, height:40.0))
 		// ツールバーの位置を決定
 		myToolbar.layer.position = CGPoint(x: self.view.bounds.width/2, y: self.view.bounds.height-20.0)
 		// ツールバーの色を決定
 		myToolbar.barStyle = .blackTranslucent
-		myToolbar.tintColor = UIColor.white
+		//myToolbar.tintColor = UIColor.black.withAlphaComponent(0.50)
 		//myToolbar.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
-		myToolbar.backgroundColor = UIColor.lightGray.withAlphaComponent(0.50)
+		//myToolbar.backgroundColor = UIColor.blue.withAlphaComponent(0.50)
+		myToolbar.backgroundColor = UIColor.white
 		// ボタンをツールバーに追加
 		myToolbar.items = toolBar[0]
 		// ツールバーに追加
@@ -260,57 +261,74 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		var Layer:UIBarButtonItem!
 		var Space:UIBarButtonItem!
 		toolBar = [[UIBarButtonItem]]()
-		SettingSave = UIBarButtonItem(title: "Save", style:.plain, target: self, action: #selector(onClickBarButton))
-		SettingSave.tag = 1
-		SettingCancel = UIBarButtonItem(title: "Cancel", style:.plain, target: self, action: #selector(onClickBarButton))
-		SettingCancel.tag = 2
-		PenSize = UIBarButtonItem(title: "Size", style:.plain, target: self, action: #selector(onClickBarButton))
-		PenSize.tag = 3
-		PenErase = UIBarButtonItem(title: "Erase", style:.plain, target: self, action: #selector(onClickBarButton))
-		PenErase.tag = 4
-		TextFont = UIBarButtonItem(title: "Font", style:.plain, target: self, action: #selector(onClickBarButton))
-		TextFont.tag = 5
-		TextPosition = UIBarButtonItem(title: "Position", style:.plain, target: self, action: #selector(onClickBarButton))
-		TextPosition.tag = 6
-		TextAdd = UIBarButtonItem(title: "Add", style:.plain, target: self, action: #selector(onClickBarButton))
-		TextAdd.tag = 7
-		TextDelete = UIBarButtonItem(title: "Delet", style:.plain, target: self, action: #selector(onClickBarButton))
-		TextDelete.tag = 8
-		var ColorView:UIImageView!
-		let image1:UIImage = UIImage(named:"text_icon")!
-		//let imageView = UIImageView(image:image1)
-		ColorView = UIImageView(image:image1)
+		
+		let SettingSaveView = UIButton()
+		SettingSaveView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
+		SettingSaveView.setImage(UIImage(named: "save_icon"), for: .normal)
+		SettingSaveView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
+		SettingSaveView.tag = 1
+		SettingSave = UIBarButtonItem(customView: SettingSaveView)
+		let SettingCancelView = UIButton()
+		SettingCancelView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
+		SettingCancelView.setImage(UIImage(named: "cancel_icon"), for: .normal)
+		SettingCancelView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
+		SettingCancelView.tag = 2
+		SettingCancel = UIBarButtonItem(customView: SettingCancelView)
+		let PenSizeView = UIButton()
+		PenSizeView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
+		PenSizeView.setImage(UIImage(named: "size_icon"), for: .normal)
+		PenSizeView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
+		PenSizeView.tag = 3
+		PenSize = UIBarButtonItem(customView: PenSizeView)
+		let PenEraseView = UIButton()
+		PenEraseView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
+		PenEraseView.setImage(UIImage(named: "erase_icon"), for: .normal)
+		PenEraseView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
+		PenEraseView.tag = 4
+		PenErase = UIBarButtonItem(customView: PenEraseView)
+		let TextFontView = UIButton()
+		TextFontView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
+		TextFontView.setImage(UIImage(named: "font_icon"), for: .normal)
+		TextFontView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
+		TextFontView.tag = 5
+		TextFont = UIBarButtonItem(customView: TextFontView)
+		let TextPositionView = UIButton()
+		TextPositionView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
+		TextPositionView.setImage(UIImage(named: "position_icon"), for: .normal)
+		TextPositionView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
+		TextPositionView.tag = 6
+		TextPosition = UIBarButtonItem(customView: TextPositionView)
+		let TextAddView = UIButton()
+		TextAddView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
+		TextAddView.setImage(UIImage(named: "text_icon"), for: .normal)
+		TextAddView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
+		TextAddView.tag = 7
+		TextAdd = UIBarButtonItem(customView: TextAddView)
+		let TextDeleteView = UIButton()
+		TextDeleteView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
+		TextDeleteView.setImage(UIImage(named: "delete_icon"), for: .normal)
+		TextDeleteView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
+		TextDeleteView.tag = 8
+		TextDelete = UIBarButtonItem(customView: TextDeleteView)
+		//TextDelete = UIBarButtonItem(title: "Delet", style:.plain, target: self, action: #selector(onClickBarButton))
+		let ColorView = UIButton()
 		ColorView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
-		
-		//ColorView.addSubview(imageView)
-		//ColorView.setImage(UIImage(named: "layer_icon"), for: .normal)
-		//ColorView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
-		//ColorView.backgroundColor = UIColor.blue
-		Color =  UIBarButtonItem(customView: ColorView)
-		
-		//Color = UIBarButtonItem(title: "Color", style:.plain, target: self, action: #selector(onClickBarButton))
-		Color.tag = 9
+		ColorView.setImage(UIImage(named: "color_icon"), for: .normal)
+		ColorView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
+		ColorView.tag = 9
+		Color = UIBarButtonItem(customView: ColorView)
 		let LayerView = UIButton()
-		
 		LayerView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
-		print("ImageEditor - initToolBarItem - LayerView.frame:",LayerView.frame)
-		//LayerView.backgroundColor = UIColor.white
-		LayerView.setImage(UIImage(named: "text_icon"), for: .normal)
-		//LayerView.setBackgroundImage(UIImage(named: "layer_icon"), for: UIControlState())
-		//LayerView.target(forAction: #selector(onClickBarButton), withSender: self)
+		LayerView.setImage(UIImage(named: "layer_icon"), for: .normal)
 		LayerView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
 		LayerView.tag = 10
 		Layer = UIBarButtonItem(customView: LayerView)
-		//Layer.action = #selector(onClickBarButton)
-		//Layer.target = self
-		//Layer = UIBarButtonItem(title: "Layer", style:.plain, target: self, action: #selector(onClickBarButton))
-		Layer.tag = 10
 		Space = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil)
-		self.toolBar.append([Space])
 		self.toolBar.append([SettingSave,Space,SettingCancel])
-		self.toolBar.append([PenSize,Space,PenErase])
+		self.toolBar.append([SettingSave,Space,SettingCancel])
+		self.toolBar.append([PenSize,PenErase,Space])
 		self.toolBar.append([TextAdd,Space,TextFont,Space,TextPosition,Space,Color,Space,Layer,Space,TextDelete])
-		self.toolBar.append([Color])
+		self.toolBar.append([Color,Space])
 		self.toolBar.append([Space])
 		print("ImageEditor - initToolBarItem")
 	}

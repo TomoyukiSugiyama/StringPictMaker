@@ -193,7 +193,7 @@ class MenuButtonActionController: UIButton {
 		buttons[1].setImage(UIImage(named: "pen_icon"), for: .normal)
 		buttons[1].setTitleColor(UIColor.black, for: .normal)
 		//buttons[2].setTitle("TEXT", for: .normal)
-		buttons[2].setImage(UIImage(named: "text_icon"), for: .normal)
+		buttons[2].setImage(UIImage(named: "addtext_icon"), for: .normal)
 		buttons[2].setTitleColor(UIColor.black, for: .normal)
 		//buttons[3].setTitle("PALET", for: .normal)
 		buttons[3].setImage(UIImage(named: "palet_icon"), for: .normal)
