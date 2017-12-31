@@ -920,21 +920,20 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	/// - Parameter selectedView: 選択されたアイテム
 	func emphasisSelectedItem(selectedView:UIView){
 		if(selectedView.subviews.count == 0){
-			selectedView.layer.borderColor = UIColor.red.cgColor
-			selectedView.layer.borderWidth = 4
-			//print("ImageEditor - emphasisSelectedItem - selectedView.frame:",selectedView.frame)
-			//print("ImageEditor - emphasisSelectedItem - selectedView.frame.origin:",selectedView.frame.origin)
-			//print("ImageEditor - emphasisSelectedItem - selectedView.center:",selectedView.center)
-			let iconSize:CGFloat = 40.0
-			let posX = selectedView.frame.width + iconSize / 2
+			let iconSize:CGFloat = 50.0
+			let margine:CGFloat = 10.0
+			let posX = selectedView.frame.width + margine
 			let posY = selectedView.frame.height / 2 - iconSize / 2
+			
 			let scaleButton = UIButton(frame:CGRect(x:posX,y:posY,width:iconSize,height:iconSize))
-			//print("ImageEditor - emphasisSelectedItem - scaleButton.frame:",scaleButton.frame)
-			scaleButton.backgroundColor = UIColor.blue
-			scaleButton.setTitle("↔︎", for: .normal)
+			scaleButton.setImage(UIImage(named: "resize_icon"), for: .normal)
 			scaleButton.tag = selectedView.tag & ~0x3FF + DataManager.TagIDs.typeScale.rawValue
 			print("ImageEditor - emphasisSelectedItem - scaleButton:",scaleButton)
 			selectedView.addSubview(scaleButton)
+			let frame = CGRect(x: 0,y: 0,width: selectedView.frame.width, height: selectedView.frame.height)
+			let selectAreaView = SelectAreaView(frame: frame)
+			selectAreaView.tag = selectedView.tag & ~0x3FF + DataManager.TagIDs.typeRect.rawValue
+			selectedView.addSubview(selectAreaView)
 		}
 	}
 	/// 選択されたアイテムの強調を削除
@@ -1034,5 +1033,50 @@ public extension UIViewController
 		}
 		// 実装ミスの場合、nilを返す
 		return nil
+	}
+}
+
+class SelectAreaView: UIView {
+	let segmentSize: CGFloat = 4.0     // 点線の線のサイズ
+	let gapSize: CGFloat = 4.0    // 点線の間のサイズ
+	var myTimer: Timer! = nil
+	var phaseCount: CGFloat = 0.0
+	required init(coder aDecoder: NSCoder) {
+		super.init(coder: aDecoder)!
+	}
+	override init(frame: CGRect) {
+		super.init(frame: frame)
+		self.backgroundColor = UIColor.clear
+		myTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(phaseChange), userInfo: nil, repeats: true)
+	}
+	deinit {
+		if myTimer != nil {
+			myTimer.invalidate()
+			myTimer = nil
+		}
+	}
+	@objc func phaseChange(timer: Timer) {
+		phaseCount += 1.0
+		if phaseCount >= segmentSize + gapSize {
+			phaseCount = 0
+		}
+		self.setNeedsDisplay()
+	}
+	override func draw(_ rect: CGRect) {
+		let path = UIBezierPath()
+		UIColor.black.set()
+		path.lineWidth = 1
+		let dashPattern = [segmentSize, gapSize]
+		path.setLineDash(dashPattern, count:2, phase:phaseCount)
+		path.move(to: CGPoint.zero)
+		path.addLine(to: CGPoint.init(x:self.frame.size.width,y: 0))
+		path.addLine(to: CGPoint.init(x:self.frame.size.width,y: self.frame.size.height))
+		path.addLine(to: CGPoint.init(x:0,y: self.frame.size.height))
+		path.addLine(to: CGPoint.init(x:0,y: 0))
+		path.stroke()
+	}
+	func changeFrame(frame: CGRect) {
+		self.frame = frame
+		self.setNeedsDisplay()
 	}
 }

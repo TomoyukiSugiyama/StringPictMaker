@@ -38,6 +38,7 @@ class DataManager{
 	enum TagIDs : Int{
 		case typeGPS = 1
 		case typeScale
+		case typeRect
 		case typeDUMMY
 	}
 	// Viewにセットするtagの種類を管理
