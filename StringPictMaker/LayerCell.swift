@@ -53,10 +53,12 @@ class LayerCell: UITableViewCell {
 	}
 	override func layoutSubviews() {
 		let margine:CGFloat = 5
-		let labelWidth:CGFloat = 100
+		let labelWidth:CGFloat = 80
 		let labelHeight:CGFloat = 20
 		var imageWidth:CGFloat!
 		var imageHeight:CGFloat!
+		let buttonWidth:CGFloat = 30
+		let buttonHeight:CGFloat = 20
 		imageWidth = self.contentView.frame.width - margine*2
 		if(UIScreen.main.bounds.size.width > UIScreen.main.bounds.size.height){
 			imageHeight = imageWidth * UIScreen.main.bounds.size.height / UIScreen.main.bounds.size.width
@@ -64,9 +66,9 @@ class LayerCell: UITableViewCell {
 			imageHeight = imageWidth * UIScreen.main.bounds.size.width / UIScreen.main.bounds.size.height
 		}
 		super.layoutSubviews()
-		layerLabel?.frame = CGRect(x: 0, y  : 0, width: labelWidth, height: labelHeight)
+		layerLabel?.frame = CGRect(x: 10, y  : 0, width: labelWidth, height: labelHeight)
 		imageLabel?.frame = CGRect(x: margine, y: labelHeight, width: imageWidth, height: imageHeight)
 		print("LayerCell - layoutSubviews - ImageLabel:",imageLabel as Any)
-		editButton?.frame = CGRect(x: 0, y: labelHeight + imageHeight, width: labelWidth, height: labelHeight)
+		editButton?.frame = CGRect(x: 10, y: labelHeight + imageHeight, width: buttonWidth, height: buttonHeight)
 	}
 }

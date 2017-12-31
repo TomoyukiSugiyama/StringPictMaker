@@ -82,36 +82,24 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 		}
 		self.view.frame = CGRect(x:UIScreen.main.bounds.width - layerViewWidth,y:0,width:layerViewWidth,height:layerViewHight)
 		self.view.backgroundColor = UIColor.lightGray.withAlphaComponent(0.5)
-		// コレクションビューを生成
-//		let layout = UITableViewFlowLayout()
 		indexpath = nil
 		let frame = CGRect(x:margine,y:margine*3 + closeButtonSize,width:tableViewWidth,height:tableViewHight)
 		print("LayerPickerViewController - viewDidLoad - frame:",frame)
 		tableView = UITableView(frame:frame, style: .plain)
 		tableView.register(LayerCell.self, forCellReuseIdentifier: "LayerCell_id")
-		//tableView.register(LayerCell.self, forCellWithReuseIdentifier: "LayerCell_id")
 		tableView.delegate = self
 		tableView.dataSource = self
 		tableView.backgroundColor = UIColor.gray
 		tableView.rowHeight = labelHeight*2 + imageHeight
 		tableView.isHidden = false
 		self.view.addSubview(tableView)
-		//closeButton = UIButton(frame: CGRect(x:margine,y:margine,width:closeButtonSize,height:closeButtonSize))
-		//closeButton.backgroundColor = UIColor.white
-		//closeButton.setTitle(">", for: .normal)
-		//closeButton.tag = -2
-		//closeButton.addTarget(self, action: #selector(onClickEditButtons), for: UIControlEvents.touchUpInside)
-		//self.view.addSubview(closeButton)
-		
 		closeButton = UIButton()
 		closeButton.frame = CGRect(x:margine,y:margine,width:closeButtonSize,height:closeButtonSize)
 		closeButton.setImage(UIImage(named: "close_icon"), for: .normal)
 		closeButton.addTarget(self, action: #selector(onClickEditButtons), for: UIControlEvents.touchUpInside)
 		closeButton.tag = -2
-		self.view.addSubview(closeButton)
-		
+		self.view.addSubview(closeButton)		
 		selectAllLayerButton = UIButton(frame: CGRect(x:margine,y:layerViewHight - selectAllButtonSize - margine,width:tableViewWidth,height:selectAllButtonSize))
-		//selectAllLayerButton.backgroundColor = UIColor.white
 		selectAllLayerButton.setTitle("Select All", for: .normal)
 		selectAllLayerButton.setTitleColor(UIColor.blue, for: .normal)
 		selectAllLayerButton.tag = -1
@@ -130,11 +118,16 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 	/// カスタマイズされたLayerCellを追加
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: "LayerCell_id", for: indexPath) as! LayerCell
-		//cell.textLabel?.text = indexPath.row.description
 		cell.layerLabel?.text = "Layer" + String(indexPath.row)
 		cell.imageLabel?.image = imageView.subviews[indexPath.row].GetImage()
-		//print("indexPath:",indexPath.row,imageView.subviews[indexPath.row].GetImage())
-		cell.editButton?.setImage(UIImage(named: "layeron_icon"), for: .normal)
+		if(imageViewInEditor.subviews.count > indexPath.row){
+			if(imageViewInEditor.subviews[indexPath.row].isHidden){
+				cell.editButton?.setImage(UIImage(named: "layeroff_icon"), for: .normal)
+			}else{
+				cell.editButton?.setImage(UIImage(named: "layeron_icon"), for: .normal)
+			}
+		}
+		print(imageViewInEditor.subviews.count,"row:",indexPath.row)
 		cell.editButton?.tag = indexPath.row
 		cell.editButton?.addTarget(self, action: #selector(onClickEditButtons), for: UIControlEvents.touchUpInside)
 		return cell
@@ -161,6 +154,7 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 			}
 			delegate?.selectedLayer(num: sender.tag)
 		}else{
+			changeVisibleIcon(layer: imageViewInEditor, num:sender.tag)
 			self.delegate?.changeVisibleLayer(num: sender.tag)
 		}
 	}
@@ -193,6 +187,19 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 			// そのオブジェクトを親のviewから取り除く
 			v.removeFromSuperview()
 			//}
+		}
+	}
+	///
+	func changeVisibleIcon(layer: UIView,num:Int) {
+		//var constraint: NSLayoutConstraint!
+		let indexpath: IndexPath = IndexPath(row: num, section: 0)
+		let cell = tableView.cellForRow(at: indexpath) as! LayerCell
+		if(layer.subviews[num].isHidden){
+			cell.editButton?.setImage(UIImage(named: "layeron_icon"), for: .normal)
+			print("LayerPickerViewController - changeVisibleIcon - layeron")
+		}else{
+			cell.editButton?.setImage(UIImage(named: "layeroff_icon"), for: .normal)
+			print("LayerPickerViewController - changeVisibleIcon:")
 		}
 	}
 	func updateTableView(){
