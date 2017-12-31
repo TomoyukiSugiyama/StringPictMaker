@@ -53,18 +53,27 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
 		myCollectionView.register(ImageCell.self, forCellWithReuseIdentifier: "ImageCell_id")		
 		myCollectionView.delegate = self
 		myCollectionView.dataSource = self
-		myCollectionView.backgroundColor = UIColor.black
+		myCollectionView.backgroundColor = UIColor.clear
+		let image1:UIImage = UIImage(named:"background_img")!
+		// UIImageView 初期化
+		let imageView = UIImageView(image:image1)
+		myCollectionView.backgroundView = imageView
 		self.view.addSubview(myCollectionView)
 		imageData = DataManager()
 		imageData?.deleteAllData()
-		var imageViewRatio:CGFloat!
+		//var imageViewRatio:CGFloat!
 		var frame:CGRect!
-		if(self.view.frame.width > self.view.frame.height){
+		if(UIScreen.main.bounds.size.width > UIScreen.main.bounds.size.height){
+			frame = CGRect(x:0,y:0,width:UIScreen.main.bounds.size.width,height:UIScreen.main.bounds.size.height)
+		}else{
+			frame = CGRect(x:0,y:0,width:UIScreen.main.bounds.size.height,height:UIScreen.main.bounds.size.width)
+		}
+		/*if(self.view.frame.width > self.view.frame.height){
 			frame = CGRect(x:0,y:0,width:self.view.frame.width,height:self.view.frame.height)
 		}else{
 			imageViewRatio = self.view.frame.width / self.view.frame.height
 			frame = CGRect(x:0,y:0,width:self.view.frame.height * imageViewRatio,height:self.view.frame.width * imageViewRatio)
-		}
+		}*/
 		imageData?.saveEmptyImage(id: 0, frame: frame)
 		// タイトルをセット
 		let num:Int = (self.imageData?.imageList.count)!
@@ -153,9 +162,22 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
 	///   - indexPath: セルのインデックス
 	/// - Returns: セルサイズ
 	func collectionView(_ collectionView:UICollectionView,layout collectionViewLayout:UICollectionViewLayout,sizeForItemAt indexPath:IndexPath) -> CGSize{
+		
 		let numberOfMargin:CGFloat = 1.0
 		let width:CGFloat = (collectionView.frame.size.width - cellMargin * numberOfMargin) / 2
-		let height:CGFloat = width * 4.0 / 3.0
+		var height:CGFloat!
+		
+		let margine:CGFloat = 5
+		let labelHeight:CGFloat = 20
+		let buttonHeight:CGFloat = 30
+		if(UIScreen.main.bounds.size.width > UIScreen.main.bounds.size.height){
+			height = (width-margine*2) * UIScreen.main.bounds.size.height / UIScreen.main.bounds.size.width
+				+ margine*2 + labelHeight + buttonHeight
+		}else{
+			height = width * UIScreen.main.bounds.size.width / UIScreen.main.bounds.size.height
+				+ margine*2 + labelHeight + buttonHeight
+		}
+
 		return CGSize(width:width,height:height)
 	}
 	/// セクション数を設定
@@ -170,7 +192,13 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
 		let id = (self.imageData?.imageList.count)! + 1
 		print("ImageListController - tappedRightBarButton - id:",id)
 		 // CoreDataにimageを追加
-		self.imageData?.saveEmptyImage(id: id, frame: self.view.frame)
+		var frame:CGRect!
+		if(UIScreen.main.bounds.size.width > UIScreen.main.bounds.size.height){
+			frame = CGRect(x:0,y:0,width:UIScreen.main.bounds.size.width,height:UIScreen.main.bounds.size.height)
+		}else{
+			frame = CGRect(x:0,y:0,width:UIScreen.main.bounds.size.height,height:UIScreen.main.bounds.size.width)
+		}
+		self.imageData?.saveEmptyImage(id: id, frame: frame)
 		// CorrectionViewを更新
 		self.updateView()
 		 // ImageEditorにImageListのindexをセットし、ImageEditorに画面遷移
