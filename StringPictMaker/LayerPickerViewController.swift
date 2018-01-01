@@ -203,6 +203,7 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 		}
 	}
 	func updateTableView(){
+		if(!tableView.isHidden){
 		//self.tableView.reloadData()
 		print("LayerPickerViewController - updateTableView1")
 		indexpath = tableView.indexPathForSelectedRow
@@ -215,6 +216,7 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 			self.tableView.reloadData()
 		}
 		print("LayerPickerViewController - updateTableView4")
+		}
 	}
 	// 画面回転時に呼び出される
 	override func willAnimateRotation(to toInterfaceOrientation: UIInterfaceOrientation, duration: TimeInterval){
