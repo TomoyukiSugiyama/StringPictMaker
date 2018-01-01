@@ -118,7 +118,7 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
 		cell.imageLabel?.image = self.imageData?.imageList[indexPath.row].imageview.GetImage()
 		cell.textLabel?.text = self.imageData?.imageList[indexPath.row].title
 		cell.editButton?.setTitle("EDIT", for: .normal)
-		cell.editButton?.setTitleColor(UIColor.blue, for: .normal)
+		//cell.editButton?.setTitleColor(UIColor.black, for: .normal)
 		cell.editButton?.tag = (self.imageData?.imageList[indexPath.row].id)!
 		//cell.backgroundColor = UIColor.lightGray
 		cell.backgroundColor = UIColor.lightGray.withAlphaComponent(0.50)

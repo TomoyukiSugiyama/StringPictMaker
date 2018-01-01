@@ -57,7 +57,11 @@ class ImageCell: UICollectionViewCell {
 		editButton = UIButton()
 		editButton?.frame = CGRect(x: margine, y: margine + labelHeight + imageHeight + margine, width: frame.width-margine*2, height: buttonHeight)
 		editButton?.setTitle("EDIT", for: .highlighted)
-		editButton?.setTitleColor(UIColor.blue, for: .normal)
+		editButton?.setTitleColor(UIColor.white, for: .normal)
+		editButton?.backgroundColor = UIColor.gray
+		editButton?.layer.cornerRadius = buttonHeight / 2
+		editButton?.layer.borderColor = UIColor.gray.cgColor
+		editButton?.layer.borderWidth = 2
 		self.contentView.addSubview(editButton!)		
 	 }
 }
