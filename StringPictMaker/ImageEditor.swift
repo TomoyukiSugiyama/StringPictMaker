@@ -10,17 +10,12 @@ import Foundation
 import UIKit
 
 /// TODO:
-/// ＊レイヤービュー上のアイテム削除後、他のUIViewを動かすと落ちる
 /// ＊レイヤーピッカービューを表示した時のImageView,Buttonの位置を調整する
-/// ＊選択したアイテムによってツールバーのアイテムを変更
 /// ＊アイテムを下に移動した時に、ツールバーとメニューボタンを透過
 /// ＊レイヤービューに３枚以上のレイヤーを追加した状態で、レイヤービューを上にスクロールし、
 /// ＊ - ImageView上のアイテムを動かすとレイヤービューの挙動がおかしくなる
-/// ＊レイヤーを表示した状態で、アイテムを削除してレイヤー上のアイテムがゼロになると落ちる
-/// ＊アイテム追加ー＞レイヤー開くー＞１つ目のレイヤー選択ー＞レイヤー閉じるー＞アイテム追加ー＞選択状態が間違い
-/// ＊アイテム追加ー＞レイヤー開くー＞１つ目のレイヤー選択ー＞レイヤーの表示をオフー＞アイテム削除ー＞レイヤーオフでも削除できる
-/// ＊アイテム追加ー＞フォント変更ー＞反映されない
-/// ＊2802
+/// ＊レイヤーの番号を画面上部に表示
+/// ＊
 /// ＊
 /// ＊
 
@@ -71,6 +66,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	var layerPickerView: LayerPickerViewController!
 	var selectedLayerNumber: Int = -1
 	var imageViewRatio: CGFloat!
+	let tagMASK = 0x3FF
 	/// DataManagerのオブジェクトを生成し、CoreDataからデータを読み出す
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -173,7 +169,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 				item.center = CGPoint(x:layer.center.x - vectorX,y:layer.center.y - vectorY)
 				//item.center = layer.center
 				for resizeIcon in item.subviews{
-					if((resizeIcon.tag & 0x3FF) == DataManager.TagIDs.typeRect.rawValue){
+					if((resizeIcon.tag & tagMASK) == DataManager.TagIDs.typeRect.rawValue){
 						let selectAreaView = resizeIcon as! SelectAreaView
 						selectAreaView.changeFrame(frame: item.bounds)
 					}else{
@@ -215,7 +211,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			if view.tag == -1{
 				view.removeFromSuperview()
 			}else{
-				if (view.tag & 0x3FF) == DataManager.TagIDs.typeGPS.rawValue {
+				if (view.tag & tagMASK) == DataManager.TagIDs.typeGPS.rawValue {
 					print("ImageEditor - initView - tagGPS - view.tag:",view.tag)
 					let label = view as! UILabel
 					label.text = "現在地"
@@ -356,14 +352,11 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	}
 	/// ColorPickerViewControllerで選択されたカラーをラベルに設定
 	func selectedColor(state: UIColor) {
-		for tag:Int in tagList {
-			print("ImageEditor - selectedColor - tag:",tag)
-			for layer in (self.imageView?.subviews)! {
-				for subview in layer.subviews {
-					// subview has a resize icon.
-					if(subview.subviews.count != 0){
-							(subview as! UILabel).textColor = state
-					}
+		for layer in (self.imageView?.subviews)! {
+			for subview in layer.subviews {
+				// subview has a resize icon.
+				if(subview.subviews.count != 0){
+						(subview as! UILabel).textColor = state
 				}
 			}
 		}
@@ -379,12 +372,10 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	/// 表示・非表示を切り替えるレイヤーの番号を取得
 	func changeVisibleLayer(num: Int) {
 		print("ImageEditor - switchLayer - num:",num)
-		//changeVisible(visible: (imageView?.subviews[num].isHidden)!, label: (imageView?.subviews[num])!)
 		changeVisible(layer: (imageView?.subviews[num])!)
 	}
 	/// レイヤーの表示・非表示、切り替え
 	func changeVisible(layer: UIView) {
-		//var constraint: NSLayoutConstraint!
 		if(layer.isHidden){
 			layer.isHidden = false
 		}else{
@@ -638,22 +629,26 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	// 選択されたアイテムをレイヤーから削除
 	func removeItemFromLayer(){
 		print("ImageEditor - removeItemFromLayer");
-		for layer in (self.imageView?.subviews)!{
+		for (index,layer) in (self.imageView?.subviews)!.enumerated(){
 			for item in layer.subviews{
-				if(item.subviews.count != 0){
-					item.removeFromSuperview()
-					if(layer.subviews.count == 0){
-						layer.removeFromSuperview()
-						if(selectedLayerNumber != -1){
-							let indexpath: IndexPath = IndexPath(row: selectedLayerNumber, section: 0)
-							layerPickerView.tableView.deselectRow(at: indexpath, animated: false)
-							layerPickerView.indexpath = nil
-							selectedLayerNumber = -1
-							print("aaatecsv")
+				print("ImageEditor - remoceItemFromLayer - index:",index)
+				let indexpath: IndexPath = IndexPath(row: selectedLayerNumber, section: 0)
+				if((index == indexpath.row) || (indexpath.row == -1)){
+					if(!layer.isHidden){
+					print("ImageEditor - remoceItemFromLayer - indexpath:",indexpath)
+					if(item.subviews.count != 0){
+						item.removeFromSuperview()
+						if(layer.subviews.count == 0){
+							layer.removeFromSuperview()
+							if(selectedLayerNumber != -1){
+								layerPickerView.tableView.deselectRow(at: indexpath, animated: false)
+								layerPickerView.indexpath = nil
+								selectedLayerNumber = -1
+							}
 						}
 					}
+					}
 				}
-				
 			}
 		}
 		// レイヤーピッカービューを更新
@@ -824,14 +819,15 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 				print("ImageEditor - handlePanGesture.changed2")
 			}
 			for tag:Int in tagList {
-				print("tag:",tag)
+			//	print("tag:",tag)
 				for layer in view {
 					for subview in layer.subviews {
 						iconIsSelected = false
 						for icon in subview.subviews{
 							//print("tag:",tag,icon.tag)
 							if(tag  == icon.tag){
-								print("ImageEditor - handlePanGesture.changed - subview.frame:",subview.frame)
+							//if(icon.tag & tagMASK == DataManager.TagIDs.typeScale.rawValue){
+								print("ImageEditor - handlePanGesture.changed - icon.tag:",icon.tag)
 								//print("ImageEditor - handlePanGesture - moved:",moved,"move:",move)
 								self.resizeText(textLabel: subview as! UILabel, posX: icon.frame)
 								let moved = CGPoint(x: icon.center.x + move.x, y: subview.frame.height / 2)
@@ -841,8 +837,9 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 							}
 						}
 						if(tag == subview.tag){
+						//if(subview.tag & tagMASK == DataManager.TagIDs.typeGPS.rawValue){
 						if(iconIsSelected == false){
-							operateView = layer.viewWithTag(tag)
+							operateView = layer.viewWithTag(subview.tag)
 							print("ImageEditor - handlePanGesture.changed - operateView:",operateView)
 							// 移動分を反映
 							let moved = CGPoint(x: operateView.center.x + move.x, y: operateView.center.y + move.y)
@@ -928,7 +925,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			let posY = selectedView.frame.height / 2 - iconSize / 2			
 			let scaleButton = UIButton(frame:CGRect(x:posX,y:posY,width:iconSize,height:iconSize))
 			scaleButton.setImage(UIImage(named: "resize_icon"), for: .normal)
-			scaleButton.tag = selectedView.tag & ~0x3FF + DataManager.TagIDs.typeScale.rawValue
+			scaleButton.tag = selectedView.tag & ~tagMASK + DataManager.TagIDs.typeScale.rawValue
 			print("ImageEditor - emphasisSelectedItem - scaleButton:",scaleButton)
 			selectedView.addSubview(scaleButton)
 			let frame = CGRect(x: 0,y: 0,width: selectedView.frame.width, height: selectedView.frame.height)
@@ -965,7 +962,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		// 文字サイズに合わせてラベルのサイズを調整
 		textLabel.sizeToFit()
 		for icon in textLabel.subviews{
-			if((icon.tag & 0x3FF) == DataManager.TagIDs.typeRect.rawValue){
+			if((icon.tag & tagMASK) == DataManager.TagIDs.typeRect.rawValue){
 				let selectAreaView = icon as! SelectAreaView
 				selectAreaView.changeFrame(frame: textLabel.bounds)
 			}
@@ -981,7 +978,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		// 文字サイズに合わせてラベルのサイズを調整
 		textLabel.sizeToFit()
 		for icon in textLabel.subviews{
-			if((icon.tag & 0x3FF) == DataManager.TagIDs.typeRect.rawValue){
+			if((icon.tag & tagMASK) == DataManager.TagIDs.typeRect.rawValue){
 				let selectAreaView = icon as! SelectAreaView
 				selectAreaView.changeFrame(frame: textLabel.bounds)
 			}
@@ -998,7 +995,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		textLabel.font = UIFont(name: textLabel.font.fontName,size:  refPointSize * itemWidth * latio / (refWidth?.width)!)
 		textLabel.sizeToFit()
 		for icon in textLabel.subviews{
-			if((icon.tag & 0x3FF) == DataManager.TagIDs.typeRect.rawValue){
+			if((icon.tag & tagMASK) == DataManager.TagIDs.typeRect.rawValue){
 				let selectAreaView = icon as! SelectAreaView
 				selectAreaView.changeFrame(frame: textLabel.bounds)
 			}
