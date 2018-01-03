@@ -10,8 +10,6 @@ import Foundation
 import UIKit
 
 ///TODO:
-/// ＊セルに表示するビューの変更
-/// ＊レイアウト
 /// ＊
 /// ＊
 /// ＊
