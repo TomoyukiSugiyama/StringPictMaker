@@ -125,6 +125,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		myToolbar.items = toolBar[0]
 		// ツールバーに追加
 		self.view.addSubview(myToolbar)
+		imageData?.setMenuType(menutype: DataManager.MenuTypes.SETTING)
 	}
 	/// ナビゲーションバーを非表示
 	override func viewWillAppear(_ animated: Bool) {
@@ -227,9 +228,12 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	}
 	var TextFont:UIBarButtonItem!
 	var TextPosition:UIBarButtonItem!
+	var TextColor:UIBarButtonItem!
 	var PenSize:UIBarButtonItem!
 	var PenErase:UIBarButtonItem!
 	var Color:UIBarButtonItem!
+	var SelectedColor:UIBarButtonItem!
+	var SelectedColorView:UIButton!
 	/// ツールバーのアイテムを初期化
 	func initToolBarItem(){
 		let buttonSize: CGFloat = 25
@@ -289,36 +293,43 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		TextDeleteView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
 		TextDeleteView.tag = 8
 		TextDelete = UIBarButtonItem(customView: TextDeleteView)
+		let TextColorView = UIButton()
+		TextColorView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
+		TextColorView.setImage(UIImage(named: "color_icon"), for: .normal)
+		TextColorView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
+		TextColorView.tag = 9
+		TextColor = UIBarButtonItem(customView: TextColorView)
 		let ColorView = UIButton()
 		ColorView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
 		ColorView.setImage(UIImage(named: "color_icon"), for: .normal)
 		ColorView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
-		ColorView.tag = 9
+		ColorView.tag = 10
 		Color = UIBarButtonItem(customView: ColorView)
+		SelectedColorView = UIButton()
+		SelectedColorView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
+		SelectedColorView.backgroundColor = UIColor.green
+		SelectedColorView.layer.cornerRadius = buttonSize/2
+		SelectedColor = UIBarButtonItem(customView: SelectedColorView)
 		let LayerView = UIButton()
 		LayerView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
 		LayerView.setImage(UIImage(named: "layer_icon"), for: .normal)
 		LayerView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
-		LayerView.tag = 10
+		LayerView.tag = 11
 		Layer = UIBarButtonItem(customView: LayerView)
 		Space = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil)
 		self.toolBar.append([SettingSave,Space,SettingCancel])
 		self.toolBar.append([SettingSave,Space,SettingCancel])
 		self.toolBar.append([PenSize,PenErase,Space])
-		self.toolBar.append([TextAdd,Space,TextFont,Space,TextPosition,Space,Color,Space,Layer,Space,TextDelete])
-		self.toolBar.append([Color,Space])
+		self.toolBar.append([TextAdd,Space,TextFont,Space,TextPosition,Space,TextColor,Space,Layer,Space,TextDelete])
+		self.toolBar.append([Color,SelectedColor,Space])
 		self.toolBar.append([Space])
 		print("ImageEditor - initToolBarItem")
 	}
-	func disableToolBarItem(){
-		TextFont.isEnabled = false
-		TextPosition.isEnabled = false
-		self.Color.isEnabled = false
-	}
+
 	func enableToolBarItem(enable:Bool){
 		TextFont.isEnabled = enable
 		TextPosition.isEnabled = enable
-		self.Color.isEnabled = enable
+		TextColor.isEnabled = enable
 	}
 	/// 以下、デリゲート
 	/// 選択されたサブメニューを取得
@@ -369,6 +380,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 				}
 			}
 		}
+		SelectedColorView.backgroundColor = state
 		// レイヤーピッカービューを更新
 		updateLayerPickerView()
 		print("ImageEditor - selectedColor - UIColor:",state)
@@ -393,27 +405,32 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	}
 	/// Settingをセット
 	func setSetting(){
+		imageData?.setMenuType(menutype: DataManager.MenuTypes.SETTING)
 		myToolbar.items = toolBar[1]
 		print("ImageEditor - setSetting");
 	}
 	/// Penをセット
 	func setPen(){
+		imageData?.setMenuType(menutype: DataManager.MenuTypes.PEN)
 		myToolbar.items = toolBar[2]
 		print("ImageEditor - setPen");
 	}
 	/// Textをセット
 	func setText(){
+		imageData?.setMenuType(menutype: DataManager.MenuTypes.TEXT)
 		myToolbar.items = toolBar[3]
 		setGPS(imageView:self.imageView!)
 		print("ImageEditor - setText");
 	}
 	/// Colorをセット
 	func setColor(){
+		imageData?.setMenuType(menutype: DataManager.MenuTypes.COLOR)
 		myToolbar.items = toolBar[4]
 		print("ImageEditor - setColor");
 	}
 	/// ダミーをセット
 	func setDUMMY(){
+		imageData?.setMenuType(menutype: DataManager.MenuTypes.DUMMY)
 		myToolbar.items = toolBar[5]
 		print("ImageEditor - setDummy");
 	}
@@ -505,6 +522,9 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			print("ImageEditor - onClickBarButton - Color")
 			displayColorPalet()
 		case 10:
+			print("ImageEditor - onClickBarButton - Color")
+			displayColorPalet()
+		case 11:
 			print("ImageEditor - onClickBarButton - Layer")
 			displayLayerSelector()
 		default:
@@ -611,6 +631,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		}
 		colorPickerView = ColorPickerViewController()
 		colorPickerView.delegate = self
+		colorPickerView.setColor(color: SelectedColorView.backgroundColor!)
 		self.view.addSubview(colorPickerView.view)
 		self.addChildViewController(colorPickerView)
 		colorPickerView.didMove(toParentViewController: self)
@@ -700,8 +721,39 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	var tagList = [Int]()
 	@objc func handleTapGesture(sender: UITapGestureRecognizer){
 		print("ImageEditor - handleTapGesture")
-		tagList.removeAll()
 		let location:CGPoint = sender.location(in: self.imageView)
+		if(imageData?.getMenuType() == DataManager.MenuTypes.COLOR){
+			var isSelected = false
+			var imageView:[UIView]!
+			// 全てのレイヤーが選択状態の場合　-1
+			if(selectedLayerNumber == -1){
+				imageView = self.imageView?.subviews
+			}else{
+				imageView = [(self.imageView?.subviews[selectedLayerNumber])!]
+			}
+			for layer in imageView {
+				if(!layer.isHidden){
+					for item in layer.subviews {
+						// imageView上のアイテムが選択された時の処理
+						if (item.frame.contains(location)) {
+							if(item.tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.GPS.rawValue){
+								let label:UILabel = item as! UILabel
+								label.textColor = SelectedColorView.backgroundColor!
+								isSelected = true
+							//item. = SelectedColorView.backgroundColor!
+							}
+						}
+					}
+				}
+			}
+			if(!isSelected){
+				if(self.imageView?.bounds.contains(location))!{
+					self.imageView?.backgroundColor = SelectedColorView.backgroundColor!
+				}
+			}
+			print("color")
+		}else if(imageData?.getMenuType() == DataManager.MenuTypes.TEXT){
+		tagList.removeAll()
 		// タッチされた座標の位置を含むサブビューを取得
 		var imageView:[UIView]!
 		var isSelected: Bool = false
@@ -720,6 +772,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			}
 		}
 		enableToolBarItem(enable: isSelected)
+		}
 	}
 	/// imageView上のアイテムをタッチ、パンした時のアクションを定義
 	///
@@ -727,6 +780,9 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	@objc func handlePanGesture(sender: UIPanGestureRecognizer){
 		switch sender.state {
 		case UIGestureRecognizerState.began:
+			if(imageData?.getMenuType() == DataManager.MenuTypes.COLOR){
+				print("color")
+			}else if(imageData?.getMenuType() == DataManager.MenuTypes.TEXT){
 			tagList.removeAll()
 			let location:CGPoint = sender.location(in: self.imageView)
 			var imageView:[UIView]!
@@ -746,6 +802,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 				}
 			}
 			enableToolBarItem(enable: isSelected)
+			}
 			break
 		case UIGestureRecognizerState.changed:
 			//移動量を取得
@@ -826,6 +883,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 						tagList.append(icon.tag)
 						print("ImageEditor - selectedItem - icon.tag:",String(icon.tag,radix:16))
 						iconIsSelected = true
+						isSelected = true
 					}
 				}
 				if(iconIsSelected == false){

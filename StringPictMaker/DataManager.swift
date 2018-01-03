@@ -61,6 +61,7 @@ class DataManager{
 		case COLOR
 		case DUMMY
 	}
+	var selectedSubMenuItem:MenuTypes!
 	let DUMMY:Int
 	init() {
 		// CoreData : 管理オブジェクトコンテキストを取得
@@ -71,6 +72,12 @@ class DataManager{
 		/// TODO: 不要な変数のため削除
 		/// initを実行する時、１つ以上のクラスインスタンスの初期化が必要であるため
 		DUMMY = 0
+	}
+	func setMenuType(menutype:MenuTypes){
+		selectedSubMenuItem = menutype
+	}
+	func getMenuType() -> MenuTypes{
+		return selectedSubMenuItem
 	}
 	/// CoreDataに空のimageを保存
 	func saveEmptyImage(id:Int,frame:CGRect){

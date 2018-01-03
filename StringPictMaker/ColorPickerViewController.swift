@@ -38,6 +38,10 @@ class ColorPickerViewController: UIViewController{
 	var margine:CGFloat!
 	var toolBarHeight:CGFloat!
 	var pickerViewSize:CGFloat!
+	var defaultColor:UIColor!
+	func setColor(color:UIColor){
+		defaultColor = color
+	}
 	/// ピッカービューを生成
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -69,6 +73,7 @@ class ColorPickerViewController: UIViewController{
 		selectButton.backgroundColor = UIColor.clear
 		selectButton.addTarget(self, action: #selector(changeColor), for: UIControlEvents.touchUpInside)
 		self.view.addSubview(selectButton)
+		pickerView.selectedColor = defaultColor
 		print("ColorPickerViewController")
 	}
 	// 色変更ボタンが押された時、ImageEditorにUIColorを送付
