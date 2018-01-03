@@ -15,6 +15,7 @@ import UIKit
 /// ＊レイヤービューに３枚以上のレイヤーを追加した状態で、レイヤービューを上にスクロールし、
 /// ＊ - ImageView上のアイテムを動かすとレイヤービューの挙動がおかしくなる
 /// ＊レイヤーの番号を画面上部に表示
+/// ＊アイテムの選択状態に合わせてツールバーのアイテムを無効化する
 /// ＊
 /// ＊
 /// ＊
@@ -89,7 +90,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		scrollView.maximumZoomScale = 2.0
 		scrollView.minimumZoomScale = 0.5
 		self.view.addSubview(scrollView)
-		self.initView()
+		self.initView(imageView:self.imageView!)
 		imageView?.isUserInteractionEnabled = true
 		scrollView.addSubview(imageView!)
 		// menuボタンを生成
@@ -128,18 +129,18 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		self.view.addSubview(myToolbar)
 		/************************************/
 	}
-	// ナビゲーションバーを非表示
+	/// ナビゲーションバーを非表示
 	override func viewWillAppear(_ animated: Bool) {
 		navigationController?.setNavigationBarHidden(true, animated: false)
 	}
-	// ImageEditorを離れる時に、ImageListControllerを更新
+	/// ImageEditorを離れる時に、ImageListControllerを更新
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 		self.imageData?.loadImage()
 		let prevVC = self.getPreviousViewController() as! ImageListController
 		prevVC.updateView()
 	}
-	// 画面回転時に呼び出される
+	/// 画面回転時に呼び出される
 	override func willAnimateRotation(to toInterfaceOrientation: UIInterfaceOrientation, duration: TimeInterval){
 		// スクロールビューのサイズを決定
 		scrollView.frame = CGRect(x:0,y:0,width:self.view.frame.width,height:self.view.frame.height)
@@ -149,95 +150,101 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		myToolbar.layer.position = CGPoint(x: self.view.bounds.width/2, y: self.view.bounds.height-20.0)
 		// メニューボタンの位置を決定
 		menuButton.center = CGPoint(x: self.view.frame.width - 40, y: self.view.frame.height-80)
-		// イメージビューのサイズを調整
-		imageViewRatio = self.view.frame.width / (imageView?.bounds.width)!
-		//let fWidth = (self.imageView?.frame.width)! * self.view.frame.width / (self.imageView?.bounds.width)!
-		let fWidth = (self.imageView?.frame.width)! * imageViewRatio
-		//let fHeight = (self.imageView?.frame.height)! * self.view.frame.height / (self.imageView?.bounds.height)!
-		let fHeight = (self.imageView?.frame.height)! * imageViewRatio
-		self.imageView?.frame = CGRect(x:0,y:0,width:fWidth,height:fHeight)
-		self.imageView?.center = self.view.center
-		// レイヤーのサイズ、レイヤー上のアイテムのサイズを調整
-		for layer in (self.imageView?.subviews)!{
-			let layerCenter:CGPoint = layer.center
-			layer.frame = (self.imageView?.bounds)!
-			// レイヤー上のアイテムのサイズを調整
-			for item in layer.subviews{
-				let vectorX:CGFloat = (layerCenter.x - item.center.x) * imageViewRatio
-				let vectorY:CGFloat = (layerCenter.y - item.center.y) * imageViewRatio
-				adjustItemToScreenSize(item:item,latio: imageViewRatio)
-				item.center = CGPoint(x:layer.center.x - vectorX,y:layer.center.y - vectorY)
-				//item.center = layer.center
-				for resizeIcon in item.subviews{
-					if((resizeIcon.tag & tagMASK) == DataManager.TagIDs.typeRect.rawValue){
-						let selectAreaView = resizeIcon as! SelectAreaView
-						selectAreaView.changeFrame(frame: item.bounds)
-					}else{
-						let iconSize:CGFloat = 40.0
-						let posX = item.frame.width + iconSize / 2
-						let posY = item.frame.height / 2 - iconSize / 2
-						resizeIcon.frame = CGRect(x:posX,y:posY,width:iconSize,height:iconSize)
-					}
-				}
-			}
-		}
+		// imageViewのサイズを調整
+		adjustSize(imageView:self.imageView!)
 		// レイヤーピッカービューを更新
 		updateLayerPickerView()
 	}
-	// スクリーンサイズを変更するための変更率を決定
-	// Iphone7のスクリーンサイズをベースにする
+	/// imageViewのサイズを回転後の画面サイズに合わせて調整
+	func adjustSize(imageView:UIView){
+		// imageViewのサイズを調整
+		imageViewRatio = self.view.frame.width / imageView.bounds.width
+		//let fWidth = (self.imageView?.frame.width)! * self.view.frame.width / (self.imageView?.bounds.width)!
+		let fWidth = imageView.frame.width * imageViewRatio
+		//let fHeight = (self.imageView?.frame.height)! * self.view.frame.height / (self.imageView?.bounds.height)!
+		let fHeight = imageView.frame.height * imageViewRatio
+		imageView.frame = CGRect(x:0,y:0,width:fWidth,height:fHeight)
+		imageView.center = self.view.center
+		// レイヤーのサイズ、レイヤー上のアイテムのサイズを調整
+		for layer in imageView.subviews{
+			adjustItemSize(layer: layer,imageViewSize:imageView.bounds)
+		}
+	}
+	/// imageViewのサイズを回転後の画面サイズに合わせて調整
+	func adjustItemSize(layer:UIView,imageViewSize:CGRect){
+		let layerCenter:CGPoint = layer.center
+		layer.frame = imageViewSize
+		// レイヤー上のアイテムのサイズを調整
+		for item in layer.subviews{
+			let vectorX:CGFloat = (layerCenter.x - item.center.x) * imageViewRatio
+			let vectorY:CGFloat = (layerCenter.y - item.center.y) * imageViewRatio
+			adjustItemToScreenSize(item:item,latio: imageViewRatio)
+			item.center = CGPoint(x:layer.center.x - vectorX,y:layer.center.y - vectorY)
+			for resizeIcon in item.subviews{
+				if((resizeIcon.tag & tagMASK) == DataManager.TagIDs.Rect.rawValue){
+					let selectAreaView = resizeIcon as! SelectAreaView
+					selectAreaView.changeFrame(frame: item.bounds)
+				}else{
+					let iconSize:CGFloat = 40.0
+					let posX = item.frame.width + iconSize / 2
+					let posY = item.frame.height / 2 - iconSize / 2
+					resizeIcon.frame = CGRect(x:posX,y:posY,width:iconSize,height:iconSize)
+				}
+			}
+		}
+	}
+	/// スクリーンサイズを変更するための変更率を決定
+	/// Iphone7のスクリーンサイズをベースにする
 	private func getScreenRatio() -> CGFloat {
 		let baseScreenWidth : CGFloat = 375.0
 		print("ImageEditor - getScreenRatio - UIScreen.main.bounds.size.width:",UIScreen.main.bounds.size.width)
 		return UIScreen.main.bounds.size.width / baseScreenWidth
 	}
 	/// imageViewを初期化
-	func initView(){
-		imageViewRatio = self.view.frame.width / (imageView?.frame.width)!
-		print("ImageEditor - initView - imageView.frame",(imageView?.frame)! as Any)
-		let fwidth:CGFloat = (imageView?.frame.width)! * imageViewRatio
-		let fheight:CGFloat = (imageView?.frame.height)! * imageViewRatio
-		imageView?.frame = CGRect(x:0,y:0,width:fwidth,height:fheight)
-		imageView?.center = self.view.center
-		print("ImageEditor - initView - imageView.frame",(imageView?.frame)! as Any)
-		for layer in (imageView?.subviews)! {
+	func initView(imageView:UIView){
+		imageViewRatio = self.view.frame.width / imageView.frame.width
+		print("ImageEditor - initView - imageView.frame",imageView.frame as Any)
+		let fwidth:CGFloat = imageView.frame.width * imageViewRatio
+		let fheight:CGFloat = imageView.frame.height * imageViewRatio
+		imageView.frame = CGRect(x:0,y:0,width:fwidth,height:fheight)
+		imageView.center = self.view.center
+		print("ImageEditor - initView - imageView.frame",imageView.frame as Any)
+		for layer in imageView.subviews {
 			if layer.tag == -1{
 				layer.removeFromSuperview()
 			}
-			for view in layer.subviews
-			{
-			// removed image from superview when tag is -1
-			// because this image is dummy. ("noimage")
-			if view.tag == -1{
-				view.removeFromSuperview()
-			}else{
-				if (view.tag & tagMASK) == DataManager.TagIDs.typeGPS.rawValue {
-					print("ImageEditor - initView - tagGPS - view.tag:",view.tag)
-					let label = view as! UILabel
-					label.text = "現在地"
-					if(gpsTag <= (view.tag & ~0x3FF)){
-						gpsTag += 1024
-						print("ImageEditor - initVies - tag:",gpsTag)
+			for item in layer.subviews{
+				// removed image from superview when tag is -1
+				// because this image is dummy. ("noimage")
+				if item.tag == -1{
+					item.removeFromSuperview()
+				}else{
+					if (item.tag & tagMASK) == DataManager.TagIDs.GPS.rawValue {
+						print("ImageEditor - initView - tagGPS - view.tag:",item.tag)
+						let label = item as! UILabel
+						label.text = "現在地"
+						if(gpsTag <= (item.tag & ~tagMASK)){
+							gpsTag += 1024
+							print("ImageEditor - initVies - tag:",gpsTag)
+						}
+					}else if item.tag == DataManager.TagIDs.DUMMY.rawValue {
 					}
-				}else if view.tag == DataManager.TagIDs.typeDUMMY.rawValue {
-					
 				}
-			}
 			}
 		}
 	}
+	var TextFont:UIBarButtonItem!
+	var TextPosition:UIBarButtonItem!
+	var PenSize:UIBarButtonItem!
+	var PenErase:UIBarButtonItem!
+	var Color:UIBarButtonItem!
 	/// ツールバーのアイテムを初期化
 	func initToolBarItem(){
 		let buttonSize: CGFloat = 25
 		var SettingSave:UIBarButtonItem!
 		var SettingCancel:UIBarButtonItem!
-		var TextFont:UIBarButtonItem!
-		var TextPosition:UIBarButtonItem!
 		var TextAdd:UIBarButtonItem!
 		var TextDelete:UIBarButtonItem!
-		var PenSize:UIBarButtonItem!
-		var PenErase:UIBarButtonItem!
-		var Color:UIBarButtonItem!
 		var Layer:UIBarButtonItem!
 		var Space:UIBarButtonItem!
 		toolBar = [[UIBarButtonItem]]()
@@ -246,6 +253,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		SettingSaveView.setImage(UIImage(named: "save_icon"), for: .normal)
 		SettingSaveView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
 		SettingSaveView.tag = 1
+		SettingSaveView.tintColor = UIColor.brown
 		SettingSave = UIBarButtonItem(customView: SettingSaveView)
 		let SettingCancelView = UIButton()
 		SettingCancelView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
@@ -289,7 +297,6 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		TextDeleteView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
 		TextDeleteView.tag = 8
 		TextDelete = UIBarButtonItem(customView: TextDeleteView)
-		//TextDelete = UIBarButtonItem(title: "Delet", style:.plain, target: self, action: #selector(onClickBarButton))
 		let ColorView = UIButton()
 		ColorView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
 		ColorView.setImage(UIImage(named: "color_icon"), for: .normal)
@@ -330,18 +337,18 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	/// FontPickerViewControllerで選択されたフォントをラベルに設定
 	func selectedFont(state: UILabel){
 		for layer in (self.imageView?.subviews)! {
-			for subview in layer.subviews {
+			for item in layer.subviews {
 				// subview has a resize icon.
-				if(subview.subviews.count != 0){
-					let center:CGPoint = subview.center
+				if(item.subviews.count != 0){
+					let center:CGPoint = item.center
 					/// TODO:
 					/// サイズ調整
-					print("ImageEditor - selectedFont - 1subview.frame:",subview.frame,"subview.center",subview.center)
-					adjustTextWithFont(textLabel: subview as! UILabel, font: state)
+					print("ImageEditor - selectedFont - 1subview.frame:",item.frame,"subview.center",item.center)
+					adjustTextWithFont(textLabel: item as! UILabel, font: state)
 					//(subview as! UILabel).font  = UIFont(name: state.font.fontName,size:(subview as! UILabel).font.pointSize)
-						print("ImageEditor - selectedFont - 2subview.frame:",subview.frame,"subview.center",subview.center)
-					subview.center = center
-					print("ImageEditor - selectedFont - 3subview.frame:",subview.frame,"subview.center",subview.center)
+						print("ImageEditor - selectedFont - 2subview.frame:",item.frame,"subview.center",item.center)
+					item.center = center
+					print("ImageEditor - selectedFont - 3subview.frame:",item.frame,"subview.center",item.center)
 					//(subview as! UILabel).sizeToFit()
 				}
 			}
@@ -395,7 +402,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	/// Textをセット
 	func setText(){
 		myToolbar.items = toolBar[3]
-		setGPS()
+		setGPS(imageView:self.imageView!)
 		print("ImageEditor - setText");
 	}
 	/// Colorをセット
@@ -414,9 +421,9 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	/// タグ = 1024の整数倍 ＋ 0x001 (typeGPS:　アイテムの種類がGPSであることを示す値)
 	var gpsTag = 1024
 	/// GPSをセット
-	func setGPS(){
+	func setGPS(imageView:UIView){
 		print("ImageEditor - setGPS");
-		let layer = UIView(frame:(self.imageView?.bounds)!)
+		let layer = UIView(frame:imageView.bounds)
 		let GPSlabel = UILabel()
 		// 文字追加
 		let str2 = "現在地"
@@ -434,13 +441,13 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		GPSlabel.center = layer.center
 		/// TODO:
 		/// tagの値変更
-		GPSlabel.tag = gpsTag + DataManager.TagIDs.typeGPS.rawValue
+		GPSlabel.tag = gpsTag + DataManager.TagIDs.GPS.rawValue
 		print("ImageEditor - setGPSLabel - tag",GPSlabel.tag);
 		gpsTag += 1024
 		layer.addSubview(GPSlabel)
-		self.imageView?.addSubview(layer)
+		imageView.addSubview(layer)
 		if(selectedLayerNumber == -1){
-		for layer in (imageView?.subviews)!{
+		for layer in imageView.subviews{
 			for item in layer.subviews{
 				self.clearEmphasisSelectedItem(selectedView: item)
 			}
@@ -476,7 +483,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		switch sender.tag {
 		case 1:
 			print("ImageEditor - onClickBarButton - SettingSave")
-			displaySaveAlert()
+			displaySaveAlert(imageView:self.imageView!)
 		case 2:
 			print("ImageEditor - onClickBarButton - SettingCancel")
 			displayCancelAlert()
@@ -489,13 +496,13 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			displayFontSelector()
 		case 6:
 			print("ImageEditor - onClickBarButton - TextPosition")
-			adjustItemPositionCenter()
+			adjustItemPositionCenter(imageView:self.imageView!)
 		case 7:
 			print("ImageEditor - onClickBarButton - TextAdd")
-			setGPS()
+			setGPS(imageView:self.imageView!)
 		case 8:
 			print("ImageEditor - onClickBarButton - TextDelete")
-			removeItemFromLayer()
+			removeItemFromLayer(imageView:self.imageView!)
 		case 9:
 			print("ImageEditor - onClickBarButton - Color")
 			displayColorPalet()
@@ -508,7 +515,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	}
 	/// 以下、ツールバーで選択されたボタン毎の処理
 	/// 作成したImageを保存して終了するためのアラートを表示
-	func displaySaveAlert() {
+	func displaySaveAlert(imageView:UIView) {
 		// UIAlertControllerクラスのインスタンスを生成
 		// タイトル, メッセージ, Alertのスタイルを指定
 		// 第3引数のpreferredStyleでアラートの表示スタイルを指定
@@ -523,13 +530,13 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			print("ImageEditor - dispCancelAlert - SaveAlert: OK")
 			// 拡大、縮小されたimageViewを元のサイズに変更
 			self.imageView?.transform = CGAffineTransform.identity
-			for layer in (self.imageView?.subviews)!{
+			for layer in imageView.subviews{
 				layer.isHidden = false
 				for item in layer.subviews{
 					self.clearEmphasisSelectedItem(selectedView: item)
 				}
 			}
-			self.imageData?.updateImage(id: self.delegateParamId, view: self.imageView!)
+			self.imageData?.updateImage(id: self.delegateParamId, view: imageView)
 			// ImageListControllerを更新
 			let prevVC = self.getPreviousViewController() as! ImageListController
 			prevVC.updateView()
@@ -553,24 +560,33 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		// UIAlertControllerクラスのインスタンスを生成
 		// タイトル, メッセージ, Alertのスタイルを指定
 		// 第3引数のpreferredStyleでアラートの表示スタイルを指定
-		let alert: UIAlertController = UIAlertController(title: "イメージ", message: "保存せず終了してもいいですか？", preferredStyle:  UIAlertControllerStyle.alert)
+		let alert: UIAlertController = UIAlertController(
+			title: "イメージ",
+			message: "保存せず終了してもいいですか？",
+			preferredStyle:  UIAlertControllerStyle.alert)
 		// Actionの設定
 		// Action初期化時にタイトル, スタイル, 押された時に実行されるハンドラを指定
 		// 第3引数のUIAlertActionStyleでボタンのスタイルを指定
 		// OKボタン
-		let defaultAction: UIAlertAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler:{
+		let defaultAction: UIAlertAction = UIAlertAction(
+			title: "OK",
+			style: UIAlertActionStyle.default,
+			handler:{
 			// ボタンが押された時の処理（クロージャ実装）
 			(action: UIAlertAction!) -> Void in
 			print("ImageEditor - dispCancelAlert - CancelAlert: OK")
 			self.navigationController?.setNavigationBarHidden(false, animated: false)
 			self.navigationController?.popViewController(animated: true)
-		})
+			})
 		// キャンセルボタン
-		let cancelAction: UIAlertAction = UIAlertAction(title: "キャンセル", style: UIAlertActionStyle.cancel, handler:{
+		let cancelAction: UIAlertAction = UIAlertAction(
+			title: "キャンセル",
+			style: UIAlertActionStyle.cancel,
+			handler:{
 			// ボタンが押された時の処理（クロージャ実装）
 			(action: UIAlertAction!) -> Void in
 			print("ImageEditor - dispCancelAlert - CancelAlert: Cancel")
-		})
+			})
 		// UIAlertControllerにActionを追加
 		alert.addAction(cancelAction)
 		alert.addAction(defaultAction)
@@ -627,26 +643,26 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		}
 	}
 	// 選択されたアイテムをレイヤーから削除
-	func removeItemFromLayer(){
+	func removeItemFromLayer(imageView:UIView){
 		print("ImageEditor - removeItemFromLayer");
-		for (index,layer) in (self.imageView?.subviews)!.enumerated(){
+		for (index,layer) in imageView.subviews.enumerated(){
 			for item in layer.subviews{
 				print("ImageEditor - remoceItemFromLayer - index:",index)
 				let indexpath: IndexPath = IndexPath(row: selectedLayerNumber, section: 0)
 				if((index == indexpath.row) || (indexpath.row == -1)){
 					if(!layer.isHidden){
-					print("ImageEditor - remoceItemFromLayer - indexpath:",indexpath)
-					if(item.subviews.count != 0){
-						item.removeFromSuperview()
-						if(layer.subviews.count == 0){
-							layer.removeFromSuperview()
-							if(selectedLayerNumber != -1){
-								layerPickerView.tableView.deselectRow(at: indexpath, animated: false)
-								layerPickerView.indexpath = nil
-								selectedLayerNumber = -1
+						print("ImageEditor - remoceItemFromLayer - indexpath:",indexpath)
+						if(item.subviews.count != 0){
+							item.removeFromSuperview()
+							if(layer.subviews.count == 0){
+								layer.removeFromSuperview()
+								if(selectedLayerNumber != -1){
+									layerPickerView.tableView.deselectRow(at: indexpath, animated: false)
+									layerPickerView.indexpath = nil
+									selectedLayerNumber = -1
+								}
 							}
 						}
-					}
 					}
 				}
 			}
@@ -655,9 +671,9 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		updateLayerPickerView()
 	}
 	/// アイテムの位置をviewの中心に移動
-	func adjustItemPositionCenter(){
+	func adjustItemPositionCenter(imageView:UIView){
 		print("ImageEditor - adjustPositionCenter");
-		for layer in (self.imageView?.subviews)!{
+		for layer in imageView.subviews{
 			for item in layer.subviews{
 				if(item.subviews.count != 0){
 					print("ImageEditor - item.center",item.center);
@@ -700,7 +716,9 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 					print("ImageEditor - handleTapGesture - subview.tag:",subview.tag)
 					/// TODO:
 					/// タグの種類確認
-					if(subview.tag != 0){
+					//if(subview.tag != 0){
+					if(subview.tag & tagMASK == DataManager.TagIDs.GPS.rawValue){
+						print("ImageEditor - handleTapGesture - subview.tag2:",subview.tag)
 						// 選択されたアイテムを強調
 						var operateView:UIView!
 						operateView = layer.viewWithTag(subview.tag)
@@ -925,12 +943,12 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			let posY = selectedView.frame.height / 2 - iconSize / 2			
 			let scaleButton = UIButton(frame:CGRect(x:posX,y:posY,width:iconSize,height:iconSize))
 			scaleButton.setImage(UIImage(named: "resize_icon"), for: .normal)
-			scaleButton.tag = selectedView.tag & ~tagMASK + DataManager.TagIDs.typeScale.rawValue
+			scaleButton.tag = selectedView.tag & ~tagMASK + DataManager.TagIDs.Scale.rawValue
 			print("ImageEditor - emphasisSelectedItem - scaleButton:",scaleButton)
 			selectedView.addSubview(scaleButton)
 			let frame = CGRect(x: 0,y: 0,width: selectedView.frame.width, height: selectedView.frame.height)
 			let selectAreaView = SelectAreaView(frame: frame)
-			selectAreaView.tag = selectedView.tag & ~0x3FF + DataManager.TagIDs.typeRect.rawValue
+			selectAreaView.tag = selectedView.tag & ~0x3FF + DataManager.TagIDs.Rect.rawValue
 			selectedView.addSubview(selectAreaView)
 		}
 	}
@@ -962,7 +980,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		// 文字サイズに合わせてラベルのサイズを調整
 		textLabel.sizeToFit()
 		for icon in textLabel.subviews{
-			if((icon.tag & tagMASK) == DataManager.TagIDs.typeRect.rawValue){
+			if((icon.tag & tagMASK) == DataManager.TagIDs.Rect.rawValue){
 				let selectAreaView = icon as! SelectAreaView
 				selectAreaView.changeFrame(frame: textLabel.bounds)
 			}
@@ -978,7 +996,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		// 文字サイズに合わせてラベルのサイズを調整
 		textLabel.sizeToFit()
 		for icon in textLabel.subviews{
-			if((icon.tag & tagMASK) == DataManager.TagIDs.typeRect.rawValue){
+			if((icon.tag & tagMASK) == DataManager.TagIDs.Rect.rawValue){
 				let selectAreaView = icon as! SelectAreaView
 				selectAreaView.changeFrame(frame: textLabel.bounds)
 			}
@@ -995,7 +1013,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		textLabel.font = UIFont(name: textLabel.font.fontName,size:  refPointSize * itemWidth * latio / (refWidth?.width)!)
 		textLabel.sizeToFit()
 		for icon in textLabel.subviews{
-			if((icon.tag & tagMASK) == DataManager.TagIDs.typeRect.rawValue){
+			if((icon.tag & tagMASK) == DataManager.TagIDs.Rect.rawValue){
 				let selectAreaView = icon as! SelectAreaView
 				selectAreaView.changeFrame(frame: textLabel.bounds)
 			}

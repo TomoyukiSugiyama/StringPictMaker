@@ -36,10 +36,10 @@ class DataManager{
 	var imageList = [ImageData]()
 	// Viewにセットするtagの種類を管理
 	enum TagIDs : Int{
-		case typeGPS = 1
-		case typeScale
-		case typeRect
-		case typeDUMMY
+		case GPS = 1
+		case Scale
+		case Rect
+		case DUMMY
 	}
 	// Viewにセットするtagの種類を管理
 	enum MenuTypes : Int{
