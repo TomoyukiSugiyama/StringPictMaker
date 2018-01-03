@@ -85,12 +85,10 @@ class ImageBoard: UIViewController, CLLocationManagerDelegate{
 			if view.tag == -1{
 				view.removeFromSuperview()
 			}else{
-				if (view.tag & 0x3FF) == DataManager.TagIDs.GPS.rawValue {
+				if (view.tag & DataManager.TagIDs.ITEM_MASK.rawValue) == DataManager.TagIDs.GPS.rawValue {
 					print("ImageEditor - initView - tagGPS - view.tag:",view.tag)
 					self.isUsed = true
 					self.gpsTagArray.append(view.tag)
-				}else if view.tag == DataManager.TagIDs.DUMMY.rawValue {
-					
 				}
 			}
 			}

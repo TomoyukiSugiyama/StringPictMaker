@@ -67,7 +67,6 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	var layerPickerView: LayerPickerViewController!
 	var selectedLayerNumber: Int = -1
 	var imageViewRatio: CGFloat!
-	let tagMASK = 0x3FF
 	/// DataManagerのオブジェクトを生成し、CoreDataからデータを読み出す
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -127,7 +126,6 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		myToolbar.items = toolBar[0]
 		// ツールバーに追加
 		self.view.addSubview(myToolbar)
-		/************************************/
 	}
 	/// ナビゲーションバーを非表示
 	override func viewWillAppear(_ animated: Bool) {
@@ -181,7 +179,8 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			adjustItemToScreenSize(item:item,latio: imageViewRatio)
 			item.center = CGPoint(x:layer.center.x - vectorX,y:layer.center.y - vectorY)
 			for resizeIcon in item.subviews{
-				if((resizeIcon.tag & tagMASK) == DataManager.TagIDs.Rect.rawValue){
+				if((resizeIcon.tag & DataManager.TagIDs.Rect.rawValue) == DataManager.TagIDs.Rect.rawValue){
+				//if((resizeIcon.tag & tagMASK) == DataManager.TagIDs.Rect.rawValue){
 					let selectAreaView = resizeIcon as! SelectAreaView
 					selectAreaView.changeFrame(frame: item.bounds)
 				}else{
@@ -218,16 +217,15 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 				// because this image is dummy. ("noimage")
 				if item.tag == -1{
 					item.removeFromSuperview()
-				}else{
-					if (item.tag & tagMASK) == DataManager.TagIDs.GPS.rawValue {
-						print("ImageEditor - initView - tagGPS - view.tag:",item.tag)
-						let label = item as! UILabel
-						label.text = "現在地"
-						if(gpsTag <= (item.tag & ~tagMASK)){
-							gpsTag += 1024
-							print("ImageEditor - initVies - tag:",gpsTag)
-						}
-					}else if item.tag == DataManager.TagIDs.DUMMY.rawValue {
+				}else if (item.tag & DataManager.TagIDs.TAG_MASK.rawValue) == DataManager.TagIDs.GPS.rawValue {
+//				else if (item.tag & tagMASK) == DataManager.TagIDs.GPS.rawValue {
+					print("ImageEditor - initView - tagGPS - view.tag:",item.tag)
+					let label = item as! UILabel
+					label.text = "現在地"
+					if(gpsTag <= (item.tag & ~DataManager.TagIDs.TAG_MASK.rawValue)){
+					//if(gpsTag <= (item.tag & ~tagMASK)){
+						gpsTag += 1024
+						print("ImageEditor - initVies - tag:",gpsTag)
 					}
 				}
 			}
@@ -418,7 +416,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	/// TODO:
 	/// Imageを編集し保存後、再編集するとTagの番号が誤って追加される
 	/// ImageViewに追加するアイテムがGPSの場合、
-	/// タグ = 1024の整数倍 ＋ 0x001 (typeGPS:　アイテムの種類がGPSであることを示す値)
+	/// GPSタグ = 1024の整数倍 ＋ 0x001 (typeGPS:　アイテムの種類がGPSであることを示す値)
 	var gpsTag = 1024
 	/// GPSをセット
 	func setGPS(imageView:UIView){
@@ -519,12 +517,18 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		// UIAlertControllerクラスのインスタンスを生成
 		// タイトル, メッセージ, Alertのスタイルを指定
 		// 第3引数のpreferredStyleでアラートの表示スタイルを指定
-		let alert: UIAlertController = UIAlertController(title: "イメージ", message: "保存して終了しますか？", preferredStyle:  UIAlertControllerStyle.alert)
+		let alert: UIAlertController = UIAlertController(
+			title: "イメージ",
+			message: "保存して終了しますか？",
+			preferredStyle:  UIAlertControllerStyle.alert)
 		// Actionの設定
 		// Action初期化時にタイトル, スタイル, 押された時に実行されるハンドラを指定
 		// 第3引数のUIAlertActionStyleでボタンのスタイルを指定する
 		// OKボタン
-		let defaultAction: UIAlertAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler:{
+		let defaultAction: UIAlertAction = UIAlertAction(
+			title: "OK",
+			style: UIAlertActionStyle.default,
+			handler:{
 			// ボタンが押された時（クロージャ実装）
 			(action: UIAlertAction!) -> Void in
 			print("ImageEditor - dispCancelAlert - SaveAlert: OK")
@@ -544,7 +548,10 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			self.navigationController?.popViewController(animated: true)
 		})
 		// キャンセルボタン
-		let cancelAction: UIAlertAction = UIAlertAction(title: "キャンセル", style: UIAlertActionStyle.cancel, handler:{
+		let cancelAction: UIAlertAction = UIAlertAction(
+			title: "キャンセル",
+			style: UIAlertActionStyle.cancel,
+			handler:{
 			// ボタンが押された時（クロージャ実装）
 			(action: UIAlertAction!) -> Void in
 			print("ImageEditor - dispCancelAlert - SaveAlert: Cancel")
@@ -682,7 +689,6 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 					// レイヤーピッカービューを更新
 					updateLayerPickerView()
 				}
-				
 			}
 		}
 	}
@@ -693,64 +699,21 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	@objc func handleTapGesture(sender: UITapGestureRecognizer){
 		print("ImageEditor - handleTapGesture")
 		tagList.removeAll()
-		let location:CGPoint = sender.location(in: imageView)
+		let location:CGPoint = sender.location(in: self.imageView)
 		// タッチされた座標にあるサブビューを取得
 		//let hitImageView:UIView? = self.imageView?.hitTest(location, with: UIEvent?)
-		print("ImageEditor - handleTapGesture - view.tag:",sender.view?.tag as Any)
 		// タッチされた座標の位置を含むサブビューを取得
-		var view:[UIView]!
+		var imageView:[UIView]!
 		// 選択されたレイヤーをviewに設定
 		// 全てのレイヤーが選択状態の場合　-1
 		if(selectedLayerNumber == -1){
-			view = self.imageView?.subviews
+			imageView = self.imageView?.subviews
 		}else{
-			view = [(self.imageView?.subviews[selectedLayerNumber])!]
+			imageView = [(self.imageView?.subviews[selectedLayerNumber])!]
 		}
-		for layer in view {
+		for layer in imageView {
 			if(!layer.isHidden){
-			for subview in layer.subviews {
-				// imageView上のアイテムが選択された時の処理
-				if (subview.frame.contains(location)) {
-					// 選択されたアイテムのタグをタグリストに追加
-					tagList.append(subview.tag)
-					print("ImageEditor - handleTapGesture - subview.tag:",subview.tag)
-					/// TODO:
-					/// タグの種類確認
-					//if(subview.tag != 0){
-					if(subview.tag & tagMASK == DataManager.TagIDs.GPS.rawValue){
-						print("ImageEditor - handleTapGesture - subview.tag2:",subview.tag)
-						// 選択されたアイテムを強調
-						var operateView:UIView!
-						operateView = layer.viewWithTag(subview.tag)
-						self.emphasisSelectedItem(selectedView: operateView)
-						myToolbar.items = toolBar[3]
-					}else{
-						/// TODO:
-						/// 必要な処理を書く　なければ消す
-					}
-				}else{
-					// リサイズアイコンが選択された時の処理
-					var iconIsSelected:Bool = false
-					for icon in subview.subviews{
-						print("subview:",subview.frame,"icon:",icon.frame,"location:",location)
-						var iconframe = icon.frame
-						iconframe.origin.x += subview.frame.origin.x
-						iconframe.origin.y += subview.frame.origin.y
-						print("subview:",subview.frame,"iconframe:",iconframe,"location:",location)
-						if(iconframe.contains(location)){
-							tagList.append(icon.tag)
-							print("ImageEditor - handleTapGesture - icon.tag:",icon.tag)
-							iconIsSelected = true
-						}
-					}
-					if(iconIsSelected == false){
-						// 選択されたアイテムの強調を削除
-						var operateView:UIView!
-						operateView = layer.viewWithTag(subview.tag)
-						self.clearEmphasisSelectedItem(selectedView: operateView)
-					}
-				}
-			}
+				selectedItem(layer: layer, location: location)
 			}
 		}
 
@@ -762,112 +725,38 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		switch sender.state {
 		case UIGestureRecognizerState.began:
 			tagList.removeAll()
-			let location:CGPoint = sender.location(in: imageView)
-			// タッチされた座標にあるサブビューを取得
-			//let hitImageView:UIView? = self.imageView?.hitTest(location, with: UIEvent?)
-			print("ImageEditor - handlePanGesture - view.tag:",sender.view?.tag as Any)
+			let location:CGPoint = sender.location(in: self.imageView)
 			// タッチされた座標の位置を含むサブビューを取得
-			var view:[UIView]!
+			var imageView:[UIView]!
 			// 選択されたレイヤーをviewに設定
 			// 全てのレイヤーが選択状態の場合　-1
 			if(selectedLayerNumber == -1){
-				view = self.imageView?.subviews
+				imageView = self.imageView?.subviews
 			}else{
-				view = [(self.imageView?.subviews[selectedLayerNumber])!]
+				imageView = [(self.imageView?.subviews[selectedLayerNumber])!]
 			}
-			for layer in view {
+			for layer in imageView {
 				if(!layer.isHidden){
-				for subview in layer.subviews {
-					// imageView上のアイテムが選択された時の処理
-					if (subview.frame.contains(location)) {
-						// 選択されたアイテムのタグをタグリストに追加
-						tagList.append(subview.tag)
-						print("ImageEditor - handlePanGesture - subview.tag:",subview.tag)
-						/// TODO:
-						/// タグの種類確認
-						if(subview.tag != 0){
-							// 選択されたアイテムを強調
-							var operateView:UIView!
-							operateView = layer.viewWithTag(subview.tag)
-							self.emphasisSelectedItem(selectedView: operateView)
-							myToolbar.items = toolBar[3]
-						}else{
-							/// TODO:
-							/// 必要な処理を書く　なければ消す
-						}
-					}else{
-						// リサイズアイコンが選択された時の処理
-						var iconIsSelected:Bool = false
-						for icon in subview.subviews{
-							print("subview:",subview.frame,"icon:",icon.frame,"location:",location)
-							var iconframe = icon.frame
-							iconframe.origin.x += subview.frame.origin.x
-							iconframe.origin.y += subview.frame.origin.y
-							print("subview:",subview.frame,"iconframe:",iconframe,"location:",location)
-							if(iconframe.contains(location)){
-								tagList.append(icon.tag)
-								print("ImageEditor - handlePanGesture - icon.tag:",icon.tag)
-								iconIsSelected = true
-							}
-						}
-						if(iconIsSelected == false){
-							// 選択されたアイテムの強調を削除
-							var operateView:UIView!
-							operateView = layer.viewWithTag(subview.tag)
-							self.clearEmphasisSelectedItem(selectedView: operateView)
-						}
-					}
-				}
+					selectedItem(layer: layer, location: location)
 				}
 			}
 			break
 		case UIGestureRecognizerState.changed:
-			var operateView:UIView!
 			//移動量を取得
 			let move:CGPoint = sender.translation(in: self.imageView)
-			var iconIsSelected:Bool = false
-			var view:[UIView]!
+			var imageView:[UIView]!
 			// 選択されたレイヤーをviewに設定
 			// 全てのレイヤーが選択状態の場合　-1
 			if(selectedLayerNumber == -1){
-				view = self.imageView?.subviews
+				imageView = self.imageView?.subviews
+				updatePosition(imageView:self.imageView!,tagList:tagList,move:move,sender: sender)
 			}else{
-				print("ImageEditor - handlePanGesture.changed1")
-				view = [(self.imageView?.subviews[selectedLayerNumber])!]
-				print("ImageEditor - handlePanGesture.changed2")
-			}
-			for tag:Int in tagList {
-			//	print("tag:",tag)
-				for layer in view {
-					for subview in layer.subviews {
-						iconIsSelected = false
-						for icon in subview.subviews{
-							//print("tag:",tag,icon.tag)
-							if(tag  == icon.tag){
-							//if(icon.tag & tagMASK == DataManager.TagIDs.typeScale.rawValue){
-								print("ImageEditor - handlePanGesture.changed - icon.tag:",icon.tag)
-								//print("ImageEditor - handlePanGesture - moved:",moved,"move:",move)
-								self.resizeText(textLabel: subview as! UILabel, posX: icon.frame)
-								let moved = CGPoint(x: icon.center.x + move.x, y: subview.frame.height / 2)
-								icon.center = moved
-								sender.setTranslation(CGPoint.zero, in: icon)
-								iconIsSelected = true
-							}
-						}
-						if(tag == subview.tag){
-						//if(subview.tag & tagMASK == DataManager.TagIDs.typeGPS.rawValue){
-						if(iconIsSelected == false){
-							operateView = layer.viewWithTag(subview.tag)
-							print("ImageEditor - handlePanGesture.changed - operateView:",operateView)
-							// 移動分を反映
-							let moved = CGPoint(x: operateView.center.x + move.x, y: operateView.center.y + move.y)
-							operateView.center = moved
-							sender.setTranslation(CGPoint.zero, in:operateView)
-						}
-						}
-					}
+				imageView = [(self.imageView?.subviews[selectedLayerNumber])!]
+				for image in imageView{
+					updatePosition(imageView:image,tagList:tagList,move:move,sender: sender)
 				}
 			}
+			
 			/// TODO:
 			/// isHiddenを設定しなくても、判定できるようにする
 			// レイヤーピッカービューを更新
@@ -883,6 +772,64 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			break
 		default:
 			break
+		}
+	}
+	func updatePosition(imageView:UIView,tagList:[Int],move:CGPoint,sender: UIPanGestureRecognizer){
+		for tag:Int in tagList {
+			let item:UIView = (self.imageView?.viewWithTag(tag))!
+			if(tag & DataManager.TagIDs.Scale.rawValue == DataManager.TagIDs.Scale.rawValue){
+				let textLavel = (self.imageView?.viewWithTag(tag & ~DataManager.TagIDs.Scale.rawValue))!
+				self.resizeText(textLabel: textLavel as! UILabel, posX: item.frame)
+				let moved = CGPoint(x: item.center.x + move.x, y: textLavel.frame.height / 2)
+				item.center = moved
+				sender.setTranslation(CGPoint.zero, in: item)
+			}else if(tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.GPS.rawValue){
+				let moved = CGPoint(x: item.center.x + move.x, y: item.center.y + move.y)
+				item.center = moved
+				sender.setTranslation(CGPoint.zero, in:item)
+			}
+		}
+	}
+	func selectedItem(layer:UIView,location:CGPoint){
+		for item in layer.subviews {
+			// imageView上のアイテムが選択された時の処理
+			if (item.frame.contains(location)) {
+				// 選択されたアイテムのタグをタグリストに追加
+				tagList.append(item.tag)
+				print("ImageEditor - selectedItem - item.tag:",String(item.tag,radix:16))
+				/// TODO:
+				/// タグの種類確認
+				//if(subview.tag != 0){
+				if(item.tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.GPS.rawValue){
+					// 選択されたアイテムを強調
+					var operateView:UIView!
+					operateView = layer.viewWithTag(item.tag)
+					self.emphasisSelectedItem(selectedView: operateView)
+					myToolbar.items = toolBar[3]
+				}else{
+					/// TODO:
+					/// 必要な処理を書く　なければ消す
+				}
+			}else{
+				// リサイズアイコンが選択された時の処理
+				var iconIsSelected:Bool = false
+				for icon in item.subviews{
+					var iconframe = icon.frame
+					iconframe.origin.x += item.frame.origin.x
+					iconframe.origin.y += item.frame.origin.y
+					if(iconframe.contains(location)){
+						tagList.append(icon.tag)
+						print("ImageEditor - selectedItem - icon.tag:",String(icon.tag,radix:16))
+						iconIsSelected = true
+					}
+				}
+				if(iconIsSelected == false){
+					// 選択されたアイテムの強調を削除
+					var operateView:UIView!
+					operateView = layer.viewWithTag(item.tag)
+					self.clearEmphasisSelectedItem(selectedView: operateView)
+				}
+			}
 		}
 	}
 	/// ズーム機能を追加するviewをimageViewに設定
@@ -943,12 +890,11 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			let posY = selectedView.frame.height / 2 - iconSize / 2			
 			let scaleButton = UIButton(frame:CGRect(x:posX,y:posY,width:iconSize,height:iconSize))
 			scaleButton.setImage(UIImage(named: "resize_icon"), for: .normal)
-			scaleButton.tag = selectedView.tag & ~tagMASK + DataManager.TagIDs.Scale.rawValue
-			print("ImageEditor - emphasisSelectedItem - scaleButton:",scaleButton)
+			scaleButton.tag = selectedView.tag | DataManager.TagIDs.Scale.rawValue
 			selectedView.addSubview(scaleButton)
 			let frame = CGRect(x: 0,y: 0,width: selectedView.frame.width, height: selectedView.frame.height)
 			let selectAreaView = SelectAreaView(frame: frame)
-			selectAreaView.tag = selectedView.tag & ~0x3FF + DataManager.TagIDs.Rect.rawValue
+			selectAreaView.tag = selectedView.tag | DataManager.TagIDs.Rect.rawValue
 			selectedView.addSubview(selectAreaView)
 		}
 	}
@@ -980,7 +926,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		// 文字サイズに合わせてラベルのサイズを調整
 		textLabel.sizeToFit()
 		for icon in textLabel.subviews{
-			if((icon.tag & tagMASK) == DataManager.TagIDs.Rect.rawValue){
+			if((icon.tag & DataManager.TagIDs.Rect.rawValue) == DataManager.TagIDs.Rect.rawValue){
 				let selectAreaView = icon as! SelectAreaView
 				selectAreaView.changeFrame(frame: textLabel.bounds)
 			}
@@ -996,7 +942,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		// 文字サイズに合わせてラベルのサイズを調整
 		textLabel.sizeToFit()
 		for icon in textLabel.subviews{
-			if((icon.tag & tagMASK) == DataManager.TagIDs.Rect.rawValue){
+			if((icon.tag & DataManager.TagIDs.Rect.rawValue) == DataManager.TagIDs.Rect.rawValue){
 				let selectAreaView = icon as! SelectAreaView
 				selectAreaView.changeFrame(frame: textLabel.bounds)
 			}
@@ -1013,7 +959,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		textLabel.font = UIFont(name: textLabel.font.fontName,size:  refPointSize * itemWidth * latio / (refWidth?.width)!)
 		textLabel.sizeToFit()
 		for icon in textLabel.subviews{
-			if((icon.tag & tagMASK) == DataManager.TagIDs.Rect.rawValue){
+			if((icon.tag & DataManager.TagIDs.Rect.rawValue) == DataManager.TagIDs.Rect.rawValue){
 				let selectAreaView = icon as! SelectAreaView
 				selectAreaView.changeFrame(frame: textLabel.bounds)
 			}

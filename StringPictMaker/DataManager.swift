@@ -35,11 +35,23 @@ class DataManager{
 	}
 	var imageList = [ImageData]()
 	// Viewにセットするtagの種類を管理
+	// |-+-+-+-+-+-+-+-+-+-+-+-+--+-+-|-+-|-+-+-+-+-+-+-+-|
+	// |------------SERIAL------------|TAG|-----ITEM------|
+	// |------------------------------|-2-|-------8-------|
+	// ITEM_MASK:
+	// |----------------------------------|1|1|1|1|1|1|1|1|
+	// TAG_MASK	:
+	// |------------------------------|1|1|1|1|1|1|1|1|1|1|
+	// ITEM		:
+	//				GPS = 1
+	// TAG		:
+	//				Scale = 1, Rect = 2
 	enum TagIDs : Int{
 		case GPS = 1
-		case Scale
-		case Rect
-		case DUMMY
+		case ITEM_MASK = 0xFF
+		case Scale = 0x100
+		case Rect = 0x200
+		case TAG_MASK = 0x3FF
 	}
 	// Viewにセットするtagの種類を管理
 	enum MenuTypes : Int{
