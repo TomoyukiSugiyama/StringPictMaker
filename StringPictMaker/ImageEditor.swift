@@ -15,7 +15,6 @@ import UIKit
 /// ＊(レイヤービューに３枚以上のレイヤーを追加した状態で、レイヤービューを上にスクロール)
 /// ＊( - ImageView上のアイテムを動かすとレイヤービューの挙動がおかしくなる)
 /// ＊レイヤーの番号を画面上部に表示
-/// ＊アイテムの選択状態に合わせてツールバーのアイテムを無効化する
 /// ＊2802
 /// ＊
 /// ＊
@@ -143,7 +142,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		// スクロールビューのサイズを決定
 		scrollView.frame = CGRect(x:0,y:0,width:self.view.frame.width,height:self.view.frame.height)
 		// ツールバーのサイズを決定
-		myToolbar.frame = CGRect(x:0, y:self.view.bounds.size.height - 44, width:self.view.bounds.size.width, height:40.0)
+		myToolbar.frame = CGRect(x:0, y:self.view.bounds.size.height - 40, width:self.view.bounds.size.width, height:40.0)
 		// ツールバーの位置を決定
 		myToolbar.layer.position = CGPoint(x: self.view.bounds.width/2, y: self.view.bounds.height-20.0)
 		// メニューボタンの位置を決定
@@ -157,9 +156,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	func adjustSize(imageView:UIView){
 		// imageViewのサイズを調整
 		imageViewRatio = self.view.frame.width / imageView.bounds.width
-		//let fWidth = (self.imageView?.frame.width)! * self.view.frame.width / (self.imageView?.bounds.width)!
 		let fWidth = imageView.frame.width * imageViewRatio
-		//let fHeight = (self.imageView?.frame.height)! * self.view.frame.height / (self.imageView?.bounds.height)!
 		let fHeight = imageView.frame.height * imageViewRatio
 		imageView.frame = CGRect(x:0,y:0,width:fWidth,height:fHeight)
 		imageView.center = self.view.center
@@ -180,7 +177,6 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			item.center = CGPoint(x:layer.center.x - vectorX,y:layer.center.y - vectorY)
 			for resizeIcon in item.subviews{
 				if((resizeIcon.tag & DataManager.TagIDs.Rect.rawValue) == DataManager.TagIDs.Rect.rawValue){
-				//if((resizeIcon.tag & tagMASK) == DataManager.TagIDs.Rect.rawValue){
 					let selectAreaView = resizeIcon as! SelectAreaView
 					selectAreaView.changeFrame(frame: item.bounds)
 				}else{
@@ -319,10 +315,10 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		TextPosition.isEnabled = false
 		self.Color.isEnabled = false
 	}
-	func enableToolBarItem(){
-		TextFont.isEnabled = true
-		TextPosition.isEnabled = true
-		self.Color.isEnabled = true
+	func enableToolBarItem(enable:Bool){
+		TextFont.isEnabled = enable
+		TextPosition.isEnabled = enable
+		self.Color.isEnabled = enable
 	}
 	/// 以下、デリゲート
 	/// 選択されたサブメニューを取得
@@ -421,8 +417,6 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		myToolbar.items = toolBar[5]
 		print("ImageEditor - setDummy");
 	}
-	/// TODO:
-	/// Imageを編集し保存後、再編集するとTagの番号が誤って追加される
 	/// ImageViewに追加するアイテムがGPSの場合、
 	/// GPSタグ = 1024の整数倍 ＋ 0x001 (typeGPS:　アイテムの種類がGPSであることを示す値)
 	var gpsTag = 1024
@@ -438,28 +432,26 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		let width = str2.size(withAttributes: [NSAttributedStringKey.font : font])
 		let labelWidth : CGFloat = 250
 		GPSlabel.font = UIFont.boldSystemFont(ofSize: pointSize * getScreenRatio() * labelWidth / width.width)
-		// label.layer.borderColor = UIColor.black.cgColor
-		// label.layer.borderWidth = 2
 		GPSlabel.text = str2
 		// 文字サイズに合わせてラベルのサイズを調整
 		GPSlabel.sizeToFit()
 		// ラベルをviewの中心に移動
 		GPSlabel.center = layer.center
-		/// TODO:
-		/// tagの値変更
 		GPSlabel.tag = gpsTag + DataManager.TagIDs.GPS.rawValue
 		print("ImageEditor - setGPSLabel - tag",GPSlabel.tag);
 		gpsTag += 1024
 		layer.addSubview(GPSlabel)
 		imageView.addSubview(layer)
 		if(selectedLayerNumber == -1){
-		for layer in imageView.subviews{
-			for item in layer.subviews{
-				self.clearEmphasisSelectedItem(selectedView: item)
+			for layer in imageView.subviews{
+				for item in layer.subviews{
+					self.clearEmphasisSelectedItem(selectedView: item)
+				}
 			}
+			self.emphasisSelectedItem(selectedView: GPSlabel)
 		}
-		self.emphasisSelectedItem(selectedView: GPSlabel)
-		}
+		// ツールバーのアイテムを有効化
+		enableToolBarItem(enable: true)
 		// レイヤーピッカービューを更新
 		updateLayerPickerView()
 	}
@@ -682,6 +674,8 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 				}
 			}
 		}
+		// ツールバーのアイテムを無効化
+		enableToolBarItem(enable: false)
 		// レイヤーピッカービューを更新
 		updateLayerPickerView()
 	}
@@ -708,10 +702,9 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		print("ImageEditor - handleTapGesture")
 		tagList.removeAll()
 		let location:CGPoint = sender.location(in: self.imageView)
-		// タッチされた座標にあるサブビューを取得
-		//let hitImageView:UIView? = self.imageView?.hitTest(location, with: UIEvent?)
 		// タッチされた座標の位置を含むサブビューを取得
 		var imageView:[UIView]!
+		var isSelected: Bool = false
 		// 選択されたレイヤーをviewに設定
 		// 全てのレイヤーが選択状態の場合　-1
 		if(selectedLayerNumber == -1){
@@ -721,10 +714,12 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		}
 		for layer in imageView {
 			if(!layer.isHidden){
-				selectedItem(layer: layer, location: location)
+				if(selectedItem(layer: layer, location: location)){
+					isSelected = true
+				}
 			}
 		}
-
+		enableToolBarItem(enable: isSelected)
 	}
 	/// imageView上のアイテムをタッチ、パンした時のアクションを定義
 	///
@@ -734,8 +729,8 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		case UIGestureRecognizerState.began:
 			tagList.removeAll()
 			let location:CGPoint = sender.location(in: self.imageView)
-			// タッチされた座標の位置を含むサブビューを取得
 			var imageView:[UIView]!
+			var isSelected: Bool = false
 			// 選択されたレイヤーをviewに設定
 			// 全てのレイヤーが選択状態の場合　-1
 			if(selectedLayerNumber == -1){
@@ -745,9 +740,12 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			}
 			for layer in imageView {
 				if(!layer.isHidden){
-					selectedItem(layer: layer, location: location)
+					if(selectedItem(layer: layer, location: location)){
+						isSelected = true
+					}
 				}
 			}
+			enableToolBarItem(enable: isSelected)
 			break
 		case UIGestureRecognizerState.changed:
 			//移動量を取得
@@ -764,7 +762,6 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 					updatePosition(imageView:image,tagList:tagList,move:move,sender: sender)
 				}
 			}
-			
 			/// TODO:
 			/// isHiddenを設定しなくても、判定できるようにする
 			// レイヤーピッカービューを更新
@@ -799,22 +796,20 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			}
 		}
 	}
-	func selectedItem(layer:UIView,location:CGPoint){
-		var isSelectedGPS:Bool = false
+	func selectedItem(layer:UIView,location:CGPoint) -> Bool{
+		var isSelected:Bool = false
 		for item in layer.subviews {
 			// imageView上のアイテムが選択された時の処理
 			if (item.frame.contains(location)) {
 				// 選択されたアイテムのタグをタグリストに追加
 				tagList.append(item.tag)
 				print("ImageEditor - selectedItem - item.tag:",String(item.tag,radix:16))
-				/// TODO:
-				/// タグの種類確認
 				if(item.tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.GPS.rawValue){
 					// 選択されたアイテムを強調
 					var operateView:UIView!
 					operateView = layer.viewWithTag(item.tag)
 					self.emphasisSelectedItem(selectedView: operateView)
-					isSelectedGPS = true
+					isSelected = true
 					myToolbar.items = toolBar[3]
 				}else{
 					/// TODO:
@@ -841,11 +836,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 				}
 			}
 		}
-		if(isSelectedGPS){
-			enableToolBarItem()
-		}else{
-			disableToolBarItem()
-		}
+		return isSelected
 	}
 	/// ズーム機能を追加するviewをimageViewに設定
 	///
@@ -970,7 +961,12 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		let refFont = UIFont(name: textLabel.font.fontName,size:refPointSize)
 		let refWidth = textLabel.text?.size(withAttributes: [NSAttributedStringKey.font : refFont!])
 		let itemWidth = textLabel.frame.width
-		print("ImageEditor - adjustItemToScreenSize - refWidth:",refWidth?.width as Any,"itemWidth:",itemWidth as Any,"ratio:",latio)
+		print("ImageEditor - adjustItemToScreenSize - refWidth:",
+			  refWidth?.width as Any,
+			  "itemWidth:",
+			  itemWidth as Any,
+			  "ratio:",
+			  latio)
 		textLabel.font = UIFont(name: textLabel.font.fontName,size:  refPointSize * itemWidth * latio / (refWidth?.width)!)
 		textLabel.sizeToFit()
 		for icon in textLabel.subviews{
@@ -1040,7 +1036,12 @@ class SelectAreaView: UIView {
 	override init(frame: CGRect) {
 		super.init(frame: frame)
 		self.backgroundColor = UIColor.clear
-		myTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(phaseChange), userInfo: nil, repeats: true)
+		myTimer = Timer.scheduledTimer(
+			timeInterval: 0.1,
+			target: self,
+			selector: #selector(phaseChange),
+			userInfo: nil,
+			repeats: true)
 	}
 	deinit {
 		if myTimer != nil {
