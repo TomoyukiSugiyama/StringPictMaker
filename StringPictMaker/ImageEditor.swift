@@ -12,11 +12,11 @@ import UIKit
 /// TODO:
 /// ＊レイヤーピッカービューを表示した時のImageView,Buttonの位置を調整する
 /// ＊アイテムを下に移動した時に、ツールバーとメニューボタンを透過
-/// ＊レイヤービューに３枚以上のレイヤーを追加した状態で、レイヤービューを上にスクロールし、
-/// ＊ - ImageView上のアイテムを動かすとレイヤービューの挙動がおかしくなる
+/// ＊(レイヤービューに３枚以上のレイヤーを追加した状態で、レイヤービューを上にスクロール)
+/// ＊( - ImageView上のアイテムを動かすとレイヤービューの挙動がおかしくなる)
 /// ＊レイヤーの番号を画面上部に表示
 /// ＊アイテムの選択状態に合わせてツールバーのアイテムを無効化する
-/// ＊
+/// ＊2802
 /// ＊
 /// ＊
 
@@ -218,13 +218,11 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 				if item.tag == -1{
 					item.removeFromSuperview()
 				}else if (item.tag & DataManager.TagIDs.TAG_MASK.rawValue) == DataManager.TagIDs.GPS.rawValue {
-//				else if (item.tag & tagMASK) == DataManager.TagIDs.GPS.rawValue {
 					print("ImageEditor - initView - tagGPS - view.tag:",item.tag)
 					let label = item as! UILabel
 					label.text = "現在地"
 					if(gpsTag <= (item.tag & ~DataManager.TagIDs.TAG_MASK.rawValue)){
-					//if(gpsTag <= (item.tag & ~tagMASK)){
-						gpsTag += 1024
+						gpsTag = (item.tag & ~DataManager.TagIDs.TAG_MASK.rawValue) + 1024
 						print("ImageEditor - initVies - tag:",gpsTag)
 					}
 				}
@@ -315,6 +313,16 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		self.toolBar.append([Color,Space])
 		self.toolBar.append([Space])
 		print("ImageEditor - initToolBarItem")
+	}
+	func disableToolBarItem(){
+		TextFont.isEnabled = false
+		TextPosition.isEnabled = false
+		self.Color.isEnabled = false
+	}
+	func enableToolBarItem(){
+		TextFont.isEnabled = true
+		TextPosition.isEnabled = true
+		self.Color.isEnabled = true
 	}
 	/// 以下、デリゲート
 	/// 選択されたサブメニューを取得
@@ -774,6 +782,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			break
 		}
 	}
+	/// 選択されたアイテムをジェスチャーに合わせて移動・サイズ変更
 	func updatePosition(imageView:UIView,tagList:[Int],move:CGPoint,sender: UIPanGestureRecognizer){
 		for tag:Int in tagList {
 			let item:UIView = (self.imageView?.viewWithTag(tag))!
@@ -791,6 +800,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		}
 	}
 	func selectedItem(layer:UIView,location:CGPoint){
+		var isSelectedGPS:Bool = false
 		for item in layer.subviews {
 			// imageView上のアイテムが選択された時の処理
 			if (item.frame.contains(location)) {
@@ -799,12 +809,12 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 				print("ImageEditor - selectedItem - item.tag:",String(item.tag,radix:16))
 				/// TODO:
 				/// タグの種類確認
-				//if(subview.tag != 0){
 				if(item.tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.GPS.rawValue){
 					// 選択されたアイテムを強調
 					var operateView:UIView!
 					operateView = layer.viewWithTag(item.tag)
 					self.emphasisSelectedItem(selectedView: operateView)
+					isSelectedGPS = true
 					myToolbar.items = toolBar[3]
 				}else{
 					/// TODO:
@@ -831,6 +841,11 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 				}
 			}
 		}
+		if(isSelectedGPS){
+			enableToolBarItem()
+		}else{
+			disableToolBarItem()
+		}
 	}
 	/// ズーム機能を追加するviewをimageViewに設定
 	///
@@ -851,7 +866,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	// スクロールビュー上のviewサイズを変更した時、
 	// viewがディスプレイの中心に来るように更新
 	func updateImageCenter(){		
-		let bounds:CGRect = self.scrollView.bounds;
+		let bounds:CGRect = self.scrollView.bounds
 		var point:CGPoint = CGPoint()
 		point.x = (self.imageView?.frame.width)! / 2
 		if ((self.imageView?.frame.width)! < bounds.size.width) {

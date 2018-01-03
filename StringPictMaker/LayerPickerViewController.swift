@@ -204,18 +204,18 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 	}
 	func updateTableView(){
 		if(!tableView.isHidden){
-		//self.tableView.reloadData()
-		print("LayerPickerViewController - updateTableView1")
-		indexpath = tableView.indexPathForSelectedRow
-		print("LayerPickerViewController - updateTableView2:",indexpath)
-		if(indexpath != nil){
-			self.tableView.reloadRows(at: [indexpath], with: .none)
-			print("LayerPickerViewController - updateTableView3")
-			tableView.selectRow(at: indexpath, animated: false, scrollPosition: .none)
-		}else{
-			self.tableView.reloadData()
-		}
-		print("LayerPickerViewController - updateTableView4")
+			//self.tableView.reloadData()
+			print("LayerPickerViewController - updateTableView1")
+			indexpath = tableView.indexPathForSelectedRow
+			print("LayerPickerViewController - updateTableView2:",indexpath)
+			if(indexpath != nil){
+				self.tableView.reloadRows(at: [indexpath], with: .none)
+				print("LayerPickerViewController - updateTableView3")
+				tableView.selectRow(at: indexpath, animated: false, scrollPosition: .none)
+			}else{
+				self.tableView.reloadData()
+			}
+			print("LayerPickerViewController - updateTableView4")
 		}
 	}
 	// 画面回転時に呼び出される
