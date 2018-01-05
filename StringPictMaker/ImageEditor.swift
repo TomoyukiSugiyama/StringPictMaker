@@ -15,7 +15,7 @@ import UIKit
 /// ＊(レイヤービューに３枚以上のレイヤーを追加した状態で、レイヤービューを上にスクロール)
 /// ＊( - ImageView上のアイテムを動かすとレイヤービューの挙動がおかしくなる)
 /// ＊(レイヤーの番号を画面上部に表示)
-/// ＊2802
+/// ＊2962
 /// ＊
 /// ＊
 
@@ -322,9 +322,9 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		Space = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil)
 		self.toolBar.append([SettingSave,Space,SettingCancel])
 		self.toolBar.append([SettingSave,Space,SettingCancel])
-		self.toolBar.append([PenSize,PenErase,Space])
-		self.toolBar.append([TextAdd,Space,TextFont,Space,TextPosition,Space,TextColor,Space,Layer,Space,TextDelete])
-		self.toolBar.append([Color,SelectedColor,Space])
+		self.toolBar.append([PenSize,PenErase,Space,Layer])
+		self.toolBar.append([TextAdd,Space,TextFont,Space,TextPosition,Space,TextColor,Space,TextDelete,Space,Layer])
+		self.toolBar.append([Color,SelectedColor,Space,Layer])
 		self.toolBar.append([Space])
 		print("ImageEditor - initToolBarItem")
 	}
@@ -416,14 +416,30 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	}
 	/// Penをセット
 	func setPen(){
+		var isSelected:Bool = false
 		imageData?.setMenuType(menutype: DataManager.MenuTypes.PEN)
 		myToolbar.items = toolBar[2]
+		for layer in (imageView?.subviews)!{
+			if(layer.tag == DataManager.MenuTypes.PEN.rawValue){
+				print("ImageEditor - setPen - layer is selected")
+				isSelected = true
+				break
+			}
+		}
+		if(!isSelected){
+			let canvas = UIImageView(frame:(imageView?.bounds)!)
+			canvas.backgroundColor = UIColor.clear
+			canvas.tag = DataManager.MenuTypes.PEN.rawValue
+			imageView?.addSubview(canvas)
+			print("ImageEditor - setPen - make new canvas")
+		}
 		print("ImageEditor - setPen");
 	}
 	/// Textをセット
 	func setText(){
 		imageData?.setMenuType(menutype: DataManager.MenuTypes.TEXT)
 		myToolbar.items = toolBar[3]
+		enableToolBarItem(enable: false)
 		print("ImageEditor - setText");
 	}
 	/// Colorをセット
@@ -450,6 +466,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	func setGPS(imageView:UIView){
 		print("ImageEditor - setGPS");
 		let layer = UIView(frame:imageView.bounds)
+		layer.tag = DataManager.MenuTypes.TEXT.rawValue
 		let GPSlabel = UILabel()
 		// 文字追加
 		let str2 = "現在地"
@@ -732,6 +749,9 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	/// Imageを編集し保存後、再編集するとTagの番号が誤って追加される
 	/// タッチした座標にあるimageView上のアイテムを管理
 	var tagList = [Int]()
+	/// PENツール用パス
+	var bezierPath:UIBezierPath!
+	var lastDrawImage:UIImage!
 	@objc func handleTapGesture(sender: UITapGestureRecognizer){
 		print("ImageEditor - handleTapGesture")
 		let location:CGPoint = sender.location(in: self.imageView)
@@ -784,6 +804,13 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 				}
 			}
 			enableToolBarItem(enable: isSelected)
+		}else if(imageData?.getMenuType() == DataManager.MenuTypes.PEN){
+			bezierPath = UIBezierPath()
+			bezierPath.lineWidth = 4.0
+			bezierPath.move(to: location)
+			//bezierPath.addLine(to: location)
+			//drawLine(path: bezierPath)
+			
 		}
 	}
 	/// imageView上のアイテムをタッチ、パンした時のアクションを定義
@@ -814,39 +841,88 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 					}
 				}
 				enableToolBarItem(enable: isSelected)
+			}else if(imageData?.getMenuType() == DataManager.MenuTypes.PEN){
+				let location:CGPoint = sender.location(in: self.imageView)
+				bezierPath = UIBezierPath()
+				bezierPath.lineWidth = 10.0
+				bezierPath.move(to: location)
 			}
 			break
 		case UIGestureRecognizerState.changed:
-			//移動量を取得
-			let move:CGPoint = sender.translation(in: self.imageView)
-			var imageView:[UIView]!
-			// 選択されたレイヤーをviewに設定
-			// 全てのレイヤーが選択状態の場合　-1
-			if(selectedLayerNumber == -1){
-				imageView = self.imageView?.subviews
-				updatePosition(imageView:self.imageView!,tagList:tagList,move:move,sender: sender)
-			}else{
-				imageView = [(self.imageView?.subviews[selectedLayerNumber])!]
-				for image in imageView{
-					updatePosition(imageView:image,tagList:tagList,move:move,sender: sender)
+			if(imageData?.getMenuType() == DataManager.MenuTypes.TEXT){
+				//移動量を取得
+				let move:CGPoint = sender.translation(in: self.imageView)
+				var imageView:[UIView]!
+				// 選択されたレイヤーをviewに設定
+				// 全てのレイヤーが選択状態の場合　-1
+				if(selectedLayerNumber == -1){
+					imageView = self.imageView?.subviews
+					updatePosition(imageView:self.imageView!,tagList:tagList,move:move,sender: sender)
+				}else{
+					imageView = [(self.imageView?.subviews[selectedLayerNumber])!]
+					for image in imageView{
+						updatePosition(imageView:image,tagList:tagList,move:move,sender: sender)
+					}
 				}
-			}
-			/// TODO:
-			/// isHiddenを設定しなくても、判定できるようにする
-			// レイヤーピッカービューを更新
-			if(layerPickerView != nil){
-				if(!layerPickerView.tableView.isHidden){
-					updateLayerPickerView()
+				/// TODO:
+				/// isHiddenを設定しなくても、判定できるようにする
+				// レイヤーピッカービューを更新
+				if(layerPickerView != nil){
+					if(!layerPickerView.tableView.isHidden){
+						updateLayerPickerView()
+					}
+				}
+			}else if(imageData?.getMenuType() == DataManager.MenuTypes.PEN){
+				if bezierPath != nil {
+					let location:CGPoint = sender.location(in: self.imageView)
+					bezierPath.addLine(to: location)
+					drawLine(path: bezierPath)
 				}
 			}
 			break
 		case UIGestureRecognizerState.ended:
+			if(imageData?.getMenuType() == DataManager.MenuTypes.PEN){
+				let location:CGPoint = sender.location(in: self.imageView)
+				bezierPath.addLine(to: location)
+				drawLine(path: bezierPath)
+				var canvas:UIImageView!
+				canvas = UIImageView()
+				for layer in (imageView?.subviews)!{
+					if(layer.tag == DataManager.MenuTypes.PEN.rawValue){
+						canvas = layer as! UIImageView
+						break
+					}
+				}
+				lastDrawImage = canvas.image
+			}
 			break
 		case UIGestureRecognizerState.cancelled:
 			break
 		default:
 			break
 		}
+	}
+	//　線を引く
+	func drawLine(path:UIBezierPath){
+		//if state == 5 {
+		var canvas:UIImageView!
+		canvas = UIImageView()
+		for layer in (imageView?.subviews)!{
+			if(layer.tag == DataManager.MenuTypes.PEN.rawValue){
+				canvas = layer as! UIImageView
+				break
+			}
+		}
+		UIGraphicsBeginImageContext(canvas.frame.size)
+		if lastDrawImage != nil {
+			lastDrawImage.draw(at: CGPoint.zero)
+		}
+		let lineColor = UIColor.blue
+		lineColor.setStroke()
+		path.stroke()
+		canvas.image = UIGraphicsGetImageFromCurrentImageContext()
+		UIGraphicsEndImageContext()
+		//}
 	}
 	/// 選択されたアイテムをジェスチャーに合わせて移動・サイズ変更
 	func updatePosition(imageView:UIView,tagList:[Int],move:CGPoint,sender: UIPanGestureRecognizer){

@@ -45,6 +45,16 @@ class ColorPickerViewController: UIViewController{
 	var firstColorButton:UIButton!
 	var secondColorButton:UIButton!
 	var thirdColorButton:UIButton!
+	
+	var buttonSize:CGFloat!
+	var firstPosX:CGFloat!
+	var firstPosY:CGFloat!
+	var secondPosX:CGFloat!
+	var secondPosY:CGFloat!
+	var thirdPosX:CGFloat!
+	var thirdPosY:CGFloat!
+	var frame:CGRect!
+
 	func setColor(color:UIColor,first:UIColor,second:UIColor,third:UIColor){
 		defaultColor = color
 		firstColor = first
@@ -59,13 +69,29 @@ class ColorPickerViewController: UIViewController{
 		toolBarHeight = 35
 		if(UIScreen.main.bounds.height > UIScreen.main.bounds.width){
 			pickerViewSize = UIScreen.main.bounds.width - margine*2 - toolBarHeight
+			frame = CGRect(x:UIScreen.main.bounds.width/2 - pickerViewSize/2,y:UIScreen.main.bounds.height/2 + toolBarHeight/2 - pickerViewSize/2,width:pickerViewSize,height:pickerViewSize)
+			buttonSize = 60
+			firstPosX = UIScreen.main.bounds.width/4 - buttonSize/2
+			firstPosY = UIScreen.main.bounds.height/2 + pickerViewSize/2 + 50
+			secondPosX = UIScreen.main.bounds.width / 2 - buttonSize/2
+			secondPosY = firstPosY
+			thirdPosX = UIScreen.main.bounds.width * 3 / 4 - buttonSize/2
+			thirdPosY = firstPosY
 		}else{
 			pickerViewSize = UIScreen.main.bounds.height - margine*2 - toolBarHeight
+			frame = CGRect(x:UIScreen.main.bounds.width/4 - pickerViewSize/2,y:UIScreen.main.bounds.height/2 + toolBarHeight/2 - pickerViewSize/2,width:pickerViewSize,height:pickerViewSize)
+			buttonSize = 60
+			let width = UIScreen.main.bounds.width - frame.center.x - pickerViewSize/2
+			firstPosX = width + width / 4 - buttonSize/2
+			firstPosY = UIScreen.main.bounds.height/2 - buttonSize/2
+			secondPosX = width + width / 2 - buttonSize/2
+			secondPosY = firstPosY
+			thirdPosX = width + width * 3 / 4 - buttonSize/2
+			thirdPosY = firstPosY
 		}
 		self.view.frame = CGRect(x:0,y:0,width:UIScreen.main.bounds.width,height:UIScreen.main.bounds.height)
 		self.view.backgroundColor = UIColor.black
 		print("ImageEditor - ColorPickerViewController - viewDidLoad - self.view.frame2:",self.view.frame)
-		let frame = CGRect(x:UIScreen.main.bounds.width/2 - pickerViewSize/2,y:UIScreen.main.bounds.height/2 + toolBarHeight/2 - pickerViewSize/2,width:pickerViewSize,height:pickerViewSize)
 		pickerView = ColorPickerView(frame:frame)
 		pickerView.setNeedsDisplay()
 		self.view.addSubview(pickerView)
@@ -85,9 +111,7 @@ class ColorPickerViewController: UIViewController{
 		self.view.addSubview(selectButton)
 		pickerView.selectedColor = defaultColor
 		print("ColorPickerViewController")
-		let buttonSize:CGFloat = 60
-		let firstPosX:CGFloat = UIScreen.main.bounds.width/4 - buttonSize/2
-		let firstPosY:CGFloat = UIScreen.main.bounds.height/2 + pickerViewSize/2 + 50
+		// 1番目に選択した色
 		firstColorButton = UIButton()
 		firstColorButton.frame = CGRect(x:firstPosX, y:firstPosY, width:buttonSize, height:buttonSize)
 		firstColorButton.backgroundColor = firstColor
@@ -95,8 +119,7 @@ class ColorPickerViewController: UIViewController{
 		firstColorButton.tag = 1
 		firstColorButton.addTarget(self, action: #selector(changeColor), for: UIControlEvents.touchUpInside)
 		self.view.addSubview(firstColorButton)
-		let secondPosX:CGFloat = UIScreen.main.bounds.width / 2 - buttonSize/2
-		let secondPosY:CGFloat = firstPosY
+		// 2番目に選択した色
 		secondColorButton = UIButton()
 		secondColorButton.frame = CGRect(x:secondPosX, y:secondPosY, width:buttonSize, height:buttonSize)
 		secondColorButton.layer.cornerRadius = buttonSize/2
@@ -104,8 +127,7 @@ class ColorPickerViewController: UIViewController{
 		secondColorButton.tag = 2
 		secondColorButton.addTarget(self, action: #selector(changeColor), for: UIControlEvents.touchUpInside)
 		self.view.addSubview(secondColorButton)
-		let thirdPosX:CGFloat = UIScreen.main.bounds.width * 3 / 4 - buttonSize/2
-		let thirdPosY:CGFloat = firstPosY
+		// 3番目に選択した色
 		thirdColorButton = UIButton()
 		thirdColorButton.frame = CGRect(x:thirdPosX, y:thirdPosY, width:buttonSize, height:buttonSize)
 		thirdColorButton.backgroundColor = thirdColor
@@ -113,7 +135,6 @@ class ColorPickerViewController: UIViewController{
 		thirdColorButton.tag = 3
 		thirdColorButton.addTarget(self, action: #selector(changeColor), for: UIControlEvents.touchUpInside)
 		self.view.addSubview(thirdColorButton)
-		
 	}
 	// 色変更ボタンが押された時、ImageEditorにUIColorを送付
 	@objc func changeColor(_ sender: ColorPickerView)
@@ -163,7 +184,33 @@ class ColorPickerViewController: UIViewController{
 	override func willAnimateRotation(to toInterfaceOrientation: UIInterfaceOrientation, duration: TimeInterval){
 		self.view.frame = CGRect(x:0,y:0,width:UIScreen.main.bounds.width,height:UIScreen.main.bounds.height)
 		self.toolbar.frame = CGRect(x:0, y:0, width:self.view.frame.width, height:35)
-		pickerView.frame = CGRect(x:UIScreen.main.bounds.width/2 - pickerViewSize/2,y:UIScreen.main.bounds.height/2 + toolBarHeight/2 - pickerViewSize/2,width:pickerViewSize,height:pickerViewSize)
+		/*pickerView.frame = CGRect(x:UIScreen.main.bounds.width/2 - pickerViewSize/2,y:UIScreen.main.bounds.height/2 + toolBarHeight/2 - pickerViewSize/2,width:pickerViewSize,height:pickerViewSize)*/
+		if(UIScreen.main.bounds.height > UIScreen.main.bounds.width){
+			pickerViewSize = UIScreen.main.bounds.width - margine*2 - toolBarHeight
+			frame = CGRect(x:UIScreen.main.bounds.width/2 - pickerViewSize/2,y:UIScreen.main.bounds.height/2 + toolBarHeight/2 - pickerViewSize/2,width:pickerViewSize,height:pickerViewSize)
+			buttonSize = 60
+			firstPosX = UIScreen.main.bounds.width/4 - buttonSize/2
+			firstPosY = UIScreen.main.bounds.height/2 + pickerViewSize/2 + 50
+			secondPosX = UIScreen.main.bounds.width / 2 - buttonSize/2
+			secondPosY = firstPosY
+			thirdPosX = UIScreen.main.bounds.width * 3 / 4 - buttonSize/2
+			thirdPosY = firstPosY
+		}else{
+			pickerViewSize = UIScreen.main.bounds.height - margine*2 - toolBarHeight
+			frame = CGRect(x:UIScreen.main.bounds.width/4 - pickerViewSize/2,y:UIScreen.main.bounds.height/2 + toolBarHeight/2 - pickerViewSize/2,width:pickerViewSize,height:pickerViewSize)
+			buttonSize = 60
+			let width = UIScreen.main.bounds.width - frame.center.x - pickerViewSize/2
+			firstPosX = width + width / 4 - buttonSize/2
+			firstPosY = UIScreen.main.bounds.height/2 - buttonSize/2
+			secondPosX = width + width / 2 - buttonSize/2
+			secondPosY = firstPosY
+			thirdPosX = width + width * 3 / 4 - buttonSize/2
+			thirdPosY = firstPosY
+		}
+		pickerView.frame = frame
+		firstColorButton.frame = CGRect(x:firstPosX, y:firstPosY, width:buttonSize, height:buttonSize)
+		secondColorButton.frame = CGRect(x:secondPosX, y:secondPosY, width:buttonSize, height:buttonSize)
+		thirdColorButton.frame = CGRect(x:thirdPosX, y:thirdPosY, width:buttonSize, height:buttonSize)
 		selectButton.center = pickerView.center
 //		self.picker.frame = CGRect(x: 0, y: 35, width: self.view.frame.width, height: self.view.frame.height - 35)
 	}
