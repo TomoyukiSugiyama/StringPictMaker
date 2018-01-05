@@ -380,6 +380,8 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 				}
 			}
 		}
+		imageData?.setColor(color: state)
+		//print(imageData?.getColor(index: 0), imageData?.getColor(index: 1),imageData?.getColor(index: 2))
 		SelectedColorView.backgroundColor = state
 		// レイヤーピッカービューを更新
 		updateLayerPickerView()
@@ -419,11 +421,15 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	func setText(){
 		imageData?.setMenuType(menutype: DataManager.MenuTypes.TEXT)
 		myToolbar.items = toolBar[3]
-		setGPS(imageView:self.imageView!)
 		print("ImageEditor - setText");
 	}
 	/// Colorをセット
 	func setColor(){
+		for layer in (self.imageView?.subviews)!{
+			for item in layer.subviews{
+				self.clearEmphasisSelectedItem(selectedView: item)
+			}
+		}
 		imageData?.setMenuType(menutype: DataManager.MenuTypes.COLOR)
 		myToolbar.items = toolBar[4]
 		print("ImageEditor - setColor");
@@ -631,7 +637,11 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		}
 		colorPickerView = ColorPickerViewController()
 		colorPickerView.delegate = self
-		colorPickerView.setColor(color: SelectedColorView.backgroundColor!)
+//		colorPickerView.setColor(color: SelectedColorView.backgroundColor!)
+		let first:UIColor = (imageData?.getColor(index: 0))!
+		let second:UIColor = (imageData?.getColor(index: 1))!
+		let third:UIColor = (imageData?.getColor(index: 2))!
+		colorPickerView.setColor(color: first, first: first, second: second, third: third)
 		self.view.addSubview(colorPickerView.view)
 		self.addChildViewController(colorPickerView)
 		colorPickerView.didMove(toParentViewController: self)
@@ -723,6 +733,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		print("ImageEditor - handleTapGesture")
 		let location:CGPoint = sender.location(in: self.imageView)
 		if(imageData?.getMenuType() == DataManager.MenuTypes.COLOR){
+			tagList.removeAll()
 			var isSelected = false
 			var imageView:[UIView]!
 			// 全てのレイヤーが選択状態の場合　-1
@@ -740,7 +751,6 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 								let label:UILabel = item as! UILabel
 								label.textColor = SelectedColorView.backgroundColor!
 								isSelected = true
-							//item. = SelectedColorView.backgroundColor!
 							}
 						}
 					}
@@ -751,40 +761,9 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 					self.imageView?.backgroundColor = SelectedColorView.backgroundColor!
 				}
 			}
-			print("color")
 		}else if(imageData?.getMenuType() == DataManager.MenuTypes.TEXT){
-		tagList.removeAll()
-		// タッチされた座標の位置を含むサブビューを取得
-		var imageView:[UIView]!
-		var isSelected: Bool = false
-		// 選択されたレイヤーをviewに設定
-		// 全てのレイヤーが選択状態の場合　-1
-		if(selectedLayerNumber == -1){
-			imageView = self.imageView?.subviews
-		}else{
-			imageView = [(self.imageView?.subviews[selectedLayerNumber])!]
-		}
-		for layer in imageView {
-			if(!layer.isHidden){
-				if(selectedItem(layer: layer, location: location)){
-					isSelected = true
-				}
-			}
-		}
-		enableToolBarItem(enable: isSelected)
-		}
-	}
-	/// imageView上のアイテムをタッチ、パンした時のアクションを定義
-	///
-	/// - Parameter sender: sender
-	@objc func handlePanGesture(sender: UIPanGestureRecognizer){
-		switch sender.state {
-		case UIGestureRecognizerState.began:
-			if(imageData?.getMenuType() == DataManager.MenuTypes.COLOR){
-				print("color")
-			}else if(imageData?.getMenuType() == DataManager.MenuTypes.TEXT){
 			tagList.removeAll()
-			let location:CGPoint = sender.location(in: self.imageView)
+			// タッチされた座標の位置を含むサブビューを取得
 			var imageView:[UIView]!
 			var isSelected: Bool = false
 			// 選択されたレイヤーをviewに設定
@@ -802,6 +781,36 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 				}
 			}
 			enableToolBarItem(enable: isSelected)
+		}
+	}
+	/// imageView上のアイテムをタッチ、パンした時のアクションを定義
+	///
+	/// - Parameter sender: sender
+	@objc func handlePanGesture(sender: UIPanGestureRecognizer){
+		switch sender.state {
+		case UIGestureRecognizerState.began:
+			if(imageData?.getMenuType() == DataManager.MenuTypes.COLOR){
+				tagList.removeAll()
+			}else if(imageData?.getMenuType() == DataManager.MenuTypes.TEXT){
+				tagList.removeAll()
+				let location:CGPoint = sender.location(in: self.imageView)
+				var imageView:[UIView]!
+				var isSelected: Bool = false
+				// 選択されたレイヤーをviewに設定
+				// 全てのレイヤーが選択状態の場合　-1
+				if(selectedLayerNumber == -1){
+					imageView = self.imageView?.subviews
+				}else{
+					imageView = [(self.imageView?.subviews[selectedLayerNumber])!]
+				}
+				for layer in imageView {
+					if(!layer.isHidden){
+						if(selectedItem(layer: layer, location: location)){
+							isSelected = true
+						}
+					}
+				}
+				enableToolBarItem(enable: isSelected)
 			}
 			break
 		case UIGestureRecognizerState.changed:

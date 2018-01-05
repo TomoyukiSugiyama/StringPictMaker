@@ -39,8 +39,17 @@ class ColorPickerViewController: UIViewController{
 	var toolBarHeight:CGFloat!
 	var pickerViewSize:CGFloat!
 	var defaultColor:UIColor!
-	func setColor(color:UIColor){
+	var firstColor:UIColor!
+	var secondColor:UIColor!
+	var thirdColor:UIColor!
+	var firstColorButton:UIButton!
+	var secondColorButton:UIButton!
+	var thirdColorButton:UIButton!
+	func setColor(color:UIColor,first:UIColor,second:UIColor,third:UIColor){
 		defaultColor = color
+		firstColor = first
+		secondColor = second
+		thirdColor = third
 	}
 	/// ピッカービューを生成
 	override func viewDidLoad() {
@@ -75,6 +84,29 @@ class ColorPickerViewController: UIViewController{
 		self.view.addSubview(selectButton)
 		pickerView.selectedColor = defaultColor
 		print("ColorPickerViewController")
+		let buttonSize:CGFloat = 60
+		let firstPosX:CGFloat = UIScreen.main.bounds.width/4 - buttonSize/2
+		let firstPosY:CGFloat = UIScreen.main.bounds.height/2 + pickerViewSize/2 + 50
+		firstColorButton = UIButton()
+		firstColorButton.frame = CGRect(x:firstPosX, y:firstPosY, width:buttonSize, height:buttonSize)
+		firstColorButton.backgroundColor = firstColor
+		firstColorButton.layer.cornerRadius = buttonSize/2
+		self.view.addSubview(firstColorButton)
+		let secondPosX:CGFloat = UIScreen.main.bounds.width / 2 - buttonSize/2
+		let secondPosY:CGFloat = firstPosY
+		secondColorButton = UIButton()
+		secondColorButton.frame = CGRect(x:secondPosX, y:secondPosY, width:buttonSize, height:buttonSize)
+		secondColorButton.layer.cornerRadius = buttonSize/2
+		secondColorButton.backgroundColor = secondColor
+		self.view.addSubview(secondColorButton)
+		let thirdPosX:CGFloat = UIScreen.main.bounds.width * 3 / 4 - buttonSize/2
+		let thirdPosY:CGFloat = firstPosY
+		thirdColorButton = UIButton()
+		thirdColorButton.frame = CGRect(x:thirdPosX, y:thirdPosY, width:buttonSize, height:buttonSize)
+		thirdColorButton.backgroundColor = thirdColor
+		thirdColorButton.layer.cornerRadius = buttonSize/2
+		self.view.addSubview(thirdColorButton)
+		
 	}
 	// 色変更ボタンが押された時、ImageEditorにUIColorを送付
 	@objc func changeColor(_ sender: ColorPickerView)

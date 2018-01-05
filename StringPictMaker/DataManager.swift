@@ -23,17 +23,6 @@ import CoreData
 /// Data manager
 /// 様々なクラスで使用するデータ・メモリに保存するためのデータを管理
 class DataManager{
-	// CoreData : 管理オブジェクトコンテキスト
-	var managedContext:NSManagedObjectContext!
-	// 検索結果配列
-	var searchResult = [Images]()
-	// CoreDataを読み出すための構造体
-	struct ImageData {
-		var id: Int
-		var title: String
-		var imageview: UIView
-	}
-	var imageList = [ImageData]()
 	// Viewにセットするtagの種類を管理
 	// |-+-+-+-+-+-+-+-+-+-+-+-+--+-+-|-+-|-+-+-+-+-+-+-+-|
 	// |------------SERIAL------------|TAG|-----ITEM------|
@@ -53,7 +42,7 @@ class DataManager{
 		case Rect = 0x200
 		case TAG_MASK = 0x3FF
 	}
-	// Viewにセットするtagの種類を管理
+	// メニューを管理
 	enum MenuTypes : Int{
 		case SETTING = 1
 		case PEN
@@ -62,6 +51,44 @@ class DataManager{
 		case DUMMY
 	}
 	var selectedSubMenuItem:MenuTypes!
+	func setMenuType(menutype:MenuTypes){
+		selectedSubMenuItem = menutype
+	}
+	func getMenuType() -> MenuTypes{
+		return selectedSubMenuItem
+	}
+	var colorArray = [UIColor]()
+	func setColor(color:UIColor){
+		if let index = colorArray.index(of: color){
+			colorArray.remove(at: index)
+			colorArray.insert(color, at: 0)
+		}else{
+			colorArray.insert(color, at: 0)
+			if(colorArray.count > 3){
+				colorArray.removeLast()
+			}
+		}
+	}
+	func getColor(index:Int) -> UIColor{
+		if(index < colorArray.count){
+			
+			return colorArray[index]
+		}else{
+			print("error")
+			return UIColor.white
+		}
+	}
+	// CoreData : 管理オブジェクトコンテキスト
+	var managedContext:NSManagedObjectContext!
+	// 検索結果配列
+	var searchResult = [Images]()
+	// CoreDataを読み出すための構造体
+	struct ImageData {
+		var id: Int
+		var title: String
+		var imageview: UIView
+	}
+	var imageList = [ImageData]()
 	let DUMMY:Int
 	init() {
 		// CoreData : 管理オブジェクトコンテキストを取得
@@ -73,12 +100,7 @@ class DataManager{
 		/// initを実行する時、１つ以上のクラスインスタンスの初期化が必要であるため
 		DUMMY = 0
 	}
-	func setMenuType(menutype:MenuTypes){
-		selectedSubMenuItem = menutype
-	}
-	func getMenuType() -> MenuTypes{
-		return selectedSubMenuItem
-	}
+
 	/// CoreDataに空のimageを保存
 	func saveEmptyImage(id:Int,frame:CGRect){
 		do{
