@@ -80,6 +80,7 @@ class ColorPickerViewController: UIViewController{
 		selectButton.frame = CGRect(x:0, y:0, width:40, height:40)
 		selectButton.center = pickerView.center
 		selectButton.backgroundColor = UIColor.clear
+		selectButton.tag = 0
 		selectButton.addTarget(self, action: #selector(changeColor), for: UIControlEvents.touchUpInside)
 		self.view.addSubview(selectButton)
 		pickerView.selectedColor = defaultColor
@@ -91,6 +92,8 @@ class ColorPickerViewController: UIViewController{
 		firstColorButton.frame = CGRect(x:firstPosX, y:firstPosY, width:buttonSize, height:buttonSize)
 		firstColorButton.backgroundColor = firstColor
 		firstColorButton.layer.cornerRadius = buttonSize/2
+		firstColorButton.tag = 1
+		firstColorButton.addTarget(self, action: #selector(changeColor), for: UIControlEvents.touchUpInside)
 		self.view.addSubview(firstColorButton)
 		let secondPosX:CGFloat = UIScreen.main.bounds.width / 2 - buttonSize/2
 		let secondPosY:CGFloat = firstPosY
@@ -98,6 +101,8 @@ class ColorPickerViewController: UIViewController{
 		secondColorButton.frame = CGRect(x:secondPosX, y:secondPosY, width:buttonSize, height:buttonSize)
 		secondColorButton.layer.cornerRadius = buttonSize/2
 		secondColorButton.backgroundColor = secondColor
+		secondColorButton.tag = 2
+		secondColorButton.addTarget(self, action: #selector(changeColor), for: UIControlEvents.touchUpInside)
 		self.view.addSubview(secondColorButton)
 		let thirdPosX:CGFloat = UIScreen.main.bounds.width * 3 / 4 - buttonSize/2
 		let thirdPosY:CGFloat = firstPosY
@@ -105,15 +110,28 @@ class ColorPickerViewController: UIViewController{
 		thirdColorButton.frame = CGRect(x:thirdPosX, y:thirdPosY, width:buttonSize, height:buttonSize)
 		thirdColorButton.backgroundColor = thirdColor
 		thirdColorButton.layer.cornerRadius = buttonSize/2
+		thirdColorButton.tag = 3
+		thirdColorButton.addTarget(self, action: #selector(changeColor), for: UIControlEvents.touchUpInside)
 		self.view.addSubview(thirdColorButton)
 		
 	}
 	// 色変更ボタンが押された時、ImageEditorにUIColorを送付
 	@objc func changeColor(_ sender: ColorPickerView)
 	{
-		print("test")
 		print("ColorPickerViewController - changeColor - sender.selectedColor:",pickerView.selectedColor)
-		delegate?.selectedColor(state: pickerView.selectedColor)
+		switch sender.tag{
+		case 0:
+			delegate?.selectedColor(state: pickerView.selectedColor)
+		case 1:
+			delegate?.selectedColor(state: firstColor)
+		case 2:
+			delegate?.selectedColor(state: secondColor)
+		case 3:
+			delegate?.selectedColor(state: thirdColor)
+		default:
+			print("ColorPickerView - changeColor - error:",sender.tag)
+			break
+		}
 		done()
 	}
 	// toolbarのキャンセルを選択

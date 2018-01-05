@@ -126,6 +126,9 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		// ツールバーに追加
 		self.view.addSubview(myToolbar)
 		imageData?.setMenuType(menutype: DataManager.MenuTypes.SETTING)
+		imageData?.setColor(color: UIColor.yellow)
+		imageData?.setColor(color: UIColor.red)
+		imageData?.setColor(color: UIColor.blue)
 	}
 	/// ナビゲーションバーを非表示
 	override func viewWillAppear(_ animated: Bool) {
