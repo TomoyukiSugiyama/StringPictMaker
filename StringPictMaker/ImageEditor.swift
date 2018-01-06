@@ -16,7 +16,10 @@ import UIKit
 /// ＊( - ImageView上のアイテムを動かすとレイヤービューの挙動がおかしくなる)
 /// ＊(レイヤーの番号を画面上部に表示)
 /// ＊ペンツール（太さ等変更可能）
-/// ＊2962
+/// ＊フリーテキスト
+/// ＊GPS　都道府県、市町村　選択
+/// ＊3115
+/// ＊
 /// ＊
 /// ＊
 
@@ -64,6 +67,8 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	var colorPickerView: ColorPickerViewController!
 	// レイヤーのピッカービューを生成
 	var layerPickerView: LayerPickerViewController!
+	// ペンのピッカービューを生成
+	var penPickerView: PenPickerViewController!
 	var selectedLayerNumber: Int = -1
 	var imageViewRatio: CGFloat!
 	/// DataManagerのオブジェクトを生成し、CoreDataからデータを読み出す
@@ -530,6 +535,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			displayCancelAlert()
 		case 3:
 			print("ImageEditor - onClickBarButton - PenSize")
+			displayPenPicker()
 		case 4:
 			print("ImageEditor - onClickBarButton - PenErase:")
 		case 5:
@@ -645,6 +651,15 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		alert.addAction(defaultAction)
 		// Alertを表示
 		present(alert, animated: true, completion: nil)
+	}
+	/// ペンピッカーを表示
+	func displayPenPicker() {
+		print("ImageEditor - displayPenPicker")		
+		penPickerView = PenPickerViewController()
+		//penPickerView.delegate = self
+		self.view.addSubview(penPickerView.view)
+		self.addChildViewController(penPickerView)
+		penPickerView.didMove(toParentViewController: self)
 	}
 	/// カラーパレットを表示
 	func displayColorPalet(){

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C806697E20008DAB006190F9 /* PenPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C806697D20008DAB006190F9 /* PenPickerViewController.swift */; };
 		C82DFCDF1FBF0E3D00B65F92 /* ImageListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82DFCDE1FBF0E3D00B65F92 /* ImageListController.swift */; };
 		C82DFCE11FBFB98C00B65F92 /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82DFCE01FBFB98C00B65F92 /* ImageCell.swift */; };
 		C84CBFB11FF75C1F00158BF5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C84CBFB01FF75C1E00158BF5 /* Assets.xcassets */; };
@@ -61,6 +62,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		C806697D20008DAB006190F9 /* PenPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenPickerViewController.swift; sourceTree = "<group>"; };
 		C82DFCDE1FBF0E3D00B65F92 /* ImageListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageListController.swift; sourceTree = "<group>"; };
 		C82DFCE01FBFB98C00B65F92 /* ImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
 		C84CBFB01FF75C1E00158BF5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -225,6 +227,7 @@
 				C8B59D831FD6DB4500DCB67B /* FontPickerViewController.swift */,
 				C8F75AE01FDC41BC006FA649 /* ColorPickerViewController.swift */,
 				C8F75AE21FDCC7FB006FA649 /* LayerPickerViewController.swift */,
+				C806697D20008DAB006190F9 /* PenPickerViewController.swift */,
 				C8F75AE41FDEAEDA006FA649 /* LayerCell.swift */,
 				C891DD751FC46AEF00C126BF /* DataManager.swift */,
 				C84CBFB01FF75C1E00158BF5 /* Assets.xcassets */,
@@ -520,6 +523,7 @@
 				C8B924B41FEF6AA100D9C3B8 /* ThumbView.swift in Sources */,
 				C8F75AE51FDEAEDA006FA649 /* LayerCell.swift in Sources */,
 				C89E07101FC04C6E00C527BC /* ImageEditor.swift in Sources */,
+				C806697E20008DAB006190F9 /* PenPickerViewController.swift in Sources */,
 				C8B924B51FEF6AA100D9C3B8 /* ColorPicker+Math.swift in Sources */,
 				C82DFCE11FBFB98C00B65F92 /* ImageCell.swift in Sources */,
 				C8B924B11FEF6AA100D9C3B8 /* ColorPickerView.swift in Sources */,
