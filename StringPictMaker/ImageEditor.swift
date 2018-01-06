@@ -15,6 +15,7 @@ import UIKit
 /// ＊(レイヤービューに３枚以上のレイヤーを追加した状態で、レイヤービューを上にスクロール)
 /// ＊( - ImageView上のアイテムを動かすとレイヤービューの挙動がおかしくなる)
 /// ＊(レイヤーの番号を画面上部に表示)
+/// ＊ペンツール（太さ等変更可能）
 /// ＊2962
 /// ＊
 /// ＊
@@ -23,7 +24,6 @@ import UIKit
 /// ＊グリッド表示
 /// ＊アイテムを移動した時、グリッドに合わせて位置調整
 /// ＊複数アイテムの整列
-/// ＊ペンツール（太さ等変更可能）
 /// ＊消しゴム
 /// ＊色吸い取り
 /// ＊範囲選択
@@ -322,7 +322,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		Space = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil)
 		self.toolBar.append([SettingSave,Space,SettingCancel])
 		self.toolBar.append([SettingSave,Space,SettingCancel])
-		self.toolBar.append([PenSize,PenErase,Space,Layer])
+		self.toolBar.append([PenSize,PenErase,Color,Space,Layer])
 		self.toolBar.append([TextAdd,Space,TextFont,Space,TextPosition,Space,TextColor,Space,TextDelete,Space,Layer])
 		self.toolBar.append([Color,SelectedColor,Space,Layer])
 		self.toolBar.append([Space])
@@ -806,11 +806,18 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			enableToolBarItem(enable: isSelected)
 		}else if(imageData?.getMenuType() == DataManager.MenuTypes.PEN){
 			bezierPath = UIBezierPath()
-			bezierPath.lineWidth = 4.0
-			bezierPath.move(to: location)
-			//bezierPath.addLine(to: location)
-			//drawLine(path: bezierPath)
-			
+			let pointSize:CGFloat = 10
+			bezierPath.addArc(withCenter: location, radius: pointSize/2, startAngle: 0.0, endAngle: CGFloat(Double.pi)*2, clockwise: true)
+			drawPoint(path: bezierPath)
+			var canvas:UIImageView!
+			canvas = UIImageView()
+			for layer in (imageView?.subviews)!{
+				if(layer.tag == DataManager.MenuTypes.PEN.rawValue){
+					canvas = layer as! UIImageView
+					break
+				}
+			}
+			lastDrawImage = canvas.image
 		}
 	}
 	/// imageView上のアイテムをタッチ、パンした時のアクションを定義
@@ -904,7 +911,6 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	}
 	//　線を引く
 	func drawLine(path:UIBezierPath){
-		//if state == 5 {
 		var canvas:UIImageView!
 		canvas = UIImageView()
 		for layer in (imageView?.subviews)!{
@@ -917,12 +923,33 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		if lastDrawImage != nil {
 			lastDrawImage.draw(at: CGPoint.zero)
 		}
-		let lineColor = UIColor.blue
+		let lineColor:UIColor = (imageData?.getColor(index: 0))!
 		lineColor.setStroke()
 		path.stroke()
 		canvas.image = UIGraphicsGetImageFromCurrentImageContext()
 		UIGraphicsEndImageContext()
-		//}
+	}
+	func drawPoint(path:UIBezierPath){
+		var canvas:UIImageView!
+		canvas = UIImageView()
+		for layer in (imageView?.subviews)!{
+			if(layer.tag == DataManager.MenuTypes.PEN.rawValue){
+				canvas = layer as! UIImageView
+				break
+			}
+		}
+		UIGraphicsBeginImageContext(canvas.frame.size)
+		if lastDrawImage != nil {
+			lastDrawImage.draw(at: CGPoint.zero)
+		}
+		let lineColor:UIColor = (imageData?.getColor(index: 0))!
+		lineColor.setStroke()
+		path.stroke()
+		lineColor.setFill()
+		path.fill()
+		canvas.image = UIGraphicsGetImageFromCurrentImageContext()
+		UIGraphicsEndImageContext()
+
 	}
 	/// 選択されたアイテムをジェスチャーに合わせて移動・サイズ変更
 	func updatePosition(imageView:UIView,tagList:[Int],move:CGPoint,sender: UIPanGestureRecognizer){
