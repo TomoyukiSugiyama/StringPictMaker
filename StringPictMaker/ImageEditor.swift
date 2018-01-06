@@ -40,7 +40,8 @@ import UIKit
 /// ＊
 
 /// Imageを編集するためのコントローラー
-class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPickerDelegate,LayerPickerDelegate,UIToolbarDelegate,UIScrollViewDelegate{
+class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPickerDelegate,LayerPickerDelegate,PenPickerDelegate,UIToolbarDelegate,UIScrollViewDelegate{
+	
 	// delegate
 	// ImageListControllerから選択されたセルのid、imageView/Dataを取得
 	var delegateParamId: Int = 0
@@ -134,6 +135,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		imageData?.setColor(color: UIColor.yellow)
 		imageData?.setColor(color: UIColor.red)
 		imageData?.setColor(color: UIColor.blue)
+		imageData?.setPen(size: 10.0)
 	}
 	/// ナビゲーションバーを非表示
 	override func viewWillAppear(_ animated: Bool) {
@@ -395,6 +397,11 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		updateLayerPickerView()
 		print("ImageEditor - selectedColor - UIColor:",state)
 	}
+	func selectedPen(size: CGFloat) {
+		imageData?.setPen(size: size)
+		print("ImageEditor - selectedPen - size:",size)
+	}
+
 	/// LayerPickerViewControllerで選択されたレイヤーをラベルに設定
 	func selectedLayer(num: Int) {
 		print("ImageEditor - selectedLayer - num:",num)
@@ -656,7 +663,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	func displayPenPicker() {
 		print("ImageEditor - displayPenPicker")		
 		penPickerView = PenPickerViewController()
-		//penPickerView.delegate = self
+		penPickerView.delegate = self
 		self.view.addSubview(penPickerView.view)
 		self.addChildViewController(penPickerView)
 		penPickerView.didMove(toParentViewController: self)
@@ -821,7 +828,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			enableToolBarItem(enable: isSelected)
 		}else if(imageData?.getMenuType() == DataManager.MenuTypes.PEN){
 			bezierPath = UIBezierPath()
-			let pointSize:CGFloat = 10
+			let pointSize:CGFloat = (imageData?.getPen())!
 			bezierPath.addArc(withCenter: location, radius: pointSize/2, startAngle: 0.0, endAngle: CGFloat(Double.pi)*2, clockwise: true)
 			drawPoint(path: bezierPath)
 			var canvas:UIImageView!
@@ -866,7 +873,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			}else if(imageData?.getMenuType() == DataManager.MenuTypes.PEN){
 				let location:CGPoint = sender.location(in: self.imageView)
 				bezierPath = UIBezierPath()
-				bezierPath.lineWidth = 10.0
+				bezierPath.lineWidth = (imageData?.getPen())!
 				bezierPath.move(to: location)
 			}
 			break

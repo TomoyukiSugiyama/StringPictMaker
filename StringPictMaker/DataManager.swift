@@ -78,6 +78,14 @@ class DataManager{
 			return UIColor.white
 		}
 	}
+	
+	var penSize:CGFloat!
+	func setPen(size:CGFloat){
+		penSize = size
+	}
+	func getPen() -> CGFloat{
+		return penSize
+	}
 	// CoreData : 管理オブジェクトコンテキスト
 	var managedContext:NSManagedObjectContext!
 	// 検索結果配列
