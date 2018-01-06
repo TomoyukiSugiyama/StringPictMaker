@@ -26,15 +26,18 @@ protocol PenPickerDelegate {
 class PenPickerViewController: UIViewController{
 	// UIToolVarを生成
 	var toolbar:UIToolbar!
+	var slider:UISlider!
 	var penSize:CGFloat!
 	var refButton:UIButton!
 	var delegate : PenPickerDelegate!
+	func setPen(size:CGFloat){
+		penSize = size
+	}
     override func viewDidLoad() {
         super.viewDidLoad()
 		print("PenPickerViewController - viewDidLoad")
-		penSize = 10.0
 		self.view.frame = CGRect(x:0,y:self.view.frame.height - 150 - 40,width:self.view.frame.width,height:150)
-		//self.view.backgroundColor = UIColor.white
+		self.view.backgroundColor = UIColor.gray
 		refButton = UIButton()
 		//refButton.frame = CGRect(x:self.view.frame.width/4,y:50,width:penSize,height:penSize)
 		refButton.frame = CGRect(x:0,y:0,width:penSize,height:penSize)
@@ -43,7 +46,7 @@ class PenPickerViewController: UIViewController{
 		refButton.layer.cornerRadius = penSize/2
 		self.view.addSubview(refButton)
 		// スライダーの作成
-		let slider = UISlider()
+		slider = UISlider()
 		slider.frame = CGRect(x:self.view.frame.width/4,y:self.view.frame.height * 3/4,width:self.view.frame.width/2,height:10)
 		//slider.frame.size.width = self.view.frame.width/2
 		slider.sizeToFit()
@@ -108,5 +111,13 @@ class PenPickerViewController: UIViewController{
 		content.view.removeFromSuperview()
 		content.removeFromParentViewController()
 	}
-
+	// 画面回転時に呼び出される
+	override func willAnimateRotation(to toInterfaceOrientation: UIInterfaceOrientation, duration: TimeInterval){
+		self.view.frame = CGRect(x:0,y:UIScreen.main.bounds.height - 150 - 40,width:UIScreen.main.bounds.width,height:150)
+		refButton.frame = CGRect(x:0,y:0,width:penSize,height:penSize)
+		refButton.center = CGPoint(x:self.view.frame.width/4,y:self.view.frame.height / 2)
+		slider.frame = CGRect(x:self.view.frame.width/4,y:self.view.frame.height * 3/4,width:self.view.frame.width/2,height:10)
+		toolbar.frame = CGRect(x:0, y:0, width:UIScreen.main.bounds.width, height:35)
+		
+	}
 }

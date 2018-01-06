@@ -664,6 +664,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		print("ImageEditor - displayPenPicker")		
 		penPickerView = PenPickerViewController()
 		penPickerView.delegate = self
+		penPickerView.setPen(size: (imageData?.getPen())!)
 		self.view.addSubview(penPickerView.view)
 		self.addChildViewController(penPickerView)
 		penPickerView.didMove(toParentViewController: self)
