@@ -241,6 +241,8 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	var TextColor:UIBarButtonItem!
 	var PenSize:UIBarButtonItem!
 	var PenErase:UIBarButtonItem!
+	var PenUndo:UIBarButtonItem!
+	var PenRedo:UIBarButtonItem!
 	var Color:UIBarButtonItem!
 	var SelectedColor:UIBarButtonItem!
 	var SelectedColorView:UIButton!
@@ -279,41 +281,53 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		PenEraseView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
 		PenEraseView.tag = 4
 		PenErase = UIBarButtonItem(customView: PenEraseView)
+		let PenUndoView = UIButton()
+		PenUndoView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
+		PenUndoView.setTitle("Undo", for: .normal)
+		PenUndoView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
+		PenUndoView.tag = 5
+		PenUndo = UIBarButtonItem(customView: PenUndoView)
+		let PenRedoView = UIButton()
+		PenRedoView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
+		PenRedoView.setTitle("Redo", for: .normal)
+		PenRedoView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
+		PenRedoView.tag = 6
+		PenRedo = UIBarButtonItem(customView: PenRedoView)
 		let TextFontView = UIButton()
 		TextFontView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
 		TextFontView.setImage(UIImage(named: "font_icon"), for: .normal)
 		TextFontView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
-		TextFontView.tag = 5
+		TextFontView.tag = 7
 		TextFont = UIBarButtonItem(customView: TextFontView)
 		let TextPositionView = UIButton()
 		TextPositionView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
 		TextPositionView.setImage(UIImage(named: "position_icon"), for: .normal)
 		TextPositionView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
-		TextPositionView.tag = 6
+		TextPositionView.tag = 8
 		TextPosition = UIBarButtonItem(customView: TextPositionView)
 		let TextAddView = UIButton()
 		TextAddView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
 		TextAddView.setImage(UIImage(named: "text_icon"), for: .normal)
 		TextAddView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
-		TextAddView.tag = 7
+		TextAddView.tag = 9
 		TextAdd = UIBarButtonItem(customView: TextAddView)
 		let TextDeleteView = UIButton()
 		TextDeleteView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
 		TextDeleteView.setImage(UIImage(named: "delete_icon"), for: .normal)
 		TextDeleteView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
-		TextDeleteView.tag = 8
+		TextDeleteView.tag = 10
 		TextDelete = UIBarButtonItem(customView: TextDeleteView)
 		let TextColorView = UIButton()
 		TextColorView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
 		TextColorView.setImage(UIImage(named: "color_icon"), for: .normal)
 		TextColorView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
-		TextColorView.tag = 9
+		TextColorView.tag = 11
 		TextColor = UIBarButtonItem(customView: TextColorView)
 		let ColorView = UIButton()
 		ColorView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
 		ColorView.setImage(UIImage(named: "color_icon"), for: .normal)
 		ColorView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
-		ColorView.tag = 10
+		ColorView.tag = 12
 		Color = UIBarButtonItem(customView: ColorView)
 		SelectedColorView = UIButton()
 		SelectedColorView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
@@ -324,12 +338,12 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		LayerView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
 		LayerView.setImage(UIImage(named: "layer_icon"), for: .normal)
 		LayerView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
-		LayerView.tag = 11
+		LayerView.tag = 13
 		Layer = UIBarButtonItem(customView: LayerView)
 		Space = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil)
 		self.toolBar.append([SettingSave,Space,SettingCancel])
 		self.toolBar.append([SettingSave,Space,SettingCancel])
-		self.toolBar.append([PenSize,PenErase,Color,Space,Layer])
+		self.toolBar.append([PenSize,PenErase,Color,PenUndo,PenRedo,Space,Layer])
 		self.toolBar.append([TextAdd,Space,TextFont,Space,TextPosition,Space,TextColor,Space,TextDelete,Space,Layer])
 		self.toolBar.append([Color,SelectedColor,Space,Layer])
 		self.toolBar.append([Space])
@@ -442,7 +456,12 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			let canvas = UIImageView(frame:(imageView?.bounds)!)
 			canvas.backgroundColor = UIColor.clear
 			canvas.tag = DataManager.MenuTypes.PEN.rawValue
+			canvas.image = UIImage()
 			imageView?.addSubview(canvas)
+			
+			saveImageArray = [UIImage]()
+			saveImageArray.append(canvas.image!)
+
 			print("ImageEditor - setPen - make new canvas")
 		}
 		print("ImageEditor - setPen");
@@ -546,24 +565,30 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		case 4:
 			print("ImageEditor - onClickBarButton - PenErase:")
 		case 5:
+			print("ImageEditor - onClickBarButton - PenUndo")
+			undoImage()
+		case 6:
+			print("ImageEditor - onClickBarButton - PenRedo")
+			redoImage()
+		case 7:
 			print("ImageEditor - onClickBarButton - TextFont")
 			displayFontSelector()
-		case 6:
+		case 8:
 			print("ImageEditor - onClickBarButton - TextPosition")
 			adjustItemPositionCenter(imageView:self.imageView!)
-		case 7:
+		case 9:
 			print("ImageEditor - onClickBarButton - TextAdd")
 			setGPS(imageView:self.imageView!)
-		case 8:
+		case 10:
 			print("ImageEditor - onClickBarButton - TextDelete")
 			removeItemFromLayer(imageView:self.imageView!)
-		case 9:
-			print("ImageEditor - onClickBarButton - Color")
-			displayColorPalet()
-		case 10:
-			print("ImageEditor - onClickBarButton - Color")
-			displayColorPalet()
 		case 11:
+			print("ImageEditor - onClickBarButton - Color")
+			displayColorPalet()
+		case 12:
+			print("ImageEditor - onClickBarButton - Color")
+			displayColorPalet()
+		case 13:
 			print("ImageEditor - onClickBarButton - Layer")
 			displayLayerSelector()
 		default:
@@ -668,6 +693,29 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		self.view.addSubview(penPickerView.view)
 		self.addChildViewController(penPickerView)
 		penPickerView.didMove(toParentViewController: self)
+	}
+	/// 画像をアンドゥー
+	func undoImage(){
+		if(currentDrawNumber-1 >= 0){
+		var canvas:UIImageView!
+		canvas = UIImageView()
+		print("ImageEditor - undoImage")
+		for layer in (imageView?.subviews)!{
+			if(layer.tag == DataManager.MenuTypes.PEN.rawValue){
+				canvas = layer as! UIImageView
+				break
+			}
+		}
+		
+		canvas.image = saveImageArray[currentDrawNumber-1]
+		currentDrawNumber -= 1
+		
+			print("ImageEditor - handlePanGesture - currentDrawNumber",currentDrawNumber)
+		}
+	}
+	/// 画像をリドゥー
+	func redoImage(){
+		print("ImageEditor - undoImage")
 	}
 	/// カラーパレットを表示
 	func displayColorPalet(){
@@ -775,6 +823,8 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	/// PENツール用パス
 	var bezierPath:UIBezierPath!
 	var lastDrawImage:UIImage!
+	var saveImageArray:[UIImage]!
+	var currentDrawNumber = 0
 	@objc func handleTapGesture(sender: UITapGestureRecognizer){
 		print("ImageEditor - handleTapGesture")
 		let location:CGPoint = sender.location(in: self.imageView)
@@ -840,6 +890,8 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 					break
 				}
 			}
+			currentDrawNumber += 1
+			saveImageArray.append(canvas.image!)
 			lastDrawImage = canvas.image
 		}
 	}
@@ -923,7 +975,10 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 						break
 					}
 				}
+				currentDrawNumber += 1
+				saveImageArray.append(canvas.image!)
 				lastDrawImage = canvas.image
+				print("ImageEditor - handlePanGesture - currentDrawNumber",currentDrawNumber)
 			}
 			break
 		case UIGestureRecognizerState.cancelled:
