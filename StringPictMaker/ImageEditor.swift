@@ -461,7 +461,6 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			
 			saveImageArray = [UIImage]()
 			saveImageArray.append(canvas.image!)
-
 			print("ImageEditor - setPen - make new canvas")
 		}
 		print("ImageEditor - setPen");
@@ -709,13 +708,13 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		
 		canvas.image = saveImageArray[currentDrawNumber-1]
 		currentDrawNumber -= 1
-		
+		lastDrawImage = saveImageArray[currentDrawNumber]
 			print("ImageEditor - handlePanGesture - currentDrawNumber",currentDrawNumber)
 		}
 	}
 	/// 画像をリドゥー
 	func redoImage(){
-		print("ImageEditor - undoImage")
+		print("ImageEditor - redoImage")
 	}
 	/// カラーパレットを表示
 	func displayColorPalet(){
@@ -892,7 +891,8 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			}
 			currentDrawNumber += 1
 			saveImageArray.append(canvas.image!)
-			lastDrawImage = canvas.image
+			//lastDrawImage = canvas.image
+			lastDrawImage = saveImageArray[currentDrawNumber]
 		}
 	}
 	/// imageView上のアイテムをタッチ、パンした時のアクションを定義
@@ -977,7 +977,8 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 				}
 				currentDrawNumber += 1
 				saveImageArray.append(canvas.image!)
-				lastDrawImage = canvas.image
+				//lastDrawImage = canvas.image
+				lastDrawImage = saveImageArray[currentDrawNumber]
 				print("ImageEditor - handlePanGesture - currentDrawNumber",currentDrawNumber)
 			}
 			break
@@ -997,6 +998,11 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 				break
 			}
 		}
+		while currentDrawNumber != saveImageArray.count - 1 {
+			saveImageArray.removeLast()
+		}
+		canvas.image = saveImageArray[currentDrawNumber]
+		print("ImageEditor - drawLine - saveImageArray",currentDrawNumber)
 		UIGraphicsBeginImageContext(canvas.frame.size)
 		if lastDrawImage != nil {
 			lastDrawImage.draw(at: CGPoint.zero)
