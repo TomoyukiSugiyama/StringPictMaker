@@ -709,12 +709,27 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		canvas.image = saveImageArray[currentDrawNumber-1]
 		currentDrawNumber -= 1
 		lastDrawImage = saveImageArray[currentDrawNumber]
-			print("ImageEditor - handlePanGesture - currentDrawNumber",currentDrawNumber)
+			print("ImageEditor - undoImage - currentDrawNumber",currentDrawNumber)
 		}
 	}
 	/// 画像をリドゥー
 	func redoImage(){
+		if(currentDrawNumber+1 < saveImageArray.count){
+		var canvas:UIImageView!
+		canvas = UIImageView()
 		print("ImageEditor - redoImage")
+		for layer in (imageView?.subviews)!{
+			if(layer.tag == DataManager.MenuTypes.PEN.rawValue){
+				canvas = layer as! UIImageView
+				break
+			}
+		}
+		
+		canvas.image = saveImageArray[currentDrawNumber+1]
+		currentDrawNumber += 1
+		lastDrawImage = saveImageArray[currentDrawNumber]
+		print("ImageEditor - redoImage - currentDrawNumber",currentDrawNumber)
+		}
 	}
 	/// カラーパレットを表示
 	func displayColorPalet(){
