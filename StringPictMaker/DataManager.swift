@@ -37,6 +37,8 @@ class DataManager{
 	//				Scale = 1, Rect = 2
 	enum TagIDs : Int{
 		case GPS = 1
+		case CITY = 2
+		case FREE = 3
 		case ITEM_MASK = 0xFF
 		case Scale = 0x100
 		case Rect = 0x200

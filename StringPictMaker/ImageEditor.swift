@@ -18,6 +18,7 @@ import UIKit
 /// ＊フリーテキスト
 /// ＊GPS　都道府県、市町村　選択
 /// ＊ペンツール使用ー＞保存ー＞EDITー＞redoー＞落ちる
+/// ＊ペンツールのundo redoアイコンを画像に置き換え
 /// ＊3115
 /// ＊
 /// ＊
@@ -40,8 +41,7 @@ import UIKit
 /// ＊
 
 /// Imageを編集するためのコントローラー
-class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPickerDelegate,LayerPickerDelegate,PenPickerDelegate,UIToolbarDelegate,UIScrollViewDelegate{
-	
+class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPickerDelegate,LayerPickerDelegate,PenPickerDelegate,TextPickerDelegate,UIToolbarDelegate,UIScrollViewDelegate{
 	// delegate
 	// ImageListControllerから選択されたセルのid、imageView/Dataを取得
 	var delegateParamId: Int = 0
@@ -70,6 +70,8 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	var layerPickerView: LayerPickerViewController!
 	// ペンのピッカービューを生成
 	var penPickerView: PenPickerViewController!
+	// テキストのピッカービューを生成
+	var textPickerView: TextPickerViewController!
 	var selectedLayerNumber: Int = -1
 	var imageViewRatio: CGFloat!
 	/// DataManagerのオブジェクトを生成し、CoreDataからデータを読み出す
@@ -230,7 +232,23 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 					label.text = "現在地"
 					if(gpsTag <= (item.tag & ~DataManager.TagIDs.TAG_MASK.rawValue)){
 						gpsTag = (item.tag & ~DataManager.TagIDs.TAG_MASK.rawValue) + 1024
-						print("ImageEditor - initVies - tag:",gpsTag)
+						print("ImageEditor - initVies - gpsTag:",gpsTag)
+					}
+				}else if(item.tag & DataManager.TagIDs.TAG_MASK.rawValue) == DataManager.TagIDs.CITY.rawValue {
+					print("ImageEditor - initView - tagCity - view.tag:",item.tag)
+					let label = item as! UILabel
+					label.text = "CITY"
+					if(cityTag <= (item.tag & ~DataManager.TagIDs.TAG_MASK.rawValue)){
+						cityTag = (item.tag & ~DataManager.TagIDs.TAG_MASK.rawValue) + 1024
+						print("ImageEditor - initVies - cityTag:",cityTag)
+					}
+				}else if(item.tag & DataManager.TagIDs.TAG_MASK.rawValue) == DataManager.TagIDs.FREE.rawValue {
+					print("ImageEditor - initView - tagCity - view.tag:",item.tag)
+					let label = item as! UILabel
+					label.text = "テキスト"
+					if(freeTag <= (item.tag & ~DataManager.TagIDs.TAG_MASK.rawValue)){
+						freeTag = (item.tag & ~DataManager.TagIDs.TAG_MASK.rawValue) + 1024
+						print("ImageEditor - initVies - cityTag:",freeTag)
 					}
 				}
 			}
@@ -415,7 +433,22 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		imageData?.setPen(size: size)
 		print("ImageEditor - selectedPen - size:",size)
 	}
-
+	func selectedText(state: Int) {
+		switch state {
+		case 0:
+			setFREE(imageView: self.imageView!)
+			print("ImageEditor - selectedText - Free Text")
+		case 1:
+			setGPS(imageView: self.imageView!)
+			print("ImageEditor - selectedText - GPS")
+		case 2:
+			setCITY(imageView: self.imageView!)
+			print("ImageEditor - selectedText - GPS(city)")
+		default:
+			print("ImageEditor - selectedText - default")
+		}
+		print("ImageEditor - selectedText - state:",state)
+	}
 	/// LayerPickerViewControllerで選択されたレイヤーをラベルに設定
 	func selectedLayer(num: Int) {
 		print("ImageEditor - selectedLayer - num:",num)
@@ -489,6 +522,42 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		myToolbar.items = toolBar[5]
 		print("ImageEditor - setDummy");
 	}
+	var freeTag = 1024
+	func setFREE(imageView:UIView){
+		print("ImageEditor - setFREE");
+		let layer = UIView(frame:imageView.bounds)
+		layer.tag = DataManager.MenuTypes.TEXT.rawValue
+		let GPSlabel = UILabel()
+		// 文字追加
+		let str2 = "テキスト"
+		let pointSize : CGFloat = 120
+		let font = UIFont.boldSystemFont(ofSize: pointSize)
+		let width = str2.size(withAttributes: [NSAttributedStringKey.font : font])
+		let labelWidth : CGFloat = 250
+		GPSlabel.font = UIFont.boldSystemFont(ofSize: pointSize * getScreenRatio() * labelWidth / width.width)
+		GPSlabel.text = str2
+		// 文字サイズに合わせてラベルのサイズを調整
+		GPSlabel.sizeToFit()
+		// ラベルをviewの中心に移動
+		GPSlabel.center = layer.center
+		GPSlabel.tag = freeTag + DataManager.TagIDs.FREE.rawValue
+		print("ImageEditor - setGPSLabel - tag",GPSlabel.tag);
+		freeTag += 1024
+		layer.addSubview(GPSlabel)
+		imageView.addSubview(layer)
+		if(selectedLayerNumber == -1){
+			for layer in imageView.subviews{
+				for item in layer.subviews{
+					self.clearEmphasisSelectedItem(selectedView: item)
+				}
+			}
+			self.emphasisSelectedItem(selectedView: GPSlabel)
+		}
+		// ツールバーのアイテムを有効化
+		enableToolBarItem(enable: true)
+		// レイヤーピッカービューを更新
+		updateLayerPickerView()
+	}
 	/// ImageViewに追加するアイテムがGPSの場合、
 	/// GPSタグ = 1024の整数倍 ＋ 0x001 (typeGPS:　アイテムの種類がGPSであることを示す値)
 	var gpsTag = 1024
@@ -513,6 +582,43 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		GPSlabel.tag = gpsTag + DataManager.TagIDs.GPS.rawValue
 		print("ImageEditor - setGPSLabel - tag",GPSlabel.tag);
 		gpsTag += 1024
+		layer.addSubview(GPSlabel)
+		imageView.addSubview(layer)
+		if(selectedLayerNumber == -1){
+			for layer in imageView.subviews{
+				for item in layer.subviews{
+					self.clearEmphasisSelectedItem(selectedView: item)
+				}
+			}
+			self.emphasisSelectedItem(selectedView: GPSlabel)
+		}
+		// ツールバーのアイテムを有効化
+		enableToolBarItem(enable: true)
+		// レイヤーピッカービューを更新
+		updateLayerPickerView()
+	}
+	var cityTag = 1024
+	/// GPSをセット
+	func setCITY(imageView:UIView){
+		print("ImageEditor - setGPS");
+		let layer = UIView(frame:imageView.bounds)
+		layer.tag = DataManager.MenuTypes.TEXT.rawValue
+		let GPSlabel = UILabel()
+		// 文字追加
+		let str2 = "CITY"
+		let pointSize : CGFloat = 120
+		let font = UIFont.boldSystemFont(ofSize: pointSize)
+		let width = str2.size(withAttributes: [NSAttributedStringKey.font : font])
+		let labelWidth : CGFloat = 250
+		GPSlabel.font = UIFont.boldSystemFont(ofSize: pointSize * getScreenRatio() * labelWidth / width.width)
+		GPSlabel.text = str2
+		// 文字サイズに合わせてラベルのサイズを調整
+		GPSlabel.sizeToFit()
+		// ラベルをviewの中心に移動
+		GPSlabel.center = layer.center
+		GPSlabel.tag = gpsTag + DataManager.TagIDs.CITY.rawValue
+		print("ImageEditor - setGPSLabel - tag",GPSlabel.tag);
+		cityTag += 1024
 		layer.addSubview(GPSlabel)
 		imageView.addSubview(layer)
 		if(selectedLayerNumber == -1){
@@ -577,7 +683,8 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			adjustItemPositionCenter(imageView:self.imageView!)
 		case 9:
 			print("ImageEditor - onClickBarButton - TextAdd")
-			setGPS(imageView:self.imageView!)
+			//setGPS(imageView:self.imageView!)
+			displayTextSelector()
 		case 10:
 			print("ImageEditor - onClickBarButton - TextDelete")
 			removeItemFromLayer(imageView:self.imageView!)
@@ -766,6 +873,13 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		self.addChildViewController(fontPickerView)
 		fontPickerView.didMove(toParentViewController: self)
 	}
+	func displayTextSelector(){
+		textPickerView = TextPickerViewController()
+		textPickerView.delegate = self
+		self.view.addSubview(textPickerView.view)
+		self.addChildViewController(textPickerView)
+		textPickerView.didMove(toParentViewController: self)
+	}
 	/// レイヤー選択画面を表示
 	func displayLayerSelector(){
 		print("ImageEditor - displayLayerSelector");
@@ -857,7 +971,9 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 					for item in layer.subviews {
 						// imageView上のアイテムが選択された時の処理
 						if (item.frame.contains(location)) {
-							if(item.tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.GPS.rawValue){
+							if(item.tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.GPS.rawValue ||
+								item.tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.CITY.rawValue ||
+								item.tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.FREE.rawValue){
 								let label:UILabel = item as! UILabel
 								label.textColor = SelectedColorView.backgroundColor!
 								isSelected = true
@@ -1060,7 +1176,9 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 				let moved = CGPoint(x: item.center.x + move.x, y: textLavel.frame.height / 2)
 				item.center = moved
 				sender.setTranslation(CGPoint.zero, in: item)
-			}else if(tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.GPS.rawValue){
+			}else if(tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.GPS.rawValue ||
+				tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.CITY.rawValue ||
+				tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.FREE.rawValue){
 				let moved = CGPoint(x: item.center.x + move.x, y: item.center.y + move.y)
 				item.center = moved
 				sender.setTranslation(CGPoint.zero, in:item)
@@ -1075,7 +1193,9 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 				// 選択されたアイテムのタグをタグリストに追加
 				tagList.append(item.tag)
 				print("ImageEditor - selectedItem - item.tag:",String(item.tag,radix:16))
-				if(item.tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.GPS.rawValue){
+				if(item.tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.GPS.rawValue ||
+					item.tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.CITY.rawValue ||
+					item.tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.FREE.rawValue){
 					// 選択されたアイテムを強調
 					var operateView:UIView!
 					operateView = layer.viewWithTag(item.tag)
