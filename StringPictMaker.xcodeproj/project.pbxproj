@@ -13,6 +13,7 @@
 		C84CBFB11FF75C1F00158BF5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C84CBFB01FF75C1E00158BF5 /* Assets.xcassets */; };
 		C888FF6E1FCCCB92000F7738 /* StringPictMaker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C888FF6C1FCCCB92000F7738 /* StringPictMaker.xcdatamodeld */; };
 		C889A8292004D46D000A97E4 /* TextPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C889A8282004D46D000A97E4 /* TextPickerViewController.swift */; };
+		C889A82B20076F7D000A97E4 /* TextEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C889A82A20076F7D000A97E4 /* TextEditorViewController.swift */; };
 		C891DD701FC1BC1800C126BF /* ImageBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = C891DD6F1FC1BC1800C126BF /* ImageBoard.swift */; };
 		C891DD721FC4555F00C126BF /* MenuButtonActionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C891DD711FC4555F00C126BF /* MenuButtonActionController.swift */; };
 		C891DD761FC46AEF00C126BF /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C891DD751FC46AEF00C126BF /* DataManager.swift */; };
@@ -69,6 +70,7 @@
 		C84CBFB01FF75C1E00158BF5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C888FF6D1FCCCB92000F7738 /* StringPictMaker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = StringPictMaker.xcdatamodel; sourceTree = "<group>"; };
 		C889A8282004D46D000A97E4 /* TextPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextPickerViewController.swift; sourceTree = "<group>"; };
+		C889A82A20076F7D000A97E4 /* TextEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEditorViewController.swift; sourceTree = "<group>"; };
 		C891DD6F1FC1BC1800C126BF /* ImageBoard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageBoard.swift; sourceTree = "<group>"; };
 		C891DD711FC4555F00C126BF /* MenuButtonActionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuButtonActionController.swift; sourceTree = "<group>"; };
 		C891DD751FC46AEF00C126BF /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
@@ -231,6 +233,7 @@
 				C8F75AE21FDCC7FB006FA649 /* LayerPickerViewController.swift */,
 				C806697D20008DAB006190F9 /* PenPickerViewController.swift */,
 				C889A8282004D46D000A97E4 /* TextPickerViewController.swift */,
+				C889A82A20076F7D000A97E4 /* TextEditorViewController.swift */,
 				C8F75AE41FDEAEDA006FA649 /* LayerCell.swift */,
 				C891DD751FC46AEF00C126BF /* DataManager.swift */,
 				C84CBFB01FF75C1E00158BF5 /* Assets.xcassets */,
@@ -528,6 +531,7 @@
 				C8F75AE51FDEAEDA006FA649 /* LayerCell.swift in Sources */,
 				C89E07101FC04C6E00C527BC /* ImageEditor.swift in Sources */,
 				C806697E20008DAB006190F9 /* PenPickerViewController.swift in Sources */,
+				C889A82B20076F7D000A97E4 /* TextEditorViewController.swift in Sources */,
 				C8B924B51FEF6AA100D9C3B8 /* ColorPicker+Math.swift in Sources */,
 				C82DFCE11FBFB98C00B65F92 /* ImageCell.swift in Sources */,
 				C8B924B11FEF6AA100D9C3B8 /* ColorPickerView.swift in Sources */,

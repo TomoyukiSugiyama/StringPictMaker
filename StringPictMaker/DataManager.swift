@@ -32,7 +32,7 @@ class DataManager{
 	// TAG_MASK	:
 	// |------------------------------|1|1|1|1|1|1|1|1|1|1|
 	// ITEM		:
-	//				GPS = 1
+	//				GPS = 1, CITY = 2, FREE = 3
 	// TAG		:
 	//				Scale = 1, Rect = 2
 	enum TagIDs : Int{

@@ -257,6 +257,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	var TextFont:UIBarButtonItem!
 	var TextPosition:UIBarButtonItem!
 	var TextColor:UIBarButtonItem!
+	var TextEdit:UIBarButtonItem!
 	var PenSize:UIBarButtonItem!
 	var PenErase:UIBarButtonItem!
 	var PenUndo:UIBarButtonItem!
@@ -341,11 +342,16 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		TextColorView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
 		TextColorView.tag = 11
 		TextColor = UIBarButtonItem(customView: TextColorView)
+		let TextEditView = UIButton()
+		TextEditView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
+		TextEditView.setTitle("Edit", for: .normal)
+		TextEditView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
+		TextEditView.tag = 12
 		let ColorView = UIButton()
 		ColorView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
 		ColorView.setImage(UIImage(named: "color_icon"), for: .normal)
 		ColorView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
-		ColorView.tag = 12
+		ColorView.tag = 13
 		Color = UIBarButtonItem(customView: ColorView)
 		SelectedColorView = UIButton()
 		SelectedColorView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
@@ -356,7 +362,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		LayerView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
 		LayerView.setImage(UIImage(named: "layer_icon"), for: .normal)
 		LayerView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
-		LayerView.tag = 13
+		LayerView.tag = 14
 		Layer = UIBarButtonItem(customView: LayerView)
 		Space = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil)
 		self.toolBar.append([SettingSave,Space,SettingCancel])
@@ -689,12 +695,15 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			print("ImageEditor - onClickBarButton - TextDelete")
 			removeItemFromLayer(imageView:self.imageView!)
 		case 11:
-			print("ImageEditor - onClickBarButton - Color")
+			print("ImageEditor - onClickBarButton - TextColor")
 			displayColorPalet()
 		case 12:
+			print("ImageEditor - onClickBarButton - TextEdit")
+			displayTextEditor()
+		case 13:
 			print("ImageEditor - onClickBarButton - Color")
 			displayColorPalet()
-		case 13:
+		case 14:
 			print("ImageEditor - onClickBarButton - Layer")
 			displayLayerSelector()
 		default:
@@ -874,15 +883,19 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		fontPickerView.didMove(toParentViewController: self)
 	}
 	func displayTextSelector(){
+		print("ImageEditor - onClickBarButton - displayTextSelector")
 		textPickerView = TextPickerViewController()
 		textPickerView.delegate = self
 		self.view.addSubview(textPickerView.view)
 		self.addChildViewController(textPickerView)
 		textPickerView.didMove(toParentViewController: self)
 	}
+	func displayTextEditor(){
+		print("ImageEditor - onClickBarButton - displayTextEditor")
+	}
 	/// レイヤー選択画面を表示
 	func displayLayerSelector(){
-		print("ImageEditor - displayLayerSelector");
+		print("ImageEditor - onClickBarButton - Color")
 		if(layerPickerView != nil){
 			hideContentController(content:layerPickerView)
 		}

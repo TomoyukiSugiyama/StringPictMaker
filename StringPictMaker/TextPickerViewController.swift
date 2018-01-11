@@ -121,5 +121,4 @@ class TextPickerViewController: UIViewController, UIPickerViewDelegate, UIPicker
 		self.view.frame = CGRect(x:0,y:UIScreen.main.bounds.height-150-40,width:UIScreen.main.bounds.width,height:150)
 		toolbar.frame = CGRect(x:0, y:0, width:self.view.frame.width, height:35)
 	}
-
 }
