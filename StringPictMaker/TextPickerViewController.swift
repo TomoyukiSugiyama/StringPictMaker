@@ -31,6 +31,9 @@ class TextPickerViewController: UIViewController, UIPickerViewDelegate, UIPicker
 	// 表示するデータの配列
 	var dataArray = ["フリーテキスト","GPS(都道府県)","GPS(市町村)"]
 	var selectedLabelNum:Int!
+	func setTextPicker(num: Int){
+		selectedLabelNum = num
+	}
     override func viewDidLoad() {
         super.viewDidLoad()
 		self.view.frame = CGRect(x:0,y:UIScreen.main.bounds.height-150-40,width:UIScreen.main.bounds.width,height:150)

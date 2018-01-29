@@ -72,6 +72,8 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	var penPickerView: PenPickerViewController!
 	// テキストのピッカービューを生成
 	var textPickerView: TextPickerViewController!
+	// テキストエディターのビューを生成
+	var textEditorView: TextEditorViewController!
 	var selectedLayerNumber: Int = -1
 	var imageViewRatio: CGFloat!
 	/// DataManagerのオブジェクトを生成し、CoreDataからデータを読み出す
@@ -138,6 +140,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		imageData?.setColor(color: UIColor.red)
 		imageData?.setColor(color: UIColor.blue)
 		imageData?.setPen(size: 10.0)
+		imageData?.setTextPicker(num: 0)
 	}
 	/// ナビゲーションバーを非表示
 	override func viewWillAppear(_ animated: Bool) {
@@ -347,6 +350,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		TextEditView.setTitle("Edit", for: .normal)
 		TextEditView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
 		TextEditView.tag = 12
+		TextEdit = UIBarButtonItem(customView: TextEditView)
 		let ColorView = UIButton()
 		ColorView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
 		ColorView.setImage(UIImage(named: "color_icon"), for: .normal)
@@ -369,6 +373,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		self.toolBar.append([SettingSave,Space,SettingCancel])
 		self.toolBar.append([PenSize,PenErase,Color,PenUndo,PenRedo,Space,Layer])
 		self.toolBar.append([TextAdd,Space,TextFont,Space,TextPosition,Space,TextColor,Space,TextDelete,Space,Layer])
+		//self.toolBar.append([TextAdd,Space,TextFont,Space,TextPosition,Space,TextColor,Space,TextDelete,Space,Layer])
 		self.toolBar.append([Color,SelectedColor,Space,Layer])
 		self.toolBar.append([Space])
 		print("ImageEditor - initToolBarItem")
@@ -442,7 +447,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	func selectedText(state: Int) {
 		switch state {
 		case 0:
-			setFREE(imageView: self.imageView!)
+			//setFREE(imageView: self.imageView!)
 			print("ImageEditor - selectedText - Free Text")
 		case 1:
 			setGPS(imageView: self.imageView!)
@@ -531,6 +536,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	var freeTag = 1024
 	func setFREE(imageView:UIView){
 		print("ImageEditor - setFREE");
+		//myToolbar.items = toolBar[4]
 		let layer = UIView(frame:imageView.bounds)
 		layer.tag = DataManager.MenuTypes.TEXT.rawValue
 		let GPSlabel = UILabel()
@@ -858,7 +864,6 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		}
 		colorPickerView = ColorPickerViewController()
 		colorPickerView.delegate = self
-//		colorPickerView.setColor(color: SelectedColorView.backgroundColor!)
 		let first:UIColor = (imageData?.getColor(index: 0))!
 		let second:UIColor = (imageData?.getColor(index: 1))!
 		let third:UIColor = (imageData?.getColor(index: 2))!
@@ -886,12 +891,18 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		print("ImageEditor - onClickBarButton - displayTextSelector")
 		textPickerView = TextPickerViewController()
 		textPickerView.delegate = self
+		let num:Int = (imageData?.getTextPicker())!
+		textPickerView.setTextPicker(num: num)
 		self.view.addSubview(textPickerView.view)
 		self.addChildViewController(textPickerView)
 		textPickerView.didMove(toParentViewController: self)
 	}
 	func displayTextEditor(){
 		print("ImageEditor - onClickBarButton - displayTextEditor")
+		textEditorView = TextEditorViewController()
+		self.view.addSubview(textEditorView.view)
+		self.addChildViewController(textEditorView)
+		textEditorView.didMove(toParentViewController: self)
 	}
 	/// レイヤー選択画面を表示
 	func displayLayerSelector(){
@@ -1214,7 +1225,11 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 					operateView = layer.viewWithTag(item.tag)
 					self.emphasisSelectedItem(selectedView: operateView)
 					isSelected = true
+					//if(item.tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.FREE.rawValue){
+						//myToolbar.items = toolBar[3]
+				//	}else{
 					myToolbar.items = toolBar[3]
+					//}
 				}else{
 					/// TODO:
 					/// 必要な処理を書く　なければ消す

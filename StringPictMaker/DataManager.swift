@@ -88,6 +88,13 @@ class DataManager{
 	func getPen() -> CGFloat{
 		return penSize
 	}
+	var textNumber:Int!
+	func setTextPicker(num:Int){
+		textNumber = num
+	}
+	func getTextPicker() -> Int{
+		return textNumber
+	}
 	// CoreData : 管理オブジェクトコンテキスト
 	var managedContext:NSManagedObjectContext!
 	// 検索結果配列
