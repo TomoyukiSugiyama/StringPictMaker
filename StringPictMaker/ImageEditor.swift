@@ -89,7 +89,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		scrollView.addGestureRecognizer(tap)
 		scrollView.frame = CGRect(x:0,y:0,width:self.view.frame.width,height:self.view.frame.height)
 		scrollView.center = self.view.center
-		print("ImageEditor - viewDidLoad - self.imageView.frame:",self.imageView?.frame as Any)
+		Log.d(item:self.imageView?.frame as Any)
 		scrollView.frame.size = CGSize(width:(self.view.frame.width),height:(self.view.frame.height))
 		scrollView.isUserInteractionEnabled = true
 		// スクロールビューのデリゲートを設定
@@ -208,7 +208,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	/// Iphone7のスクリーンサイズをベースにする
 	private func getScreenRatio() -> CGFloat {
 		let baseScreenWidth : CGFloat = 375.0
-		print("ImageEditor - getScreenRatio - UIScreen.main.bounds.size.width:",UIScreen.main.bounds.size.width)
+		Log.d(item:"width",UIScreen.main.bounds.size.width)
 		return UIScreen.main.bounds.size.width / baseScreenWidth
 	}
 	/// imageViewを初期化
@@ -1439,6 +1439,11 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			// layerPickerView is not displayed.
 		}
 	}
+	func debugPrint(item:Any...){
+		#if DEBUG
+			print(item)
+		#endif
+	}
 }
 // MARK: - 以前のViewControllerのインスタンスを取得
 public extension UIViewController
@@ -1509,3 +1514,5 @@ class SelectAreaView: UIView {
 		self.setNeedsDisplay()
 	}
 }
+
+

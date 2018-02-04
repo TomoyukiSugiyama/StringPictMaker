@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		C806697E20008DAB006190F9 /* PenPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C806697D20008DAB006190F9 /* PenPickerViewController.swift */; };
+		C80995F520276D6500399C8B /* DebugLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = C80995F420276D6500399C8B /* DebugLog.swift */; };
 		C82DFCDF1FBF0E3D00B65F92 /* ImageListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82DFCDE1FBF0E3D00B65F92 /* ImageListController.swift */; };
 		C82DFCE11FBFB98C00B65F92 /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82DFCE01FBFB98C00B65F92 /* ImageCell.swift */; };
 		C84CBFB11FF75C1F00158BF5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C84CBFB01FF75C1E00158BF5 /* Assets.xcassets */; };
@@ -65,6 +66,7 @@
 
 /* Begin PBXFileReference section */
 		C806697D20008DAB006190F9 /* PenPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenPickerViewController.swift; sourceTree = "<group>"; };
+		C80995F420276D6500399C8B /* DebugLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugLog.swift; sourceTree = "<group>"; };
 		C82DFCDE1FBF0E3D00B65F92 /* ImageListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageListController.swift; sourceTree = "<group>"; };
 		C82DFCE01FBFB98C00B65F92 /* ImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
 		C84CBFB01FF75C1E00158BF5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -241,6 +243,7 @@
 				C888FF6C1FCCCB92000F7738 /* StringPictMaker.xcdatamodeld */,
 				C8F22EDB1FBC80BD00632109 /* LaunchScreen.storyboard */,
 				C8F22EDE1FBC80BD00632109 /* Info.plist */,
+				C80995F420276D6500399C8B /* DebugLog.swift */,
 			);
 			path = StringPictMaker;
 			sourceTree = "<group>";
@@ -516,6 +519,7 @@
 				C891DD701FC1BC1800C126BF /* ImageBoard.swift in Sources */,
 				C891DD761FC46AEF00C126BF /* DataManager.swift in Sources */,
 				C889A8292004D46D000A97E4 /* TextPickerViewController.swift in Sources */,
+				C80995F520276D6500399C8B /* DebugLog.swift in Sources */,
 				C8F22ED21FBC80BD00632109 /* SplashController.swift in Sources */,
 				C8B924B01FEF6AA100D9C3B8 /* ColorApplyButton.swift in Sources */,
 				C8B924B71FEF6AA100D9C3B8 /* ColorLightingPicker.swift in Sources */,
@@ -704,6 +708,7 @@
 				DEVELOPMENT_TEAM = FCW69NXFM4;
 				INFOPLIST_FILE = StringPictMaker/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.u3gpw25.StringPictMaker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
