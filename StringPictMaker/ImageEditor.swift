@@ -373,7 +373,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		self.toolBar.append([SettingSave,Space,SettingCancel])
 		self.toolBar.append([PenSize,PenErase,Color,PenUndo,PenRedo,Space,Layer])
 		self.toolBar.append([TextAdd,Space,TextFont,Space,TextPosition,Space,TextColor,Space,TextDelete,Space,Layer])
-		//self.toolBar.append([TextAdd,Space,TextFont,Space,TextPosition,Space,TextColor,Space,TextDelete,Space,Layer])
+		self.toolBar.append([TextEdit,Space,TextFont,Space,TextPosition,Space,TextColor,Space,TextDelete,Space,Layer])
 		self.toolBar.append([Color,SelectedColor,Space,Layer])
 		self.toolBar.append([Space])
 		print("ImageEditor - initToolBarItem")
@@ -447,7 +447,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	func selectedText(state: Int) {
 		switch state {
 		case 0:
-			//setFREE(imageView: self.imageView!)
+			setFREE(imageView: self.imageView!)
 			print("ImageEditor - selectedText - Free Text")
 		case 1:
 			setGPS(imageView: self.imageView!)
@@ -524,19 +524,19 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			}
 		}
 		imageData?.setMenuType(menutype: DataManager.MenuTypes.COLOR)
-		myToolbar.items = toolBar[4]
+		myToolbar.items = toolBar[5]
 		print("ImageEditor - setColor");
 	}
 	/// ダミーをセット
 	func setDUMMY(){
 		imageData?.setMenuType(menutype: DataManager.MenuTypes.DUMMY)
-		myToolbar.items = toolBar[5]
+		myToolbar.items = toolBar[6]
 		print("ImageEditor - setDummy");
 	}
 	var freeTag = 1024
 	func setFREE(imageView:UIView){
 		print("ImageEditor - setFREE");
-		//myToolbar.items = toolBar[4]
+		myToolbar.items = toolBar[4]
 		let layer = UIView(frame:imageView.bounds)
 		layer.tag = DataManager.MenuTypes.TEXT.rawValue
 		let GPSlabel = UILabel()
