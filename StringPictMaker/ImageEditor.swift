@@ -41,7 +41,7 @@ import UIKit
 /// ＊
 
 /// Imageを編集するためのコントローラー
-class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPickerDelegate,LayerPickerDelegate,PenPickerDelegate,TextPickerDelegate,UIToolbarDelegate,UIScrollViewDelegate{
+class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPickerDelegate,LayerPickerDelegate,PenPickerDelegate,TextPickerDelegate,TextEditorDelegate, UIToolbarDelegate,UIScrollViewDelegate{
 	// delegate
 	// ImageListControllerから選択されたセルのid、imageView/Dataを取得
 	var delegateParamId: Int = 0
@@ -247,8 +247,8 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 					}
 				}else if(item.tag & DataManager.TagIDs.TAG_MASK.rawValue) == DataManager.TagIDs.FREE.rawValue {
 					print("ImageEditor - initView - tagCity - view.tag:",item.tag)
-					let label = item as! UILabel
-					label.text = "テキスト"
+					//let label = item as! UILabel
+					//label.text = "テキスト"
 					if(freeTag <= (item.tag & ~DataManager.TagIDs.TAG_MASK.rawValue)){
 						freeTag = (item.tag & ~DataManager.TagIDs.TAG_MASK.rawValue) + 1024
 						print("ImageEditor - initVies - cityTag:",freeTag)
@@ -459,6 +459,20 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			print("ImageEditor - selectedText - default")
 		}
 		print("ImageEditor - selectedText - state:",state)
+	}
+	func editedText(str: String) {
+		for layer in (self.imageView?.subviews)! {
+			for subview in layer.subviews {
+				// subview has a resize icon.
+				if(subview.subviews.count != 0){
+					
+					if(subview.tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.FREE.rawValue){
+						(subview as! UILabel).text = str
+						print("editedText")
+					}
+				}
+			}
+		}
 	}
 	/// LayerPickerViewControllerで選択されたレイヤーをラベルに設定
 	func selectedLayer(num: Int) {
@@ -900,6 +914,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	func displayTextEditor(){
 		print("ImageEditor - onClickBarButton - displayTextEditor")
 		textEditorView = TextEditorViewController()
+		textEditorView.delegate = self
 		self.view.addSubview(textEditorView.view)
 		self.addChildViewController(textEditorView)
 		textEditorView.didMove(toParentViewController: self)

@@ -16,17 +16,22 @@ import UIKit
 /// ＊
 /// ＊
 /// ＊
-
+/// 選択されたフォントをImageEditorに送付するデリゲートメソッド
+protocol TextEditorDelegate {
+	// デリゲートメソッド定義
+	func editedText(str:String)
+}
 class TextEditorViewController: UIViewController ,UITextFieldDelegate{
 	// UIToolVarを生成
 	var toolbar:UIToolbar!
-	
+	var textField:UITextField!
+	var delegate : TextEditorDelegate!
     override func viewDidLoad() {
         super.viewDidLoad()
 		super.viewDidLoad()
 		//self.view.frame = CGRect(x:0,y:UIScreen.main.bounds.height-150-40,width:UIScreen.main.bounds.width,height:150)
 		self.view.frame = CGRect(x:0,y:0,width:UIScreen.main.bounds.width,height:UIScreen.main.bounds.height)
-		self.view.backgroundColor = UIColor.black
+		self.view.backgroundColor = UIColor.white
 		// toolbarを追加
 		toolbar = UIToolbar()
 		toolbar.frame = CGRect(x:0, y:0, width:self.view.frame.width, height:35)
@@ -35,7 +40,7 @@ class TextEditorViewController: UIViewController ,UITextFieldDelegate{
 		toolbar.setItems([cancelItem, doneItem], animated: true)
 		self.view.addSubview(toolbar)
 		// インスタンス初期化
-		let textField = UITextField()
+		textField = UITextField()
 		// サイズ設定
 		textField.frame.size.width = self.view.frame.width * 2 / 3
 		textField.frame.size.height = 48
@@ -64,15 +69,13 @@ class TextEditorViewController: UIViewController ,UITextFieldDelegate{
         // Dispose of any resources that can be recreated.
     }
 	// 改行ボタンを押した時の処理
-	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-		
+	func textFieldShouldReturn(_ textField: UITextField) -> Bool {		
 		// キーボードを隠す
 		textField.resignFirstResponder()
 		return true
 	}
 	// クリアボタンが押された時の処理
-	func textFieldShouldClear(_ textField: UITextField) -> Bool {
-		
+	func textFieldShouldClear(_ textField: UITextField) -> Bool {		
 		print("Clear")
 		return true
 	}
@@ -103,6 +106,7 @@ class TextEditorViewController: UIViewController ,UITextFieldDelegate{
 		
 		}
 		self.delegate?.selectedFont(state: selectedLabel)*/
+		self.delegate?.editedText(str: textField.text!)
 		hideContentController(content: self)
 	}
 	/// コンテナをスーパービューに追加
