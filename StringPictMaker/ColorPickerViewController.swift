@@ -64,7 +64,7 @@ class ColorPickerViewController: UIViewController{
 	/// ピッカービューを生成
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		print("ImageEditor - ColorPickerViewController - viewDidLoad - self.view.frame1:",self.view.frame)
+		Log.d("self.view.frame",self.view.frame)
 		margine = 20
 		toolBarHeight = 35
 		if(UIScreen.main.bounds.height > UIScreen.main.bounds.width){
@@ -91,7 +91,7 @@ class ColorPickerViewController: UIViewController{
 		}
 		self.view.frame = CGRect(x:0,y:0,width:UIScreen.main.bounds.width,height:UIScreen.main.bounds.height)
 		self.view.backgroundColor = UIColor.black
-		print("ImageEditor - ColorPickerViewController - viewDidLoad - self.view.frame2:",self.view.frame)
+		Log.d("self.view.frame",self.view.frame)
 		pickerView = ColorPickerView(frame:frame)
 		pickerView.setNeedsDisplay()
 		self.view.addSubview(pickerView)
@@ -110,7 +110,7 @@ class ColorPickerViewController: UIViewController{
 		selectButton.addTarget(self, action: #selector(changeColor), for: UIControlEvents.touchUpInside)
 		self.view.addSubview(selectButton)
 		pickerView.selectedColor = defaultColor
-		print("ColorPickerViewController")
+		Log.d()
 		// 1番目に選択した色
 		firstColorButton = UIButton()
 		firstColorButton.frame = CGRect(x:firstPosX, y:firstPosY, width:buttonSize, height:buttonSize)
@@ -139,7 +139,7 @@ class ColorPickerViewController: UIViewController{
 	// 色変更ボタンが押された時、ImageEditorにUIColorを送付
 	@objc func changeColor(_ sender: ColorPickerView)
 	{
-		print("ColorPickerViewController - changeColor - sender.selectedColor:",pickerView.selectedColor)
+		Log.d("sender.selectedColor:",pickerView.selectedColor)
 		switch sender.tag{
 		case 0:
 			delegate?.selectedColor(state: pickerView.selectedColor)
@@ -150,24 +150,24 @@ class ColorPickerViewController: UIViewController{
 		case 3:
 			delegate?.selectedColor(state: thirdColor)
 		default:
-			print("ColorPickerView - changeColor - error:",sender.tag)
+			fatalError("ColorPickerView - changeColor - error: \(sender.tag)")
 			break
 		}
 		done()
 	}
 	// toolbarのキャンセルを選択
 	@objc func cancel(){
-		print("ColorPickerViewController - cancel")
+		Log.d()
 		hideContentController(content: self)
 	}
 	// toolbarの完了を選択
 	@objc func done(){
-		print("ColorPickerViewController - done")
+		Log.d()
 		hideContentController(content: self)
 	}
 	/// コンテナをスーパービューに追加
 	func displayContentController(content:UIViewController, container:UIView){
-		print("ColorPickerViewController - displayContentController")
+		Log.d()
 		addChildViewController(content)
 		content.view.frame = container.bounds
 		container.addSubview(content.view)
@@ -175,7 +175,7 @@ class ColorPickerViewController: UIViewController{
 	}
 	/// コンテナをスーパービューから削除
 	func hideContentController(content:UIViewController){
-		print("ColorPickerViewController - hideContentController")
+		Log.d()
 		content.willMove(toParentViewController: self)
 		content.view.removeFromSuperview()
 		content.removeFromParentViewController()

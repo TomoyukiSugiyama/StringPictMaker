@@ -35,7 +35,7 @@ class PenPickerViewController: UIViewController{
 	}
     override func viewDidLoad() {
         super.viewDidLoad()
-		print("PenPickerViewController - viewDidLoad")
+		Log.d()
 		self.view.frame = CGRect(x:0,y:self.view.frame.height - 150 - 40,width:self.view.frame.width,height:150)
 		self.view.backgroundColor = UIColor.gray
 		refButton = UIButton()
@@ -87,12 +87,12 @@ class PenPickerViewController: UIViewController{
     }
 	// toolbarのキャンセルを選択
 	@objc func cancel(){
-		print("PenPickerViewController - cancel")
+		Log.d()
 		hideContentController(content: self)
 	}
 	// toolbarの完了を選択
 	@objc func done(){
-		print("FontPickerViewController - done")
+		Log.d()
 //		if(selectedLabel == nil){
 			// 表示するラベルを生成する
 //			selectedLabel = UILabel(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 50))
@@ -106,7 +106,7 @@ class PenPickerViewController: UIViewController{
 	}
 	/// コンテナをスーパービューから削除
 	func hideContentController(content:UIViewController){
-		print("FontPickerViewController - hideContentController")
+		Log.d()
 		content.willMove(toParentViewController: self)
 		content.view.removeFromSuperview()
 		content.removeFromParentViewController()

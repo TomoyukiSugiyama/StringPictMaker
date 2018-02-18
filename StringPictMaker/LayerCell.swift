@@ -39,7 +39,7 @@ class LayerCell: UITableViewCell {
 		layerLabel?.textAlignment = NSTextAlignment.center
 		//layerLabel?.backgroundColor = UIColor.gray
 		self.contentView.addSubview(layerLabel!)
-		print("LayerCell - init - ImageLabel:",imageLabel as Any)
+		Log.d("ImageLabel",imageLabel as Any)
 		// UIButtonを生成
 		editButton = UIButton()
 		editButton?.setImage(UIImage(named: "layeron_icon"), for: .normal)
@@ -66,7 +66,7 @@ class LayerCell: UITableViewCell {
 		super.layoutSubviews()
 		layerLabel?.frame = CGRect(x: 10, y  : 0, width: labelWidth, height: labelHeight)
 		imageLabel?.frame = CGRect(x: margine, y: labelHeight, width: imageWidth, height: imageHeight)
-		print("LayerCell - layoutSubviews - ImageLabel:",imageLabel as Any)
+		Log.d("ImageLabel",imageLabel as Any)
 		editButton?.frame = CGRect(x: 10, y: labelHeight + imageHeight, width: buttonWidth, height: buttonHeight)
 	}
 }

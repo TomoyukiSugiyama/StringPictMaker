@@ -76,8 +76,8 @@ class DataManager{
 			
 			return colorArray[index]
 		}else{
-			print("error")
-			return UIColor.white
+			fatalError("error")
+			//return UIColor.white
 		}
 	}
 	
@@ -139,7 +139,7 @@ class DataManager{
 		} catch {
 			print(error)
 		}
-		print("DataManager - saveEmptyImage - id:",id)
+		Log.d("id",id)
 		loadImage()
 	}
 	/// CoreDataからImageを読み出し、ImageListに追加
@@ -160,14 +160,14 @@ class DataManager{
 			imageList.append(ImageData(id: Int(serchRes.id),title: serchRes.title!,imageview: unarchivedView))
 		}
 		//print("type:",imageList[0].typeList[0]);
-		print("DataManager - loadImage - imageList.count:",imageList.count,"searchResult.count:",searchResult.count)
+		Log.d("imageList.count",imageList.count,"searchResult.count",searchResult.count)
 	}
 	// CoreDataのImageを更新
 	func updateImage(id:Int,view:UIView){
 		let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Images")
 		//let predict = NSPredicate(format: "%K=%@", "id", id)
 		//fetchRequest.predicate = predict
-		print("DataManager - updateImage - id:",id,"count:",imageList.count)
+		Log.d("id",id,"count:",imageList.count)
 		// 読み込み実行
 		do {
 			//フェッチリクエストを実行
@@ -226,7 +226,7 @@ class DataManager{
 	/// - Parameter id: 検索するid
 	/// - Returns: 検索したIDを含むimageListのインデックス
 	func indexOf(id: Int) -> Int {
-		print("DataManager - indexOf - id",id,"count",imageList.count)
+		Log.d("id",id,"count",imageList.count)
 		return imageList.index(where: { $0.id == id })!
 	}
 }

@@ -89,7 +89,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		scrollView.addGestureRecognizer(tap)
 		scrollView.frame = CGRect(x:0,y:0,width:self.view.frame.width,height:self.view.frame.height)
 		scrollView.center = self.view.center
-		Log.d(item:self.imageView?.frame as Any)
+		Log.d(self.imageView?.frame as Any)
 		scrollView.frame.size = CGSize(width:(self.view.frame.width),height:(self.view.frame.height))
 		scrollView.isUserInteractionEnabled = true
 		// スクロールビューのデリゲートを設定
@@ -208,18 +208,18 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	/// Iphone7のスクリーンサイズをベースにする
 	private func getScreenRatio() -> CGFloat {
 		let baseScreenWidth : CGFloat = 375.0
-		Log.d(item:"width",UIScreen.main.bounds.size.width)
+		Log.d("width",UIScreen.main.bounds.size.width)
 		return UIScreen.main.bounds.size.width / baseScreenWidth
 	}
 	/// imageViewを初期化
 	func initView(imageView:UIView){
 		imageViewRatio = self.view.frame.width / imageView.frame.width
-		print("ImageEditor - initView - imageView.frame",imageView.frame as Any)
+		Log.d("imageView.frame",imageView.frame as Any)
 		let fwidth:CGFloat = imageView.frame.width * imageViewRatio
 		let fheight:CGFloat = imageView.frame.height * imageViewRatio
 		imageView.frame = CGRect(x:0,y:0,width:fwidth,height:fheight)
 		imageView.center = self.view.center
-		print("ImageEditor - initView - imageView.frame",imageView.frame as Any)
+		Log.d("imageView.frame",imageView.frame as Any)
 		for layer in imageView.subviews {
 			if layer.tag == -1{
 				layer.removeFromSuperview()
@@ -230,28 +230,29 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 				if item.tag == -1{
 					item.removeFromSuperview()
 				}else if (item.tag & DataManager.TagIDs.TAG_MASK.rawValue) == DataManager.TagIDs.GPS.rawValue {
-					print("ImageEditor - initView - tagGPS - view.tag:",item.tag)
+					Log.d("view.tag",item.tag)
 					let label = item as! UILabel
 					label.text = "現在地"
 					if(gpsTag <= (item.tag & ~DataManager.TagIDs.TAG_MASK.rawValue)){
 						gpsTag = (item.tag & ~DataManager.TagIDs.TAG_MASK.rawValue) + 1024
-						print("ImageEditor - initVies - gpsTag:",gpsTag)
+						Log.d("gpsTag",gpsTag)
 					}
 				}else if(item.tag & DataManager.TagIDs.TAG_MASK.rawValue) == DataManager.TagIDs.CITY.rawValue {
-					print("ImageEditor - initView - tagCity - view.tag:",item.tag)
+					Log.d("view.tag",item.tag)
 					let label = item as! UILabel
 					label.text = "CITY"
 					if(cityTag <= (item.tag & ~DataManager.TagIDs.TAG_MASK.rawValue)){
 						cityTag = (item.tag & ~DataManager.TagIDs.TAG_MASK.rawValue) + 1024
-						print("ImageEditor - initVies - cityTag:",cityTag)
+						Log.d("cityTag",cityTag)
 					}
 				}else if(item.tag & DataManager.TagIDs.TAG_MASK.rawValue) == DataManager.TagIDs.FREE.rawValue {
 					print("ImageEditor - initView - tagCity - view.tag:",item.tag)
+					Log.d("item.tag",item.tag)
 					//let label = item as! UILabel
 					//label.text = "テキスト"
 					if(freeTag <= (item.tag & ~DataManager.TagIDs.TAG_MASK.rawValue)){
 						freeTag = (item.tag & ~DataManager.TagIDs.TAG_MASK.rawValue) + 1024
-						print("ImageEditor - initVies - cityTag:",freeTag)
+						Log.d("cityTag",cityTag)
 					}
 				}
 			}
@@ -376,7 +377,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		self.toolBar.append([TextEdit,Space,TextFont,Space,TextPosition,Space,TextColor,Space,TextDelete,Space,Layer])
 		self.toolBar.append([Color,SelectedColor,Space,Layer])
 		self.toolBar.append([Space])
-		print("ImageEditor - initToolBarItem")
+		Log.d()
 	}
 
 	func enableToolBarItem(enable:Bool){
@@ -409,19 +410,19 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 					let center:CGPoint = item.center
 					/// TODO:
 					/// サイズ調整
-					print("ImageEditor - selectedFont - 1subview.frame:",item.frame,"subview.center",item.center)
+					Log.d("item.frame",item.frame,"item.center",item.center)
 					adjustTextWithFont(textLabel: item as! UILabel, font: state)
 					//(subview as! UILabel).font  = UIFont(name: state.font.fontName,size:(subview as! UILabel).font.pointSize)
-						print("ImageEditor - selectedFont - 2subview.frame:",item.frame,"subview.center",item.center)
+					Log.d("item.frame",item.frame,"item.center",item.center)
 					item.center = center
-					print("ImageEditor - selectedFont - 3subview.frame:",item.frame,"subview.center",item.center)
+					Log.d("item.frame",item.frame,"item.center",item.center)
 					//(subview as! UILabel).sizeToFit()
 				}
 			}
 		}
 		// レイヤーピッカービューを更新
 		updateLayerPickerView()
-		print("ImageEditor - selectedFont - fontName:",state.font.fontName)
+		Log.d("fontName",state.font.fontName)
 	}
 	/// ColorPickerViewControllerで選択されたカラーをラベルに設定
 	func selectedColor(state: UIColor) {
@@ -438,27 +439,27 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		SelectedColorView.backgroundColor = state
 		// レイヤーピッカービューを更新
 		updateLayerPickerView()
-		print("ImageEditor - selectedColor - UIColor:",state)
+		Log.d("state",state)
 	}
 	func selectedPen(size: CGFloat) {
 		imageData?.setPen(size: size)
-		print("ImageEditor - selectedPen - size:",size)
+		Log.d("size",size)
 	}
 	func selectedText(state: Int) {
 		switch state {
 		case 0:
 			setFREE(imageView: self.imageView!)
-			print("ImageEditor - selectedText - Free Text")
+			Log.d("FREE")
 		case 1:
 			setGPS(imageView: self.imageView!)
-			print("ImageEditor - selectedText - GPS")
+			Log.d("GPS")
 		case 2:
 			setCITY(imageView: self.imageView!)
-			print("ImageEditor - selectedText - GPS(city)")
+			Log.d("GPS(city)")
 		default:
-			print("ImageEditor - selectedText - default")
+			Log.d("DEFAULT")
 		}
-		print("ImageEditor - selectedText - state:",state)
+		Log.d("state",state)
 	}
 	func editedText(str: String) {
 		for layer in (self.imageView?.subviews)! {
@@ -468,7 +469,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 					
 					if(subview.tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.FREE.rawValue){
 						(subview as! UILabel).text = str
-						print("editedText")
+						Log.d()
 					}
 				}
 			}
@@ -476,12 +477,12 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	}
 	/// LayerPickerViewControllerで選択されたレイヤーをラベルに設定
 	func selectedLayer(num: Int) {
-		print("ImageEditor - selectedLayer - num:",num)
+		Log.d("num",num)
 		selectedLayerNumber = num
 	}
 	/// 表示・非表示を切り替えるレイヤーの番号を取得
 	func changeVisibleLayer(num: Int) {
-		print("ImageEditor - switchLayer - num:",num)
+		Log.d("num",num)
 		changeVisible(layer: (imageView?.subviews[num])!)
 	}
 	/// レイヤーの表示・非表示、切り替え
@@ -496,7 +497,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	func setSetting(){
 		imageData?.setMenuType(menutype: DataManager.MenuTypes.SETTING)
 		myToolbar.items = toolBar[1]
-		print("ImageEditor - setSetting");
+		Log.d()
 	}
 	/// Penをセット
 	func setPen(){
@@ -505,7 +506,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		myToolbar.items = toolBar[2]
 		for layer in (imageView?.subviews)!{
 			if(layer.tag == DataManager.MenuTypes.PEN.rawValue){
-				print("ImageEditor - setPen - layer is selected")
+				Log.d()
 				isSelected = true
 				break
 			}
@@ -519,16 +520,16 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			
 			saveImageArray = [UIImage]()
 			saveImageArray.append(canvas.image!)
-			print("ImageEditor - setPen - make new canvas")
+			Log.d("make new canvas")
 		}
-		print("ImageEditor - setPen");
+		Log.d()
 	}
 	/// Textをセット
 	func setText(){
 		imageData?.setMenuType(menutype: DataManager.MenuTypes.TEXT)
 		myToolbar.items = toolBar[3]
 		enableToolBarItem(enable: false)
-		print("ImageEditor - setText");
+		Log.d()
 	}
 	/// Colorをセット
 	func setColor(){
@@ -539,17 +540,17 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		}
 		imageData?.setMenuType(menutype: DataManager.MenuTypes.COLOR)
 		myToolbar.items = toolBar[5]
-		print("ImageEditor - setColor");
+		Log.d()
 	}
 	/// ダミーをセット
 	func setDUMMY(){
 		imageData?.setMenuType(menutype: DataManager.MenuTypes.DUMMY)
 		myToolbar.items = toolBar[6]
-		print("ImageEditor - setDummy");
+		Log.d()
 	}
 	var freeTag = 1024
 	func setFREE(imageView:UIView){
-		print("ImageEditor - setFREE");
+		Log.d()
 		myToolbar.items = toolBar[4]
 		let layer = UIView(frame:imageView.bounds)
 		layer.tag = DataManager.MenuTypes.TEXT.rawValue
@@ -567,7 +568,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		// ラベルをviewの中心に移動
 		GPSlabel.center = layer.center
 		GPSlabel.tag = freeTag + DataManager.TagIDs.FREE.rawValue
-		print("ImageEditor - setGPSLabel - tag",GPSlabel.tag);
+		Log.d("GPSlabel.tag",GPSlabel.tag)
 		freeTag += 1024
 		layer.addSubview(GPSlabel)
 		imageView.addSubview(layer)
@@ -589,7 +590,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	var gpsTag = 1024
 	/// GPSをセット
 	func setGPS(imageView:UIView){
-		print("ImageEditor - setGPS");
+		Log.d()
 		let layer = UIView(frame:imageView.bounds)
 		layer.tag = DataManager.MenuTypes.TEXT.rawValue
 		let GPSlabel = UILabel()
@@ -606,7 +607,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		// ラベルをviewの中心に移動
 		GPSlabel.center = layer.center
 		GPSlabel.tag = gpsTag + DataManager.TagIDs.GPS.rawValue
-		print("ImageEditor - setGPSLabel - tag",GPSlabel.tag);
+		Log.d("CPSlabel.tag",GPSlabel.tag)
 		gpsTag += 1024
 		layer.addSubview(GPSlabel)
 		imageView.addSubview(layer)
@@ -626,7 +627,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	var cityTag = 1024
 	/// GPSをセット
 	func setCITY(imageView:UIView){
-		print("ImageEditor - setGPS");
+		Log.d()
 		let layer = UIView(frame:imageView.bounds)
 		layer.tag = DataManager.MenuTypes.TEXT.rawValue
 		let GPSlabel = UILabel()
@@ -643,7 +644,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		// ラベルをviewの中心に移動
 		GPSlabel.center = layer.center
 		GPSlabel.tag = gpsTag + DataManager.TagIDs.CITY.rawValue
-		print("ImageEditor - setGPSLabel - tag",GPSlabel.tag);
+		Log.d("CITYlabel.tag",GPSlabel.tag)
 		cityTag += 1024
 		layer.addSubview(GPSlabel)
 		imageView.addSubview(layer)
@@ -663,21 +664,21 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	/// Future functions
 	/// Imageをセット
 	func setPicture(){
-		print("ImageEditor - setPicture");
+		Log.d("future")
 		//self.navigationController?.setNavigationBarHidden(false, animated: false)
 		//self.navigationController?.popViewController(animated: true)
 	}
 	/// Stampをセット
 	func setStamp(){
-		print("ImageEditor - setStamp");
+		Log.d("future")
 	}
 	/// Timeをセット
 	func setTime(){
-		print("ImageEditor - setTime");
+		Log.d("future")
 	}
 	/// Dateをセット
 	func setDate(){
-		print("ImageEditor - setDate");
+		Log.d("future")
 	}
 	/// 以下、ツールバーのアクション
 	///
@@ -685,49 +686,49 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	@objc func onClickBarButton(sender: UIBarButtonItem) {
 		switch sender.tag {
 		case 1:
-			print("ImageEditor - onClickBarButton - SettingSave")
+			Log.d("SettingSave")
 			displaySaveAlert(imageView:self.imageView!)
 		case 2:
-			print("ImageEditor - onClickBarButton - SettingCancel")
+			Log.d("SettingCancel")
 			displayCancelAlert()
 		case 3:
-			print("ImageEditor - onClickBarButton - PenSize")
+			Log.d("PenSize")
 			displayPenPicker()
 		case 4:
-			print("ImageEditor - onClickBarButton - PenErase:")
+			Log.d("PenErase")
 		case 5:
-			print("ImageEditor - onClickBarButton - PenUndo")
+			Log.d("PenUndo")
 			undoImage()
 		case 6:
-			print("ImageEditor - onClickBarButton - PenRedo")
+			Log.d("PenRedo")
 			redoImage()
 		case 7:
-			print("ImageEditor - onClickBarButton - TextFont")
+			Log.d("TextFont")
 			displayFontSelector()
 		case 8:
-			print("ImageEditor - onClickBarButton - TextPosition")
+			Log.d("TextPosition")
 			adjustItemPositionCenter(imageView:self.imageView!)
 		case 9:
-			print("ImageEditor - onClickBarButton - TextAdd")
+			Log.d("TextAdd")
 			//setGPS(imageView:self.imageView!)
 			displayTextSelector()
 		case 10:
-			print("ImageEditor - onClickBarButton - TextDelete")
+			Log.d("TextDelete")
 			removeItemFromLayer(imageView:self.imageView!)
 		case 11:
-			print("ImageEditor - onClickBarButton - TextColor")
+			Log.d("TextColor")
 			displayColorPalet()
 		case 12:
-			print("ImageEditor - onClickBarButton - TextEdit")
+			Log.d("TextEdit")
 			displayTextEditor()
 		case 13:
-			print("ImageEditor - onClickBarButton - Color")
+			Log.d("Color")
 			displayColorPalet()
 		case 14:
-			print("ImageEditor - onClickBarButton - Layer")
+			Log.d("Layer")
 			displayLayerSelector()
 		default:
-			print("ImageEditor - onClickBarButton - DUMMY")
+			Log.d("DUMMY")
 		}
 	}
 	/// 以下、ツールバーで選択されたボタン毎の処理
@@ -750,7 +751,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			handler:{
 			// ボタンが押された時（クロージャ実装）
 			(action: UIAlertAction!) -> Void in
-			print("ImageEditor - dispCancelAlert - SaveAlert: OK")
+			Log.d("SaveAlert: OK")
 			// 拡大、縮小されたimageViewを元のサイズに変更
 			self.imageView?.transform = CGAffineTransform.identity
 			for layer in imageView.subviews{
@@ -773,7 +774,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			handler:{
 			// ボタンが押された時（クロージャ実装）
 			(action: UIAlertAction!) -> Void in
-			print("ImageEditor - dispCancelAlert - SaveAlert: Cancel")
+			Log.d("SaveAlert: Cancel")
 		})
 		// UIAlertControllerにActionを追加
 		alert.addAction(cancelAction)
@@ -800,7 +801,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			handler:{
 			// ボタンが押された時の処理（クロージャ実装）
 			(action: UIAlertAction!) -> Void in
-			print("ImageEditor - dispCancelAlert - CancelAlert: OK")
+			Log.d("CancelAlert: OK")
 			self.navigationController?.setNavigationBarHidden(false, animated: false)
 			self.navigationController?.popViewController(animated: true)
 			})
@@ -811,7 +812,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			handler:{
 			// ボタンが押された時の処理（クロージャ実装）
 			(action: UIAlertAction!) -> Void in
-			print("ImageEditor - dispCancelAlert - CancelAlert: Cancel")
+			Log.d("CancelAlert: Cancel")
 			})
 		// UIAlertControllerにActionを追加
 		alert.addAction(cancelAction)
@@ -821,7 +822,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	}
 	/// ペンピッカーを表示
 	func displayPenPicker() {
-		print("ImageEditor - displayPenPicker")		
+		Log.d()
 		penPickerView = PenPickerViewController()
 		penPickerView.delegate = self
 		penPickerView.setPen(size: (imageData?.getPen())!)
@@ -834,7 +835,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		if(currentDrawNumber-1 >= 0){
 		var canvas:UIImageView!
 		canvas = UIImageView()
-		print("ImageEditor - undoImage")
+		Log.d()
 		for layer in (imageView?.subviews)!{
 			if(layer.tag == DataManager.MenuTypes.PEN.rawValue){
 				canvas = layer as! UIImageView
@@ -845,7 +846,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		canvas.image = saveImageArray[currentDrawNumber-1]
 		currentDrawNumber -= 1
 		lastDrawImage = saveImageArray[currentDrawNumber]
-			print("ImageEditor - undoImage - currentDrawNumber",currentDrawNumber)
+			Log.d("currentDrawNumber",currentDrawNumber)
 		}
 	}
 	/// 画像をリドゥー
@@ -853,7 +854,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		if(currentDrawNumber+1 < saveImageArray.count){
 		var canvas:UIImageView!
 		canvas = UIImageView()
-		print("ImageEditor - redoImage")
+		Log.d()
 		for layer in (imageView?.subviews)!{
 			if(layer.tag == DataManager.MenuTypes.PEN.rawValue){
 				canvas = layer as! UIImageView
@@ -864,12 +865,12 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		canvas.image = saveImageArray[currentDrawNumber+1]
 		currentDrawNumber += 1
 		lastDrawImage = saveImageArray[currentDrawNumber]
-		print("ImageEditor - redoImage - currentDrawNumber",currentDrawNumber)
+		Log.d("currentDrawNumber",currentDrawNumber)
 		}
 	}
 	/// カラーパレットを表示
 	func displayColorPalet(){
-		print("ImageEditor - displayColorPalet")
+		Log.d()
 		if(fontPickerView != nil){
 			hideContentController(content:fontPickerView)
 		}
@@ -888,7 +889,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	}
 	/// 文字フォントを選択するピッカーを表示
 	func displayFontSelector(){
-		print("ImageEditor - displayFontSelector")
+		Log.d()
 		if(fontPickerView != nil){
 			hideContentController(content:fontPickerView)
 		}
@@ -902,7 +903,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		fontPickerView.didMove(toParentViewController: self)
 	}
 	func displayTextSelector(){
-		print("ImageEditor - onClickBarButton - displayTextSelector")
+		Log.d()
 		textPickerView = TextPickerViewController()
 		textPickerView.delegate = self
 		let num:Int = (imageData?.getTextPicker())!
@@ -912,7 +913,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		textPickerView.didMove(toParentViewController: self)
 	}
 	func displayTextEditor(){
-		print("ImageEditor - onClickBarButton - displayTextEditor")
+		Log.d()
 		textEditorView = TextEditorViewController()
 		textEditorView.delegate = self
 		self.view.addSubview(textEditorView.view)
@@ -921,7 +922,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	}
 	/// レイヤー選択画面を表示
 	func displayLayerSelector(){
-		print("ImageEditor - onClickBarButton - Color")
+		Log.d()
 		if(layerPickerView != nil){
 			hideContentController(content:layerPickerView)
 		}
@@ -940,14 +941,14 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	}
 	// 選択されたアイテムをレイヤーから削除
 	func removeItemFromLayer(imageView:UIView){
-		print("ImageEditor - removeItemFromLayer");
+		Log.d()
 		for (index,layer) in imageView.subviews.enumerated(){
 			for item in layer.subviews{
-				print("ImageEditor - remoceItemFromLayer - index:",index)
+				Log.d("index",index)
 				let indexpath: IndexPath = IndexPath(row: selectedLayerNumber, section: 0)
 				if((index == indexpath.row) || (indexpath.row == -1)){
 					if(!layer.isHidden){
-						print("ImageEditor - remoceItemFromLayer - indexpath:",indexpath)
+						Log.d("indexpath:",indexpath)
 						if(item.subviews.count != 0){
 							item.removeFromSuperview()
 							if(layer.subviews.count == 0){
@@ -970,13 +971,13 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	}
 	/// アイテムの位置をviewの中心に移動
 	func adjustItemPositionCenter(imageView:UIView){
-		print("ImageEditor - adjustPositionCenter");
+		Log.d()
 		for layer in imageView.subviews{
 			for item in layer.subviews{
 				if(item.subviews.count != 0){
-					print("ImageEditor - item.center",item.center);
+					Log.d("item.center",item.center);
 					item.center = (self.imageView?.bounds.center)!
-					print("ImageEditor - item.center",item.center);
+					Log.d("item.center",item.center);
 					// レイヤーピッカービューを更新
 					updateLayerPickerView()
 				}
@@ -993,7 +994,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	var saveImageArray:[UIImage]!
 	var currentDrawNumber = 0
 	@objc func handleTapGesture(sender: UITapGestureRecognizer){
-		print("ImageEditor - handleTapGesture")
+		Log.d()
 		let location:CGPoint = sender.location(in: self.imageView)
 		if(imageData?.getMenuType() == DataManager.MenuTypes.COLOR){
 			tagList.removeAll()
@@ -1149,7 +1150,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 				saveImageArray.append(canvas.image!)
 				//lastDrawImage = canvas.image
 				lastDrawImage = saveImageArray[currentDrawNumber]
-				print("ImageEditor - handlePanGesture - currentDrawNumber",currentDrawNumber)
+				Log.d("currentDrawNumber",currentDrawNumber)
 			}
 			break
 		case UIGestureRecognizerState.cancelled:
@@ -1172,7 +1173,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			saveImageArray.removeLast()
 		}
 		canvas.image = saveImageArray[currentDrawNumber]
-		print("ImageEditor - drawLine - saveImageArray",currentDrawNumber)
+		Log.d("currentDrawNumber",currentDrawNumber)
 		UIGraphicsBeginImageContext(canvas.frame.size)
 		if lastDrawImage != nil {
 			lastDrawImage.draw(at: CGPoint.zero)
@@ -1231,7 +1232,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			if (item.frame.contains(location)) {
 				// 選択されたアイテムのタグをタグリストに追加
 				tagList.append(item.tag)
-				print("ImageEditor - selectedItem - item.tag:",String(item.tag,radix:16))
+				Log.d("item.tag",String(item.tag,radix:16))
 				if(item.tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.GPS.rawValue ||
 					item.tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.CITY.rawValue ||
 					item.tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.FREE.rawValue){
@@ -1258,7 +1259,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 					iconframe.origin.y += item.frame.origin.y
 					if(iconframe.contains(location)){
 						tagList.append(icon.tag)
-						print("ImageEditor - selectedItem - icon.tag:",String(icon.tag,radix:16))
+						Log.d("icon.tag",String(icon.tag,radix:16))
 						iconIsSelected = true
 						isSelected = true
 					}
@@ -1396,11 +1397,11 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		let refFont = UIFont(name: textLabel.font.fontName,size:refPointSize)
 		let refWidth = textLabel.text?.size(withAttributes: [NSAttributedStringKey.font : refFont!])
 		let itemWidth = textLabel.frame.width
-		print("ImageEditor - adjustItemToScreenSize - refWidth:",
+		Log.d("refWidth",
 			  refWidth?.width as Any,
-			  "itemWidth:",
+			  "itemWidth",
 			  itemWidth as Any,
-			  "ratio:",
+			  "ratio",
 			  latio)
 		textLabel.font = UIFont(name: textLabel.font.fontName,size:  refPointSize * itemWidth * latio / (refWidth?.width)!)
 		textLabel.sizeToFit()
@@ -1414,17 +1415,17 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	/// 以下、レイヤーピッカービューのコンテナに関する処理
 	/// コンテナをスーパービューに追加
 	func displayContentController(content:UIViewController, container:UIView){
-		print("ImageEditor - displayContentController")
+		Log.d()
 		//content.view.frame = container.bounds
 		container.addSubview(content.view)
 		addChildViewController(content)
-		print("ImageEditor - displayContentController - didMove1:",content.isMovingToParentViewController)
+		Log.d("didMove",content.isMovingToParentViewController)
 		content.didMove(toParentViewController: self)
-		print("ImageEditor - displayContentController - didMove2:",content.isMovingToParentViewController)
+		Log.d("didMove",content.isMovingToParentViewController)
 	}
 	/// コンテナをスーパービューから削除
 	func hideContentController(content:UIViewController){
-		print("ImageEditor - hideContentController")
+		Log.d()
 		content.willMove(toParentViewController: self)
 		content.view.removeFromSuperview()
 		content.removeFromParentViewController()

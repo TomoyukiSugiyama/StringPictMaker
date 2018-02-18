@@ -76,27 +76,27 @@ class TextEditorViewController: UIViewController ,UITextFieldDelegate{
 	}
 	// クリアボタンが押された時の処理
 	func textFieldShouldClear(_ textField: UITextField) -> Bool {		
-		print("Clear")
+		Log.d()
 		return true
 	}
 	// テキストフィールドがフォーカスされた時の処理
 	func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-		print("Start")
+		Log.d()
 		return true
 	}
 	// テキストフィールドでの編集が終わろうとするときの処理
 	func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
-		print("End")
+		Log.d()
 		return true
 	}
 	// toolbarのキャンセルを選択
 	@objc func cancel(){
-		print("TextPickerViewController - cancel")
+		Log.d()
 		hideContentController(content: self)
 	}
 	// toolbarの完了を選択
 	@objc func done(){
-		print("TextPickerViewController - done")
+		Log.d()
 		/*if(selectedLabel == nil){
 		// 表示するラベルを生成する
 		selectedLabel = UILabel(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 50))
@@ -111,7 +111,7 @@ class TextEditorViewController: UIViewController ,UITextFieldDelegate{
 	}
 	/// コンテナをスーパービューに追加
 	func displayContentController(content:UIViewController, container:UIView){
-		print("TextPickerViewController - displayContentController")
+		Log.d()
 		addChildViewController(content)
 		content.view.frame = container.bounds
 		container.addSubview(content.view)
@@ -119,7 +119,7 @@ class TextEditorViewController: UIViewController ,UITextFieldDelegate{
 	}
 	/// コンテナをスーパービューから削除
 	func hideContentController(content:UIViewController){
-		print("TextPickerViewController - hideContentController")
+		Log.d()
 		content.willMove(toParentViewController: self)
 		content.view.removeFromSuperview()
 		content.removeFromParentViewController()

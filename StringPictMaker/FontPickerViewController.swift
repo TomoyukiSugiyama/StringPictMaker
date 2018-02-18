@@ -43,9 +43,9 @@ class FontPickerViewController: UIViewController, UIPickerViewDelegate, UIPicker
 	/// ピッカービューを生成
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		print("FontPickerViewController - viewDidLoad - frame:",self.view.frame)
+		Log.d("frame",self.view.frame)
 		self.view.frame = CGRect(x:0,y:self.view.frame.height - 150 - 40,width:self.view.frame.width,height:150)
-		print("FontPickerViewController - viewDidLoad - frame:",self.view.frame)
+		Log.d("frame",self.view.frame)
 		self.view.backgroundColor = UIColor.black
 		//self.view.frame = CGRect(x:0,y:self.view.frame.height - 100 - 4,width:self.view.frame.width,height:100.0)
 		// toolbarを追加
@@ -67,7 +67,7 @@ class FontPickerViewController: UIViewController, UIPickerViewDelegate, UIPicker
 		// dataSourceの設定
 		picker.dataSource = self
 		self.view.addSubview(picker)
-		print("FontPickerViewController")
+		Log.d()
 	}
 	// PickerViewの個数
 	func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -94,16 +94,16 @@ class FontPickerViewController: UIViewController, UIPickerViewDelegate, UIPicker
 		selectedLabel.textAlignment = .center
 		selectedLabel.text = dataArray[row]
 		selectedLabel.font = UIFont(name: fontArray[row],size:16)
-		print("value : \(dataArray[row])")
+		Log.d("value : \(dataArray[row])")
 	}
 	// toolbarのキャンセルを選択
 	@objc func cancel(){
-		print("FontPickerViewController - cancel")
+		Log.d()
 		hideContentController(content: self)
 	}
 	// toolbarの完了を選択
 	@objc func done(){
-		print("FontPickerViewController - done")
+		Log.d()
 		if(selectedLabel == nil){
 			// 表示するラベルを生成する
 			selectedLabel = UILabel(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 50))
@@ -117,7 +117,7 @@ class FontPickerViewController: UIViewController, UIPickerViewDelegate, UIPicker
 	}
 	/// コンテナをスーパービューに追加
 	func displayContentController(content:UIViewController, container:UIView){
-		print("FontPickerViewController - displayContentController")
+		Log.d()
 		addChildViewController(content)
 		content.view.frame = container.bounds
 		container.addSubview(content.view)
@@ -125,7 +125,7 @@ class FontPickerViewController: UIViewController, UIPickerViewDelegate, UIPicker
 	}
 	/// コンテナをスーパービューから削除
 	func hideContentController(content:UIViewController){
-		print("FontPickerViewController - hideContentController")
+		Log.d()
 		content.willMove(toParentViewController: self)
 		content.view.removeFromSuperview()
 		content.removeFromParentViewController()

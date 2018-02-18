@@ -40,7 +40,7 @@ class ImageBoard: UIViewController, CLLocationManagerDelegate{
 	/// 3.ImageListControllerに戻るためのジェスチャーを追加
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		print("ImageBoard - delegateParamId:",delegateParamId)
+		Log.d("delegateParamId",delegateParamId)
 		myLocationManager = CLLocationManager()
 		myLocationManager.delegate = self
 		self.initView()
@@ -59,7 +59,7 @@ class ImageBoard: UIViewController, CLLocationManagerDelegate{
 	}
 	// ダブルタップ時、ImageListControllerに戻る
 	@objc func doubleTap(gesture: UITapGestureRecognizer) -> Void {
-		print("ImageBoard - doubleTap")
+		Log.d()
 		// imageViewに追加したジェスチャーを削除
 		// 追加したまま、ImageEditorに移るとスクロールが効かなくなるため
 		self.imageView?.gestureRecognizers?.removeAll()
@@ -68,7 +68,7 @@ class ImageBoard: UIViewController, CLLocationManagerDelegate{
 	}
 	// ピンチ時、ImageListControllerに戻る
 	@objc func pinchAction(gesture: UITapGestureRecognizer) -> Void {
-		print("ImageBoard - pinchAction")
+		Log.d()
 		// imageViewに追加したジェスチャーを削除
 		// 追加したまま、ImageEditorに移るとスクロールが効かなくなるため
 		self.imageView?.gestureRecognizers?.removeAll()
@@ -86,7 +86,7 @@ class ImageBoard: UIViewController, CLLocationManagerDelegate{
 				view.removeFromSuperview()
 			}else{
 				if (view.tag & DataManager.TagIDs.ITEM_MASK.rawValue) == DataManager.TagIDs.GPS.rawValue {
-					print("ImageEditor - initView - tagGPS - view.tag:",view.tag)
+					Log.d("view.tag",view.tag)
 					self.isUsed = true
 					self.gpsTagArray.append(view.tag)
 				}
@@ -100,7 +100,7 @@ class ImageBoard: UIViewController, CLLocationManagerDelegate{
 		if(self.isUsed == true){
 			let status = CLLocationManager.authorizationStatus()
 			if(status == CLAuthorizationStatus.notDetermined) {
-				print("ImageBoard - getGPS - status",status)
+				Log.d("status",status)
 				//self.myLocationManager.requestWhenInUseAuthorization()
 			}else{
 				print(status)
@@ -119,24 +119,24 @@ class ImageBoard: UIViewController, CLLocationManagerDelegate{
 	func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
 		switch status {
 		case .notDetermined:
-			print("ユーザーはこのアプリケーションに関してまだ選択を行っていません")
+			fatalError("ユーザーはこのアプリケーションに関してまだ選択を行っていません")
 			self.myLocationManager.requestWhenInUseAuthorization()
 			// 許可を求めるコードを記述する
 			break
 		case .denied:
-			print("ローケーションサービスの設定が「無効」になっています (ユーザーによって、明示的に拒否されています）")
+			fatalError("ローケーションサービスの設定が「無効」になっています (ユーザーによって、明示的に拒否されています）")
 			// 「設定 > プライバシー > 位置情報サービス で、位置情報サービスの利用を許可して下さい」を表示する
 			break
 		case .restricted:
-			print("このアプリケーションは位置情報サービスを使用できません(ユーザによって拒否されたわけではありません)")
+			fatalError("このアプリケーションは位置情報サービスを使用できません(ユーザによって拒否されたわけではありません)")
 			// 「このアプリは、位置情報を取得できないために、正常に動作できません」を表示する
 			break
 		case .authorizedAlways:
-			print("常時、位置情報の取得が許可されています。")
+			fatalError("常時、位置情報の取得が許可されています。")
 			// 位置情報取得の開始処理
 			break
 		case .authorizedWhenInUse:
-			print("起動時のみ、位置情報の取得が許可されています。")
+			fatalError("起動時のみ、位置情報の取得が許可されています。")
 			// 位置情報取得の開始処理
 			break
 		}
@@ -147,10 +147,10 @@ class ImageBoard: UIViewController, CLLocationManagerDelegate{
 		reverseGeocode(latitude: userLocation.coordinate.latitude, longitude: userLocation.coordinate.longitude)
 	}
 	func locationManagerDidPauseLocationUpdates(manager: CLLocationManager!,didUpdateLocations locations: [CLLocation]) {
-		print("locationManagerDidPauseLocationUpdates")
+		Log.d()
 	}
 	func locationManager(_ manager: CLLocationManager,didFailWithError error: Error){
-		print("error")
+		fatalError("error")
 	}
 	// リバースジオコーディングを実行
 	func reverseGeocode(latitude:CLLocationDegrees, longitude:CLLocationDegrees) {
@@ -160,7 +160,7 @@ class ImageBoard: UIViewController, CLLocationManagerDelegate{
 			{(placemarks, error) in
 				if (error != nil)
 				{
-					print("reverse geodcode fail: \(error!.localizedDescription)")
+					fatalError("reverse geodcode fail: \(error!.localizedDescription)")
 				}
 				let pm = placemarks! as [CLPlacemark]
 				

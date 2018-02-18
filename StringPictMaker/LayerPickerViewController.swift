@@ -82,7 +82,7 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 		self.view.backgroundColor = UIColor.lightGray.withAlphaComponent(0.5)
 		indexpath = nil
 		let frame = CGRect(x:margine,y:margine*3 + closeButtonSize,width:tableViewWidth,height:tableViewHight)
-		print("LayerPickerViewController - viewDidLoad - frame:",frame)
+		Log.d("frame",frame)
 		tableView = UITableView(frame:frame, style: .plain)
 		tableView.register(LayerCell.self, forCellReuseIdentifier: "LayerCell_id")
 		tableView.delegate = self
@@ -103,7 +103,7 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 		selectAllLayerButton.tag = -1
 		selectAllLayerButton.addTarget(self, action: #selector(onClickEditButtons), for: UIControlEvents.touchUpInside)
 		self.view.addSubview(selectAllLayerButton)
-		print("LayerPickerViewController - viewDidLoad")
+		Log.d()
 	}
 	/// セクション数
 	func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -132,7 +132,7 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 	}
 	/// データ選択後に呼び出されるメソッド
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath){
-		print("LayerPickerViewController - indexPath:",indexPath.row)
+		Log.d("indexPath",indexPath.row)
 		for layer in self.imageViewInEditor.subviews{
 			for item in layer.subviews{
 				clearEmphasisSelectedItem(selectedView: item)
@@ -158,7 +158,7 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 	}
 	/// コンテナをスーパービューに追加
 	func displayContentController(content:UIViewController, container:UIView){
-		print("LayerPickerViewController - displayContentController")
+		Log.d()
 		addChildViewController(content)
 		content.view.frame = container.bounds
 		container.addSubview(content.view)
@@ -166,7 +166,7 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 	}
 	/// コンテナをスーパービューから削除
 	func hideContentController(content:UIViewController){
-		print("LayerPickerViewController - hideContentController")
+		Log.d()
 		tableView.isHidden = true
 		content.willMove(toParentViewController: self)
 		content.view.removeFromSuperview()
@@ -194,26 +194,26 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 		let cell = tableView.cellForRow(at: indexpath) as! LayerCell
 		if(layer.subviews[num].isHidden){
 			cell.editButton?.setImage(UIImage(named: "layeron_icon"), for: .normal)
-			print("LayerPickerViewController - changeVisibleIcon - layeron")
+			Log.d("layeron")
 		}else{
 			cell.editButton?.setImage(UIImage(named: "layeroff_icon"), for: .normal)
-			print("LayerPickerViewController - changeVisibleIcon:")
+			Log.d("changeVisibleIcon:")
 		}
 	}
 	func updateTableView(){
 		if(!tableView.isHidden){
 			//self.tableView.reloadData()
-			print("LayerPickerViewController - updateTableView1")
+			Log.d()
 			indexpath = tableView.indexPathForSelectedRow
-			print("LayerPickerViewController - updateTableView2:",indexpath)
+			Log.d("indexpath",indexpath)
 			if(indexpath != nil){
 				self.tableView.reloadRows(at: [indexpath], with: .none)
-				print("LayerPickerViewController - updateTableView3")
+				Log.d()
 				tableView.selectRow(at: indexpath, animated: false, scrollPosition: .none)
 			}else{
 				self.tableView.reloadData()
 			}
-			print("LayerPickerViewController - updateTableView4")
+			Log.d()
 		}
 	}
 	// 画面回転時に呼び出される

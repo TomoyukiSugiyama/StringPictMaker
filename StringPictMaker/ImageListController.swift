@@ -113,7 +113,7 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
 	/// - Returns: セル
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCell_id", for: indexPath) as! ImageCell
-		print("ImageListController - collectionView - index:",indexPath.row)
+		Log.d("index",indexPath.row)
 		cell.imageLabel?.image = self.imageData?.imageList[indexPath.row].imageview.GetImage()
 		cell.textLabel?.text = self.imageData?.imageList[indexPath.row].title
 		cell.editButton?.setTitle("EDIT", for: .normal)
@@ -189,7 +189,7 @@ class ImageListController: UIViewController, UICollectionViewDataSource,UICollec
 	/// ナビゲーションバーの追加ボタンをタップしたときのアクション
 	@objc func tappedRightBarButton() {
 		let id = (self.imageData?.imageList.count)! + 1
-		print("ImageListController - tappedRightBarButton - id:",id)
+		Log.d("id",id)
 		 // CoreDataにimageを追加
 		var frame:CGRect!
 		if(UIScreen.main.bounds.size.width > UIScreen.main.bounds.size.height){
