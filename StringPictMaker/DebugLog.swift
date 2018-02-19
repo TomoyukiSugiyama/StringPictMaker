@@ -19,5 +19,4 @@ class Log {
 			print(path,replaceString,line,item.description,separator:separator)
 		#endif
 	}
-	
 }

@@ -85,8 +85,10 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		let singlePan = UIPanGestureRecognizer(target:self, action:#selector(handlePanGesture))
 		singlePan.maximumNumberOfTouches = 1
 		let tap = UITapGestureRecognizer(target:self, action:#selector(handleTapGesture))
+		let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture))
 		scrollView.addGestureRecognizer(singlePan)
 		scrollView.addGestureRecognizer(tap)
+		scrollView.addGestureRecognizer(longPress)
 		scrollView.frame = CGRect(x:0,y:0,width:self.view.frame.width,height:self.view.frame.height)
 		scrollView.center = self.view.center
 		Log.d(self.imageView?.frame as Any)
@@ -246,7 +248,6 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 						Log.d("cityTag",cityTag)
 					}
 				}else if(item.tag & DataManager.TagIDs.TAG_MASK.rawValue) == DataManager.TagIDs.FREE.rawValue {
-					print("ImageEditor - initView - tagCity - view.tag:",item.tag)
 					Log.d("item.tag",item.tag)
 					//let label = item as! UILabel
 					//label.text = "テキスト"
@@ -469,6 +470,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 					
 					if(subview.tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.FREE.rawValue){
 						(subview as! UILabel).text = str
+						resizeSelectArea(textLabel:subview as! UILabel)
 						Log.d()
 					}
 				}
@@ -551,7 +553,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	var freeTag = 1024
 	func setFREE(imageView:UIView){
 		Log.d()
-		myToolbar.items = toolBar[4]
+		//myToolbar.items = toolBar[4]
 		let layer = UIView(frame:imageView.bounds)
 		layer.tag = DataManager.MenuTypes.TEXT.rawValue
 		let GPSlabel = UILabel()
@@ -984,6 +986,30 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			}
 		}
 	}
+	@objc func handleLongPressGesture(sender: UITapGestureRecognizer){
+		if sender.state == .began {
+			let location:CGPoint = sender.location(in: self.imageView)
+			var imageView:[UIView]!
+			// 全てのレイヤーが選択状態の場合　-1
+			if(selectedLayerNumber == -1){
+				imageView = self.imageView?.subviews
+			}else{
+				imageView = [(self.imageView?.subviews[selectedLayerNumber])!]
+			}
+			for layer in imageView {
+				if(!layer.isHidden){
+					for item in layer.subviews {
+						// imageView上のアイテムが選択された時の処理
+						if (item.frame.contains(location)) {
+							if(item.tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.FREE.rawValue){
+								displayTextEditor()
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 	/// TODO:
 	/// Imageを編集し保存後、再編集するとTagの番号が誤って追加される
 	/// タッチした座標にあるimageView上のアイテムを管理
@@ -1331,6 +1357,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			let posX = selectedView.frame.width + margine
 			let posY = selectedView.frame.height / 2 - iconSize / 2			
 			let scaleButton = UIButton(frame:CGRect(x:posX,y:posY,width:iconSize,height:iconSize))
+			Log.d(posX,posY,iconSize,selectedView.frame)
 			scaleButton.setImage(UIImage(named: "resize_icon"), for: .normal)
 			scaleButton.tag = selectedView.tag | DataManager.TagIDs.Scale.rawValue
 			selectedView.addSubview(scaleButton)
@@ -1371,6 +1398,23 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			if((icon.tag & DataManager.TagIDs.Rect.rawValue) == DataManager.TagIDs.Rect.rawValue){
 				let selectAreaView = icon as! SelectAreaView
 				selectAreaView.changeFrame(frame: textLabel.bounds)
+			}
+		}
+	}
+	func resizeSelectArea(textLabel:UILabel){
+		// 文字サイズに合わせてラベルのサイズを調整
+		textLabel.sizeToFit()
+		for icon in textLabel.subviews{
+			if((icon.tag & DataManager.TagIDs.Rect.rawValue) == DataManager.TagIDs.Rect.rawValue){
+				let selectAreaView = icon as! SelectAreaView
+				selectAreaView.changeFrame(frame: textLabel.bounds)
+			}else if((icon.tag & DataManager.TagIDs.Scale.rawValue) == DataManager.TagIDs.Scale.rawValue){
+				let iconSize:CGFloat = 50.0
+				let margine:CGFloat = 10.0
+				let posX = textLabel.frame.width + margine
+				let posY = textLabel.frame.height / 2 - iconSize / 2
+				icon.frame.origin = CGPoint(x: posX, y: posY)
+				Log.d(posX,posY,iconSize,textLabel.frame)
 			}
 		}
 	}
@@ -1439,11 +1483,6 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		}else{
 			// layerPickerView is not displayed.
 		}
-	}
-	func debugPrint(item:Any...){
-		#if DEBUG
-			print(item)
-		#endif
 	}
 }
 // MARK: - 以前のViewControllerのインスタンスを取得
