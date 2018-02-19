@@ -104,7 +104,27 @@ class LayerPickerViewController: UIViewController,UITableViewDataSource,UITableV
 		selectAllLayerButton.addTarget(self, action: #selector(onClickEditButtons), for: UIControlEvents.touchUpInside)
 		self.view.addSubview(selectAllLayerButton)
 		Log.d()
+		tableView.isEditing = true
+		tableView.allowsSelectionDuringEditing = true
 	}
+	func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+		return true
+	}
+	
+	func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+		// TODO: 入れ替え時の処理を実装する（データ制御など）
+	}
+/*	func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+		return true
+	}
+	
+	func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
+		return .none
+	}
+	
+	func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
+		return false
+	}*/
 	/// セクション数
 	func numberOfSectionsInTableView(tableView: UITableView) -> Int {
 		return 1

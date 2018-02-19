@@ -119,24 +119,24 @@ class ImageBoard: UIViewController, CLLocationManagerDelegate{
 	func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
 		switch status {
 		case .notDetermined:
-			fatalError("ユーザーはこのアプリケーションに関してまだ選択を行っていません")
+			Log.d("ユーザーはこのアプリケーションに関してまだ選択を行っていません")
 			self.myLocationManager.requestWhenInUseAuthorization()
 			// 許可を求めるコードを記述する
 			break
 		case .denied:
-			fatalError("ローケーションサービスの設定が「無効」になっています (ユーザーによって、明示的に拒否されています）")
+			Log.d("ローケーションサービスの設定が「無効」になっています (ユーザーによって、明示的に拒否されています）")
 			// 「設定 > プライバシー > 位置情報サービス で、位置情報サービスの利用を許可して下さい」を表示する
 			break
 		case .restricted:
-			fatalError("このアプリケーションは位置情報サービスを使用できません(ユーザによって拒否されたわけではありません)")
+			Log.d("このアプリケーションは位置情報サービスを使用できません(ユーザによって拒否されたわけではありません)")
 			// 「このアプリは、位置情報を取得できないために、正常に動作できません」を表示する
 			break
 		case .authorizedAlways:
-			fatalError("常時、位置情報の取得が許可されています。")
+			Log.d("常時、位置情報の取得が許可されています。")
 			// 位置情報取得の開始処理
 			break
 		case .authorizedWhenInUse:
-			fatalError("起動時のみ、位置情報の取得が許可されています。")
+			Log.d("起動時のみ、位置情報の取得が許可されています。")
 			// 位置情報取得の開始処理
 			break
 		}
