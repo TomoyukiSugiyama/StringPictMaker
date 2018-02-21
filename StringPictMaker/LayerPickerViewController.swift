@@ -10,6 +10,9 @@ import Foundation
 import UIKit
 
 /// TODO:
+/// ＊レイアウト調整
+/// ＊レイヤー並べ替え
+/// ＊レイヤー削除
 /// ＊
 /// ＊
 /// ＊

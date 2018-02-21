@@ -15,10 +15,11 @@ import UIKit
 /// ＊(レイヤービューに３枚以上のレイヤーを追加した状態で、レイヤービューを上にスクロール)
 /// ＊( - ImageView上のアイテムを動かすとレイヤービューの挙動がおかしくなる)
 /// ＊(レイヤーの番号を画面上部に表示)
-/// ＊フリーテキスト
 /// ＊GPS　都道府県、市町村　選択
 /// ＊ペンツール使用ー＞保存ー＞EDITー＞redoー＞落ちる
 /// ＊ペンツールのundo redoアイコンを画像に置き換え
+/// ＊ペンツールのeraseを削除
+/// ＊ペンツール使用ー＞保存ー＞EDITー＞COLORー＞落ちる
 /// ＊3115
 /// ＊
 /// ＊
@@ -284,80 +285,80 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		SettingSaveView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
 		SettingSaveView.setImage(UIImage(named: "save_icon"), for: .normal)
 		SettingSaveView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
-		SettingSaveView.tag = 1
+		SettingSaveView.tag = MenuSettingSave
 		SettingSaveView.tintColor = UIColor.brown
 		SettingSave = UIBarButtonItem(customView: SettingSaveView)
 		let SettingCancelView = UIButton()
 		SettingCancelView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
 		SettingCancelView.setImage(UIImage(named: "cancel_icon"), for: .normal)
 		SettingCancelView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
-		SettingCancelView.tag = 2
+		SettingCancelView.tag = MenuSettingCancel
 		SettingCancel = UIBarButtonItem(customView: SettingCancelView)
 		let PenSizeView = UIButton()
 		PenSizeView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
 		PenSizeView.setImage(UIImage(named: "size_icon"), for: .normal)
 		PenSizeView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
-		PenSizeView.tag = 3
+		PenSizeView.tag = MenuPenSize
 		PenSize = UIBarButtonItem(customView: PenSizeView)
 		let PenEraseView = UIButton()
 		PenEraseView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
 		PenEraseView.setImage(UIImage(named: "erase_icon"), for: .normal)
 		PenEraseView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
-		PenEraseView.tag = 4
+		PenEraseView.tag = MenuPenErase
 		PenErase = UIBarButtonItem(customView: PenEraseView)
 		let PenUndoView = UIButton()
 		PenUndoView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
 		PenUndoView.setTitle("Undo", for: .normal)
 		PenUndoView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
-		PenUndoView.tag = 5
+		PenUndoView.tag = MenuPenUndo
 		PenUndo = UIBarButtonItem(customView: PenUndoView)
 		let PenRedoView = UIButton()
 		PenRedoView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
 		PenRedoView.setTitle("Redo", for: .normal)
 		PenRedoView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
-		PenRedoView.tag = 6
+		PenRedoView.tag = MenuPenRedo
 		PenRedo = UIBarButtonItem(customView: PenRedoView)
 		let TextFontView = UIButton()
 		TextFontView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
 		TextFontView.setImage(UIImage(named: "font_icon"), for: .normal)
 		TextFontView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
-		TextFontView.tag = 7
+		TextFontView.tag = MenuTextFont
 		TextFont = UIBarButtonItem(customView: TextFontView)
 		let TextPositionView = UIButton()
 		TextPositionView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
 		TextPositionView.setImage(UIImage(named: "position_icon"), for: .normal)
 		TextPositionView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
-		TextPositionView.tag = 8
+		TextPositionView.tag = MenuTextPosition
 		TextPosition = UIBarButtonItem(customView: TextPositionView)
 		let TextAddView = UIButton()
 		TextAddView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
 		TextAddView.setImage(UIImage(named: "text_icon"), for: .normal)
 		TextAddView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
-		TextAddView.tag = 9
+		TextAddView.tag = MenuTextAdd
 		TextAdd = UIBarButtonItem(customView: TextAddView)
 		let TextDeleteView = UIButton()
 		TextDeleteView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
 		TextDeleteView.setImage(UIImage(named: "delete_icon"), for: .normal)
 		TextDeleteView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
-		TextDeleteView.tag = 10
+		TextDeleteView.tag = MenuTextDelete
 		TextDelete = UIBarButtonItem(customView: TextDeleteView)
 		let TextColorView = UIButton()
 		TextColorView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
 		TextColorView.setImage(UIImage(named: "color_icon"), for: .normal)
 		TextColorView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
-		TextColorView.tag = 11
+		TextColorView.tag = MenuTextColor
 		TextColor = UIBarButtonItem(customView: TextColorView)
 		let TextEditView = UIButton()
 		TextEditView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
 		TextEditView.setTitle("Edit", for: .normal)
 		TextEditView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
-		TextEditView.tag = 12
+		TextEditView.tag = MenuTextEdit
 		TextEdit = UIBarButtonItem(customView: TextEditView)
 		let ColorView = UIButton()
 		ColorView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
 		ColorView.setImage(UIImage(named: "color_icon"), for: .normal)
 		ColorView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
-		ColorView.tag = 13
+		ColorView.tag = MenuColor
 		Color = UIBarButtonItem(customView: ColorView)
 		SelectedColorView = UIButton()
 		SelectedColorView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
@@ -368,7 +369,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		LayerView.frame = CGRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
 		LayerView.setImage(UIImage(named: "layer_icon"), for: .normal)
 		LayerView.addTarget(self, action: #selector(onClickBarButton), for:.touchUpInside)
-		LayerView.tag = 14
+		LayerView.tag = MenuLayer
 		Layer = UIBarButtonItem(customView: LayerView)
 		Space = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil)
 		self.toolBar.append([SettingSave,Space,SettingCancel])
@@ -687,46 +688,46 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	/// - Parameter sender: ツールバーのボタンを取得
 	@objc func onClickBarButton(sender: UIBarButtonItem) {
 		switch sender.tag {
-		case 1:
+		case MenuSettingSave:
 			Log.d("SettingSave")
 			displaySaveAlert(imageView:self.imageView!)
-		case 2:
+		case MenuSettingCancel:
 			Log.d("SettingCancel")
 			displayCancelAlert()
-		case 3:
+		case MenuPenSize:
 			Log.d("PenSize")
 			displayPenPicker()
-		case 4:
+		case MenuPenErase:
 			Log.d("PenErase")
-		case 5:
+		case MenuPenUndo:
 			Log.d("PenUndo")
 			undoImage()
-		case 6:
+		case MenuPenRedo:
 			Log.d("PenRedo")
 			redoImage()
-		case 7:
+		case MenuTextFont:
 			Log.d("TextFont")
 			displayFontSelector()
-		case 8:
+		case MenuTextPosition:
 			Log.d("TextPosition")
 			adjustItemPositionCenter(imageView:self.imageView!)
-		case 9:
+		case MenuTextAdd:
 			Log.d("TextAdd")
 			//setGPS(imageView:self.imageView!)
 			displayTextSelector()
-		case 10:
+		case MenuTextDelete:
 			Log.d("TextDelete")
 			removeItemFromLayer(imageView:self.imageView!)
-		case 11:
+		case MenuTextColor:
 			Log.d("TextColor")
 			displayColorPalet()
-		case 12:
+		case MenuTextEdit:
 			Log.d("TextEdit")
 			displayTextEditor()
-		case 13:
+		case MenuColor:
 			Log.d("Color")
 			displayColorPalet()
-		case 14:
+		case MenuLayer:
 			Log.d("Layer")
 			displayLayerSelector()
 		default:
