@@ -35,7 +35,7 @@ class DataManager{
 	//				GPS = 1, CITY = 2, FREE = 3
 	// TAG		:
 	//				Scale = 1, Rect = 2
-	enum TagIDs : Int{
+	/*enum TagIDs : Int{
 		case GPS = 1
 		case CITY = 2
 		case FREE = 3
@@ -51,7 +51,7 @@ class DataManager{
 		case TEXT
 		case COLOR
 		case DUMMY
-	}
+	}*/
 	var selectedSubMenuItem:MenuTypes!
 	func setMenuType(menutype:MenuTypes){
 		selectedSubMenuItem = menutype

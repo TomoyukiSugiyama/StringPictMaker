@@ -137,7 +137,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		myToolbar.items = toolBar[0]
 		// ツールバーに追加
 		self.view.addSubview(myToolbar)
-		imageData?.setMenuType(menutype: DataManager.MenuTypes.SETTING)
+		imageData?.setMenuType(menutype: MenuTypes.SETTING)
 		imageData?.setColor(color: UIColor.yellow)
 		imageData?.setColor(color: UIColor.red)
 		imageData?.setColor(color: UIColor.blue)
@@ -194,7 +194,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			adjustItemToScreenSize(item:item,latio: imageViewRatio)
 			item.center = CGPoint(x:layer.center.x - vectorX,y:layer.center.y - vectorY)
 			for resizeIcon in item.subviews{
-				if((resizeIcon.tag & DataManager.TagIDs.Rect.rawValue) == DataManager.TagIDs.Rect.rawValue){
+				if((resizeIcon.tag & TagRect) == TagRect){
 					let selectAreaView = resizeIcon as! SelectAreaView
 					selectAreaView.changeFrame(frame: item.bounds)
 				}else{
@@ -231,28 +231,28 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 				// because this image is dummy. ("noimage")
 				if item.tag == -1{
 					item.removeFromSuperview()
-				}else if (item.tag & DataManager.TagIDs.TAG_MASK.rawValue) == DataManager.TagIDs.GPS.rawValue {
+				}else if (item.tag & TagMaskAll) == TagGPS {
 					Log.d("view.tag",item.tag)
 					let label = item as! UILabel
 					label.text = "現在地"
-					if(gpsTag <= (item.tag & ~DataManager.TagIDs.TAG_MASK.rawValue)){
-						gpsTag = (item.tag & ~DataManager.TagIDs.TAG_MASK.rawValue) + 1024
+					if(gpsTag <= (item.tag & ~TagMaskAll)){
+						gpsTag = (item.tag & ~TagMaskAll) + 1024
 						Log.d("gpsTag",gpsTag)
 					}
-				}else if(item.tag & DataManager.TagIDs.TAG_MASK.rawValue) == DataManager.TagIDs.CITY.rawValue {
+				}else if(item.tag & TagMaskAll) == TagCity {
 					Log.d("view.tag",item.tag)
 					let label = item as! UILabel
 					label.text = "CITY"
-					if(cityTag <= (item.tag & ~DataManager.TagIDs.TAG_MASK.rawValue)){
-						cityTag = (item.tag & ~DataManager.TagIDs.TAG_MASK.rawValue) + 1024
+					if(cityTag <= (item.tag & ~TagMaskAll)){
+						cityTag = (item.tag & ~TagMaskAll) + 1024
 						Log.d("cityTag",cityTag)
 					}
-				}else if(item.tag & DataManager.TagIDs.TAG_MASK.rawValue) == DataManager.TagIDs.FREE.rawValue {
+				}else if(item.tag & TagMaskAll) == TagFree {
 					Log.d("item.tag",item.tag)
 					//let label = item as! UILabel
 					//label.text = "テキスト"
-					if(freeTag <= (item.tag & ~DataManager.TagIDs.TAG_MASK.rawValue)){
-						freeTag = (item.tag & ~DataManager.TagIDs.TAG_MASK.rawValue) + 1024
+					if(freeTag <= (item.tag & ~TagMaskAll)){
+						freeTag = (item.tag & ~TagMaskAll) + 1024
 						Log.d("cityTag",cityTag)
 					}
 				}
@@ -388,16 +388,16 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	}
 	/// 以下、デリゲート
 	/// 選択されたサブメニューを取得
-	func selectedSubMenu(state: DataManager.MenuTypes) {
-		if state == DataManager.MenuTypes.SETTING{
+	func selectedSubMenu(state: MenuTypes) {
+		if state == MenuTypes.SETTING{
 			setSetting()
-		}else if state == DataManager.MenuTypes.PEN{
+		}else if state == MenuTypes.PEN{
 			setPen()
-		}else if state == DataManager.MenuTypes.TEXT{
+		}else if state == MenuTypes.TEXT{
 			setText()
-		}else if state == DataManager.MenuTypes.COLOR{
+		}else if state == MenuTypes.COLOR{
 			setColor()
-		}else if state == DataManager.MenuTypes.DUMMY{
+		}else if state == MenuTypes.DUMMY{
 			setDUMMY()
 		}
 	}
@@ -468,7 +468,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 				// subview has a resize icon.
 				if(subview.subviews.count != 0){
 					
-					if(subview.tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.FREE.rawValue){
+					if(subview.tag & TagMaskAll == TagFree){
 						(subview as! UILabel).text = str
 						resizeSelectArea(textLabel:subview as! UILabel)
 						Log.d()
@@ -497,17 +497,17 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	}
 	/// Settingをセット
 	func setSetting(){
-		imageData?.setMenuType(menutype: DataManager.MenuTypes.SETTING)
+		imageData?.setMenuType(menutype: MenuTypes.SETTING)
 		myToolbar.items = toolBar[1]
 		Log.d()
 	}
 	/// Penをセット
 	func setPen(){
 		var isSelected:Bool = false
-		imageData?.setMenuType(menutype: DataManager.MenuTypes.PEN)
+		imageData?.setMenuType(menutype: MenuTypes.PEN)
 		myToolbar.items = toolBar[2]
 		for layer in (imageView?.subviews)!{
-			if(layer.tag == DataManager.MenuTypes.PEN.rawValue){
+			if(layer.tag == LayerPen){
 				Log.d()
 				isSelected = true
 				break
@@ -516,7 +516,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		if(!isSelected){
 			let canvas = UIImageView(frame:(imageView?.bounds)!)
 			canvas.backgroundColor = UIColor.clear
-			canvas.tag = DataManager.MenuTypes.PEN.rawValue
+			canvas.tag = LayerPen
 			canvas.image = UIImage()
 			imageView?.addSubview(canvas)
 			
@@ -528,7 +528,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	}
 	/// Textをセット
 	func setText(){
-		imageData?.setMenuType(menutype: DataManager.MenuTypes.TEXT)
+		imageData?.setMenuType(menutype: MenuTypes.TEXT)
 		myToolbar.items = toolBar[3]
 		enableToolBarItem(enable: false)
 		Log.d()
@@ -540,13 +540,13 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 				self.clearEmphasisSelectedItem(selectedView: item)
 			}
 		}
-		imageData?.setMenuType(menutype: DataManager.MenuTypes.COLOR)
+		imageData?.setMenuType(menutype: MenuTypes.COLOR)
 		myToolbar.items = toolBar[5]
 		Log.d()
 	}
 	/// ダミーをセット
 	func setDUMMY(){
-		imageData?.setMenuType(menutype: DataManager.MenuTypes.DUMMY)
+		imageData?.setMenuType(menutype: MenuTypes.DUMMY)
 		myToolbar.items = toolBar[6]
 		Log.d()
 	}
@@ -555,7 +555,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		Log.d()
 		//myToolbar.items = toolBar[4]
 		let layer = UIView(frame:imageView.bounds)
-		layer.tag = DataManager.MenuTypes.TEXT.rawValue
+		layer.tag = LayerText
 		let GPSlabel = UILabel()
 		// 文字追加
 		let str2 = "テキスト"
@@ -569,7 +569,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		GPSlabel.sizeToFit()
 		// ラベルをviewの中心に移動
 		GPSlabel.center = layer.center
-		GPSlabel.tag = freeTag + DataManager.TagIDs.FREE.rawValue
+		GPSlabel.tag = freeTag + TagFree
 		Log.d("GPSlabel.tag",GPSlabel.tag)
 		freeTag += 1024
 		layer.addSubview(GPSlabel)
@@ -594,7 +594,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	func setGPS(imageView:UIView){
 		Log.d()
 		let layer = UIView(frame:imageView.bounds)
-		layer.tag = DataManager.MenuTypes.TEXT.rawValue
+		layer.tag = LayerText
 		let GPSlabel = UILabel()
 		// 文字追加
 		let str2 = "現在地"
@@ -608,7 +608,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		GPSlabel.sizeToFit()
 		// ラベルをviewの中心に移動
 		GPSlabel.center = layer.center
-		GPSlabel.tag = gpsTag + DataManager.TagIDs.GPS.rawValue
+		GPSlabel.tag = gpsTag + TagGPS
 		Log.d("CPSlabel.tag",GPSlabel.tag)
 		gpsTag += 1024
 		layer.addSubview(GPSlabel)
@@ -631,7 +631,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	func setCITY(imageView:UIView){
 		Log.d()
 		let layer = UIView(frame:imageView.bounds)
-		layer.tag = DataManager.MenuTypes.TEXT.rawValue
+		layer.tag = LayerText
 		let GPSlabel = UILabel()
 		// 文字追加
 		let str2 = "CITY"
@@ -645,7 +645,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		GPSlabel.sizeToFit()
 		// ラベルをviewの中心に移動
 		GPSlabel.center = layer.center
-		GPSlabel.tag = gpsTag + DataManager.TagIDs.CITY.rawValue
+		GPSlabel.tag = gpsTag + TagCity
 		Log.d("CITYlabel.tag",GPSlabel.tag)
 		cityTag += 1024
 		layer.addSubview(GPSlabel)
@@ -839,7 +839,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		canvas = UIImageView()
 		Log.d()
 		for layer in (imageView?.subviews)!{
-			if(layer.tag == DataManager.MenuTypes.PEN.rawValue){
+			if(layer.tag == LayerPen){
 				canvas = layer as! UIImageView
 				break
 			}
@@ -858,7 +858,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		canvas = UIImageView()
 		Log.d()
 		for layer in (imageView?.subviews)!{
-			if(layer.tag == DataManager.MenuTypes.PEN.rawValue){
+			if(layer.tag == LayerPen){
 				canvas = layer as! UIImageView
 				break
 			}
@@ -1001,7 +1001,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 					for item in layer.subviews {
 						// imageView上のアイテムが選択された時の処理
 						if (item.frame.contains(location)) {
-							if(item.tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.FREE.rawValue){
+							if(item.tag & TagItemMask == TagFree){
 								displayTextEditor()
 							}
 						}
@@ -1022,7 +1022,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	@objc func handleTapGesture(sender: UITapGestureRecognizer){
 		Log.d()
 		let location:CGPoint = sender.location(in: self.imageView)
-		if(imageData?.getMenuType() == DataManager.MenuTypes.COLOR){
+		if(imageData?.getMenuType() == MenuTypes.COLOR){
 			tagList.removeAll()
 			var isSelected = false
 			var imageView:[UIView]!
@@ -1037,9 +1037,9 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 					for item in layer.subviews {
 						// imageView上のアイテムが選択された時の処理
 						if (item.frame.contains(location)) {
-							if(item.tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.GPS.rawValue ||
-								item.tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.CITY.rawValue ||
-								item.tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.FREE.rawValue){
+							if(item.tag & TagItemMask == TagGPS ||
+								item.tag & TagItemMask == TagCity ||
+								item.tag & TagItemMask == TagFree){
 								let label:UILabel = item as! UILabel
 								label.textColor = SelectedColorView.backgroundColor!
 								isSelected = true
@@ -1053,7 +1053,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 					self.imageView?.backgroundColor = SelectedColorView.backgroundColor!
 				}
 			}
-		}else if(imageData?.getMenuType() == DataManager.MenuTypes.TEXT){
+		}else if(imageData?.getMenuType() == MenuTypes.TEXT){
 			tagList.removeAll()
 			// タッチされた座標の位置を含むサブビューを取得
 			var imageView:[UIView]!
@@ -1073,7 +1073,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 				}
 			}
 			enableToolBarItem(enable: isSelected)
-		}else if(imageData?.getMenuType() == DataManager.MenuTypes.PEN){
+		}else if(imageData?.getMenuType() == MenuTypes.PEN){
 			bezierPath = UIBezierPath()
 			let pointSize:CGFloat = (imageData?.getPen())!
 			bezierPath.addArc(withCenter: location, radius: pointSize/2, startAngle: 0.0, endAngle: CGFloat(Double.pi)*2, clockwise: true)
@@ -1081,7 +1081,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			var canvas:UIImageView!
 			canvas = UIImageView()
 			for layer in (imageView?.subviews)!{
-				if(layer.tag == DataManager.MenuTypes.PEN.rawValue){
+				if(layer.tag == LayerPen){
 					canvas = layer as! UIImageView
 					break
 				}
@@ -1098,9 +1098,9 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	@objc func handlePanGesture(sender: UIPanGestureRecognizer){
 		switch sender.state {
 		case UIGestureRecognizerState.began:
-			if(imageData?.getMenuType() == DataManager.MenuTypes.COLOR){
+			if(imageData?.getMenuType() == MenuTypes.COLOR){
 				tagList.removeAll()
-			}else if(imageData?.getMenuType() == DataManager.MenuTypes.TEXT){
+			}else if(imageData?.getMenuType() == MenuTypes.TEXT){
 				tagList.removeAll()
 				let location:CGPoint = sender.location(in: self.imageView)
 				var imageView:[UIView]!
@@ -1120,7 +1120,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 					}
 				}
 				enableToolBarItem(enable: isSelected)
-			}else if(imageData?.getMenuType() == DataManager.MenuTypes.PEN){
+			}else if(imageData?.getMenuType() == MenuTypes.PEN){
 				let location:CGPoint = sender.location(in: self.imageView)
 				bezierPath = UIBezierPath()
 				bezierPath.lineWidth = (imageData?.getPen())!
@@ -1128,7 +1128,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			}
 			break
 		case UIGestureRecognizerState.changed:
-			if(imageData?.getMenuType() == DataManager.MenuTypes.TEXT){
+			if(imageData?.getMenuType() == MenuTypes.TEXT){
 				//移動量を取得
 				let move:CGPoint = sender.translation(in: self.imageView)
 				var imageView:[UIView]!
@@ -1151,7 +1151,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 						updateLayerPickerView()
 					}
 				}
-			}else if(imageData?.getMenuType() == DataManager.MenuTypes.PEN){
+			}else if(imageData?.getMenuType() == MenuTypes.PEN){
 				if bezierPath != nil {
 					let location:CGPoint = sender.location(in: self.imageView)
 					bezierPath.addLine(to: location)
@@ -1160,14 +1160,14 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			}
 			break
 		case UIGestureRecognizerState.ended:
-			if(imageData?.getMenuType() == DataManager.MenuTypes.PEN){
+			if(imageData?.getMenuType() == MenuTypes.PEN){
 				let location:CGPoint = sender.location(in: self.imageView)
 				bezierPath.addLine(to: location)
 				drawLine(path: bezierPath)
 				var canvas:UIImageView!
 				canvas = UIImageView()
 				for layer in (imageView?.subviews)!{
-					if(layer.tag == DataManager.MenuTypes.PEN.rawValue){
+					if(layer.tag == LayerPen){
 						canvas = layer as! UIImageView
 						break
 					}
@@ -1190,7 +1190,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		var canvas:UIImageView!
 		canvas = UIImageView()
 		for layer in (imageView?.subviews)!{
-			if(layer.tag == DataManager.MenuTypes.PEN.rawValue){
+			if(layer.tag == LayerPen){
 				canvas = layer as! UIImageView
 				break
 			}
@@ -1214,7 +1214,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		var canvas:UIImageView!
 		canvas = UIImageView()
 		for layer in (imageView?.subviews)!{
-			if(layer.tag == DataManager.MenuTypes.PEN.rawValue){
+			if(layer.tag == LayerPen){
 				canvas = layer as! UIImageView
 				break
 			}
@@ -1236,15 +1236,15 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 	func updatePosition(imageView:UIView,tagList:[Int],move:CGPoint,sender: UIPanGestureRecognizer){
 		for tag:Int in tagList {
 			let item:UIView = (self.imageView?.viewWithTag(tag))!
-			if(tag & DataManager.TagIDs.Scale.rawValue == DataManager.TagIDs.Scale.rawValue){
-				let textLavel = (self.imageView?.viewWithTag(tag & ~DataManager.TagIDs.Scale.rawValue))!
+			if(tag & TagScale == TagScale){
+				let textLavel = (self.imageView?.viewWithTag(tag & ~TagScale))!
 				self.resizeText(textLabel: textLavel as! UILabel, posX: item.frame)
 				let moved = CGPoint(x: item.center.x + move.x, y: textLavel.frame.height / 2)
 				item.center = moved
 				sender.setTranslation(CGPoint.zero, in: item)
-			}else if(tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.GPS.rawValue ||
-				tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.CITY.rawValue ||
-				tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.FREE.rawValue){
+			}else if(tag & TagItemMask == TagGPS ||
+				tag & TagItemMask == TagCity ||
+				tag & TagItemMask == TagFree){
 				let moved = CGPoint(x: item.center.x + move.x, y: item.center.y + move.y)
 				item.center = moved
 				sender.setTranslation(CGPoint.zero, in:item)
@@ -1259,15 +1259,15 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 				// 選択されたアイテムのタグをタグリストに追加
 				tagList.append(item.tag)
 				Log.d("item.tag",String(item.tag,radix:16))
-				if(item.tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.GPS.rawValue ||
-					item.tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.CITY.rawValue ||
-					item.tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.FREE.rawValue){
+				if(item.tag & TagItemMask == TagGPS ||
+					item.tag & TagItemMask == TagCity ||
+					item.tag & TagItemMask == TagFree){
 					// 選択されたアイテムを強調
 					var operateView:UIView!
 					operateView = layer.viewWithTag(item.tag)
 					self.emphasisSelectedItem(selectedView: operateView)
 					isSelected = true
-					//if(item.tag & DataManager.TagIDs.ITEM_MASK.rawValue == DataManager.TagIDs.FREE.rawValue){
+					//if(item.tag & TagItemMask == TagFree){
 						//myToolbar.items = toolBar[3]
 				//	}else{
 					myToolbar.items = toolBar[3]
@@ -1359,11 +1359,11 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 			let scaleButton = UIButton(frame:CGRect(x:posX,y:posY,width:iconSize,height:iconSize))
 			Log.d(posX,posY,iconSize,selectedView.frame)
 			scaleButton.setImage(UIImage(named: "resize_icon"), for: .normal)
-			scaleButton.tag = selectedView.tag | DataManager.TagIDs.Scale.rawValue
+			scaleButton.tag = selectedView.tag | TagScale
 			selectedView.addSubview(scaleButton)
 			let frame = CGRect(x: 0,y: 0,width: selectedView.frame.width, height: selectedView.frame.height)
 			let selectAreaView = SelectAreaView(frame: frame)
-			selectAreaView.tag = selectedView.tag | DataManager.TagIDs.Rect.rawValue
+			selectAreaView.tag = selectedView.tag | TagRect
 			selectedView.addSubview(selectAreaView)
 		}
 	}
@@ -1395,7 +1395,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		// 文字サイズに合わせてラベルのサイズを調整
 		textLabel.sizeToFit()
 		for icon in textLabel.subviews{
-			if((icon.tag & DataManager.TagIDs.Rect.rawValue) == DataManager.TagIDs.Rect.rawValue){
+			if((icon.tag & TagRect) == TagRect){
 				let selectAreaView = icon as! SelectAreaView
 				selectAreaView.changeFrame(frame: textLabel.bounds)
 			}
@@ -1405,10 +1405,10 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		// 文字サイズに合わせてラベルのサイズを調整
 		textLabel.sizeToFit()
 		for icon in textLabel.subviews{
-			if((icon.tag & DataManager.TagIDs.Rect.rawValue) == DataManager.TagIDs.Rect.rawValue){
+			if((icon.tag & TagRect) == TagRect){
 				let selectAreaView = icon as! SelectAreaView
 				selectAreaView.changeFrame(frame: textLabel.bounds)
-			}else if((icon.tag & DataManager.TagIDs.Scale.rawValue) == DataManager.TagIDs.Scale.rawValue){
+			}else if((icon.tag & TagScale) == TagScale){
 				let iconSize:CGFloat = 50.0
 				let margine:CGFloat = 10.0
 				let posX = textLabel.frame.width + margine
@@ -1428,7 +1428,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		// 文字サイズに合わせてラベルのサイズを調整
 		textLabel.sizeToFit()
 		for icon in textLabel.subviews{
-			if((icon.tag & DataManager.TagIDs.Rect.rawValue) == DataManager.TagIDs.Rect.rawValue){
+			if((icon.tag & TagRect) == TagRect){
 				let selectAreaView = icon as! SelectAreaView
 				selectAreaView.changeFrame(frame: textLabel.bounds)
 			}
@@ -1450,7 +1450,7 @@ class ImageEditor: UIViewController, SubMenuDelegate, FontPickerDelegate,ColorPi
 		textLabel.font = UIFont(name: textLabel.font.fontName,size:  refPointSize * itemWidth * latio / (refWidth?.width)!)
 		textLabel.sizeToFit()
 		for icon in textLabel.subviews{
-			if((icon.tag & DataManager.TagIDs.Rect.rawValue) == DataManager.TagIDs.Rect.rawValue){
+			if((icon.tag & TagRect) == TagRect){
 				let selectAreaView = icon as! SelectAreaView
 				selectAreaView.changeFrame(frame: textLabel.bounds)
 			}
